@@ -21,6 +21,13 @@
         .negative-eps {
             color: #dc3545;
         }
+        .eps-history {
+            font-size: 0.85em;
+            line-height: 1.2;
+        }
+        .eps-history small {
+            color: #6c757d;
+        }
         .header-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -96,7 +103,8 @@
                                         <th>Company</th>
                                         <th>Market Cap</th>
                                         <th>Price</th>
-                                        <th>EPS</th>
+                                        <th>Current EPS</th>
+                                        <th>EPS History</th>
                                         <th>Sector</th>
                                     </tr>
                                 </thead>
@@ -109,6 +117,19 @@
                                         <td>${{ "%.2f"|format(stock.price) }}</td>
                                         <td class="{% if stock.eps >= 0 %}positive-eps{% else %}negative-eps{% endif %}">
                                             ${{ "%.2f"|format(stock.eps) }}
+                                        </td>
+                                        <td>
+                                            {% if stock.eps_history and stock.eps_history.annual %}
+                                                <div class="eps-history">
+                                                    {% for year, eps in stock.eps_history.annual.items() %}
+                                                        <small class="d-block">
+                                                            {{ year[:4] }}: ${{ "%.2f"|format(eps) }}
+                                                        </small>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <small class="text-muted">N/A</small>
+                                            {% endif %}
                                         </td>
                                         <td><span class="badge bg-secondary">{{ stock.sector }}</span></td>
                                     </tr>
