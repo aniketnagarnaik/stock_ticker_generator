@@ -5,6 +5,7 @@ Clean, simple implementation for viewing real stock data
 
 from flask import Flask, render_template, jsonify, request
 import os
+from datetime import datetime
 from stock_data import StockData
 
 app = Flask(__name__)
@@ -12,10 +13,13 @@ app = Flask(__name__)
 # Global variable to store stock data
 stocks_data = []
 
+# Server start time
+server_start_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
 @app.route('/')
 def index():
     """Main page showing stock data"""
-    return render_template('index.html', stocks=stocks_data)
+    return render_template('index.html', stocks=stocks_data, server_start_time=server_start_time)
 
 @app.route('/api/stocks')
 def api_stocks():
