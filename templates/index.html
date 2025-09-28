@@ -11,11 +11,11 @@
             font-size: 0.9rem;
         }
         .container {
-            margin-top: 15px;
-            padding: 0 10px;
+            margin-top: 10px;
+            padding: 0 5px;
         }
         .card {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border: none;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
@@ -23,26 +23,84 @@
             background-color: #007bff;
             color: white;
             font-weight: bold;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
         }
         .card-body {
-            padding: 0.75rem;
+            padding: 0.6rem;
+        }
+        
+        /* Mobile-first responsive table */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .table {
             margin-bottom: 0;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            min-width: 800px; /* Ensure horizontal scroll on mobile */
         }
         .table th {
             background-color: #495057;
             color: white;
-            padding: 0.5rem;
-            font-size: 0.8rem;
+            padding: 0.4rem 0.3rem;
+            font-size: 0.75rem;
             font-weight: 600;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         .table td {
-            padding: 0.4rem;
+            padding: 0.3rem;
             vertical-align: middle;
+            white-space: nowrap;
+        }
+        
+        /* Mobile-specific optimizations */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 2px;
+                margin-top: 5px;
+            }
+            .card-body {
+                padding: 0.4rem;
+            }
+            .table {
+                font-size: 0.75rem;
+            }
+            .table th {
+                padding: 0.3rem 0.2rem;
+                font-size: 0.7rem;
+            }
+            .table td {
+                padding: 0.25rem 0.2rem;
+            }
+            .btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+            .form-control, .form-select {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.4rem;
+            }
+            
+            /* Mobile header optimization */
+            .compact-header {
+                padding: 10px 0;
+            }
+            .stats-inline {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+                align-items: flex-end;
+            }
+            .stats-inline span {
+                font-size: 0.8rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
         }
         .stock-row {
             transition: background-color 0.2s;
@@ -86,31 +144,55 @@
             margin-bottom: 0.5rem;
             font-size: 0.8rem;
         }
+        .filter-compact {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            padding: 4px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .filter-compact .form-control,
+        .filter-compact .form-select {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.4rem;
+        }
+        
+        /* Mobile filter optimization */
+        @media (max-width: 768px) {
             .filter-compact {
-                display: flex;
-                gap: 15px;
-                align-items: center;
-                flex-wrap: wrap;
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
             }
             .filter-group {
-                display: flex;
+                justify-content: space-between;
+                padding: 6px;
                 gap: 8px;
-                align-items: center;
-                padding: 5px;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-                background-color: #f8f9fa;
             }
             .filter-actions {
-                display: flex;
-                gap: 8px;
-                align-items: center;
+                justify-content: center;
+                margin-top: 5px;
             }
             .filter-compact .form-control,
             .filter-compact .form-select {
-                font-size: 0.8rem;
-                padding: 0.25rem 0.5rem;
+                font-size: 0.7rem;
+                padding: 0.15rem 0.3rem;
+                min-width: 60px;
             }
+        }
             .form-check-inline {
                 margin-right: 0.5rem;
             }
@@ -140,7 +222,7 @@
                         <span>Avg Cap: <strong id="avgMarketCap">$0T</strong></span>
                         <button class="btn btn-light btn-sm" onclick="refreshData()">
                             🔄 Refresh
-                        </button>
+                    </button>
                     </div>
                 </div>
             </div>
@@ -170,42 +252,42 @@
                                     <option value="custom">Custom</option>
                                 </select>
                                 <input type="number" class="form-control" id="epsGrowthCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
-                            </div>
+        </div>
 
                             <!-- RS vs SPY Filter -->
                             <div class="filter-group">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" id="rsSpyCheck">
                                     <label class="form-check-label" for="rsSpyCheck">RS vs SPY ></label>
-                                </div>
+                </div>
                                 <select class="form-select" id="rsSpyThreshold" style="width: auto;">
                                     <option value="10">10%</option>
                                     <option value="20">20%</option>
                                     <option value="custom">Custom</option>
                                 </select>
                                 <input type="number" class="form-control" id="rsSpyCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
-                            </div>
+            </div>
 
                             <!-- RS vs Sector Filter -->
                             <div class="filter-group">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" id="rsSectorCheck">
                                     <label class="form-check-label" for="rsSectorCheck">RS vs Sector ></label>
-                                </div>
+                </div>
                                 <select class="form-select" id="rsSectorThreshold" style="width: auto;">
                                     <option value="5">5%</option>
                                     <option value="15">15%</option>
                                     <option value="custom">Custom</option>
                                 </select>
                                 <input type="number" class="form-control" id="rsSectorCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
-                            </div>
+            </div>
 
                             <!-- Action Buttons -->
                             <div class="filter-actions">
                                 <button class="btn btn-success btn-sm" id="applyMultipleFilterButton">Apply Filters</button>
                                 <button class="btn btn-secondary btn-sm" id="clearAllFiltersButton">Clear All</button>
-                            </div>
-                        </div>
+                </div>
+            </div>
                     </div>
                 </div>
             </div>
@@ -219,21 +301,21 @@
                         <h5 class="mb-0">Stock Data</h5>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead class="table-dark">
-                                    <tr>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
                                             <th>Symbol</th>
-                                            <th>Company</th>
+                                <th>Company</th>
                                             <th>Market Cap</th>
                                             <th>Price</th>
                                         <th>EPS Growth %</th>
                                         <th>RS vs SPY</th>
                                         <th>RS vs Sector</th>
                                         <th>EPS History</th>
-                                        <th>Sector</th>
-                                    </tr>
-                                </thead>
+                                <th>Sector</th>
+                            </tr>
+                        </thead>
                                 <tbody>
                                     {% for stock in stocks %}
                                     <tr class="stock-row">
@@ -288,8 +370,8 @@
                                         <td><span class="badge bg-secondary">{{ stock.sector }}</span></td>
                                     </tr>
                                     {% endfor %}
-                                </tbody>
-                            </table>
+                        </tbody>
+                    </table>
                         </div>
                     </div>
                 </div>
