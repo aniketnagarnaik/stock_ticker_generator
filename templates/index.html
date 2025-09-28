@@ -6,6 +6,44 @@
     <title>Stock Data Viewer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f8f9fa;
+            font-size: 0.9rem;
+        }
+        .container {
+            margin-top: 15px;
+            padding: 0 10px;
+        }
+        .card {
+            margin-bottom: 10px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        .card-body {
+            padding: 0.75rem;
+        }
+        .table {
+            margin-bottom: 0;
+            font-size: 0.85rem;
+        }
+        .table th {
+            background-color: #495057;
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .table td {
+            padding: 0.4rem;
+            vertical-align: middle;
+        }
         .stock-row {
             transition: background-color 0.2s;
         }
@@ -17,71 +55,157 @@
         }
         .positive-eps {
             color: #28a745;
+            font-weight: 600;
         }
         .negative-eps {
             color: #dc3545;
+            font-weight: 600;
         }
         .eps-history {
-            font-size: 0.85em;
-            line-height: 1.2;
+            font-size: 0.9em;
+            line-height: 1.3;
         }
         .eps-history small {
-            color: #6c757d;
+            color: #212529;
+            font-weight: 500;
         }
-        .header-gradient {
+        .eps-value {
+            font-weight: 600;
+            color: #495057;
+        }
+        .compact-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
+            padding: 1rem 0;
+            margin-bottom: 1rem;
+        }
+        .stats-inline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+            .filter-compact {
+                display: flex;
+                gap: 15px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+            .filter-group {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                padding: 5px;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                background-color: #f8f9fa;
+            }
+            .filter-actions {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+            .filter-compact .form-control,
+            .filter-compact .form-select {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.5rem;
+            }
+            .form-check-inline {
+                margin-right: 0.5rem;
+            }
+            .form-check-input {
+                margin-right: 0.25rem;
+            }
+        .btn-sm {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .badge {
+            font-size: 0.7rem;
         }
     </style>
 </head>
 <body>
-    <div class="header-gradient">
+    <div class="compact-header">
         <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h1>📈 Stock Data Viewer</h1>
-                    <p class="mb-0">Real-time stock data from Yahoo Finance</p>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="mb-0">📈 Stock Data Viewer</h4>
+                    <small>Real-time data from Yahoo Finance</small>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="stats-inline">
+                        <span><strong>{{ stocks|length }}</strong> stocks</span>
+                        <span>Avg Cap: <strong id="avgMarketCap">$0T</strong></span>
+                        <button class="btn btn-light btn-sm" onclick="refreshData()">
+                            🔄 Refresh
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <!-- Stats Row -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card bg-primary text-white">
-                    <div class="card-body text-center">
-                        <h4>{{ stocks|length }}</h4>
-                        <p class="mb-0">Total Stocks</p>
+
+        <!-- Multiple Filter -->
+        <div class="row mb-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h6 class="mb-0">📊 Multiple Filters</h6>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-success text-white">
-                    <div class="card-body text-center">
-                        <h4 id="avgMarketCap">$0T</h4>
-                        <p class="mb-0">Avg Market Cap</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-info text-white">
-                    <div class="card-body text-center">
-                        <h4 id="avgEps">0.0</h4>
-                        <p class="mb-0">Avg EPS</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-warning text-white">
-                    <div class="card-body text-center">
-                        <button class="btn btn-light btn-sm" onclick="refreshData()">
-                            🔄 Refresh
-                        </button>
-                        <p class="mb-0 mt-2">Update Data</p>
+                    <div class="card-body py-2">
+                        <div class="filter-compact">
+                            <!-- EPS Growth Filter -->
+                            <div class="filter-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="epsGrowthCheck">
+                                    <label class="form-check-label" for="epsGrowthCheck">EPS Growth ></label>
+                                </div>
+                                <select class="form-select" id="epsGrowthThreshold" style="width: auto;">
+                                    <option value="25">25%</option>
+                                    <option value="35">35%</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                                <input type="number" class="form-control" id="epsGrowthCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
+                            </div>
+
+                            <!-- RS vs SPY Filter -->
+                            <div class="filter-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rsSpyCheck">
+                                    <label class="form-check-label" for="rsSpyCheck">RS vs SPY ></label>
+                                </div>
+                                <select class="form-select" id="rsSpyThreshold" style="width: auto;">
+                                    <option value="10">10%</option>
+                                    <option value="20">20%</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                                <input type="number" class="form-control" id="rsSpyCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
+                            </div>
+
+                            <!-- RS vs Sector Filter -->
+                            <div class="filter-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="rsSectorCheck">
+                                    <label class="form-check-label" for="rsSectorCheck">RS vs Sector ></label>
+                                </div>
+                                <select class="form-select" id="rsSectorThreshold" style="width: auto;">
+                                    <option value="5">5%</option>
+                                    <option value="15">15%</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                                <input type="number" class="form-control" id="rsSectorCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="filter-actions">
+                                <button class="btn btn-success btn-sm" id="applyMultipleFilterButton">Apply Filters</button>
+                                <button class="btn btn-secondary btn-sm" id="clearAllFiltersButton">Clear All</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -99,11 +223,13 @@
                             <table class="table table-striped table-hover">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>Symbol</th>
-                                        <th>Company</th>
-                                        <th>Market Cap</th>
-                                        <th>Price</th>
-                                        <th>Current EPS</th>
+                                            <th>Symbol</th>
+                                            <th>Company</th>
+                                            <th>Market Cap</th>
+                                            <th>Price</th>
+                                        <th>EPS Growth %</th>
+                                        <th>RS vs SPY</th>
+                                        <th>RS vs Sector</th>
                                         <th>EPS History</th>
                                         <th>Sector</th>
                                     </tr>
@@ -115,15 +241,43 @@
                                         <td>{{ stock.company_name }}</td>
                                         <td class="market-cap">${{ "%.1f"|format(stock.market_cap / 1000000000000) }}T</td>
                                         <td>${{ "%.2f"|format(stock.price) }}</td>
-                                        <td class="{% if stock.eps >= 0 %}positive-eps{% else %}negative-eps{% endif %}">
-                                            ${{ "%.2f"|format(stock.eps) }}
+                                        <td class="{% if stock.eps_growth and stock.eps_growth.quarter_over_quarter and stock.eps_growth.quarter_over_quarter > 0 %}positive-eps{% elif stock.eps_growth and stock.eps_growth.quarter_over_quarter and stock.eps_growth.quarter_over_quarter < 0 %}negative-eps{% endif %}">
+                                            {% if stock.eps_growth and stock.eps_growth.quarter_over_quarter is not none %}
+                                                {{ "%.1f"|format(stock.eps_growth.quarter_over_quarter) }}%
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="{% if stock.relative_strength and stock.relative_strength.rs_spy and stock.relative_strength.rs_spy > 0 %}positive-eps{% elif stock.relative_strength and stock.relative_strength.rs_spy and stock.relative_strength.rs_spy < 0 %}negative-eps{% endif %}">
+                                            {% if stock.relative_strength and stock.relative_strength.rs_spy is not none %}
+                                                {{ "%.1f"|format(stock.relative_strength.rs_spy) }}%
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="{% if stock.relative_strength and stock.relative_strength.rs_sector and stock.relative_strength.rs_sector > 0 %}positive-eps{% elif stock.relative_strength and stock.relative_strength.rs_sector and stock.relative_strength.rs_sector < 0 %}negative-eps{% endif %}">
+                                            {% if stock.relative_strength and stock.relative_strength.rs_sector is not none %}
+                                                {{ "%.1f"|format(stock.relative_strength.rs_sector) }}%
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
                                         </td>
                                         <td>
-                                            {% if stock.eps_history and stock.eps_history.annual %}
+                                            {% if stock.eps_history and stock.eps_history.quarterly %}
                                                 <div class="eps-history">
-                                                    {% for year, eps in stock.eps_history.annual.items() %}
+                                                    {% for quarter_date, eps in stock.eps_history.quarterly.items() %}
                                                         <small class="d-block">
-                                                            {{ year[:4] }}: ${{ "%.2f"|format(eps) }}
+                                                            {% set year = quarter_date[:4] %}
+                                                            {% set month = quarter_date[5:7] %}
+                                                            {% if month == "01" or month == "02" or month == "03" %}
+                                                                Q1 {{ year }}: <span class="eps-value">${{ "%.2f"|format(eps) }}</span>
+                                                            {% elif month == "04" or month == "05" or month == "06" %}
+                                                                Q2 {{ year }}: <span class="eps-value">${{ "%.2f"|format(eps) }}</span>
+                                                            {% elif month == "07" or month == "08" or month == "09" %}
+                                                                Q3 {{ year }}: <span class="eps-value">${{ "%.2f"|format(eps) }}</span>
+                                                            {% else %}
+                                                                Q4 {{ year }}: <span class="eps-value">${{ "%.2f"|format(eps) }}</span>
+                                                            {% endif %}
                                                         </small>
                                                     {% endfor %}
                                                 </div>
@@ -142,25 +296,16 @@
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                <p class="text-muted">
-                    Data from Yahoo Finance | Last updated: <span id="lastUpdated">Loading...</span>
-                </p>
-            </div>
-        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Calculate and display statistics
         function updateStats() {
-            const stocks = {{ stocks|tojson }};
+            const stocks = filteredStocks; // Use filteredStocks for stats
             
             if (stocks.length === 0) {
                 document.getElementById('avgMarketCap').textContent = '$0T';
-                document.getElementById('avgEps').textContent = '0.0';
                 return;
             }
             
@@ -168,14 +313,6 @@
             const totalMarketCap = stocks.reduce((sum, stock) => sum + stock.market_cap, 0);
             const avgMarketCap = totalMarketCap / stocks.length;
             document.getElementById('avgMarketCap').textContent = `$${(avgMarketCap / 1000000000000).toFixed(1)}T`;
-            
-            // Calculate average EPS
-            const totalEps = stocks.reduce((sum, stock) => sum + stock.eps, 0);
-            const avgEps = totalEps / stocks.length;
-            document.getElementById('avgEps').textContent = avgEps.toFixed(2);
-            
-            // Update last updated time
-            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
         }
         
         // Refresh data from server
@@ -203,6 +340,273 @@
                 button.innerHTML = originalText;
                 button.disabled = false;
             }
+        }
+        
+        // Filter functionality
+        let allStocks = {{ stocks|tojson }};
+        let filteredStocks = allStocks;
+        
+            // Handle custom threshold inputs for all filters
+            function setupCustomThresholdHandlers() {
+                // EPS Growth
+                document.getElementById('epsGrowthThreshold').addEventListener('change', function() {
+                    const customInput = document.getElementById('epsGrowthCustom');
+                    customInput.style.display = this.value === 'custom' ? 'block' : 'none';
+                });
+                
+                // RS vs SPY
+                document.getElementById('rsSpyThreshold').addEventListener('change', function() {
+                    const customInput = document.getElementById('rsSpyCustom');
+                    customInput.style.display = this.value === 'custom' ? 'block' : 'none';
+                });
+                
+                // RS vs Sector
+                document.getElementById('rsSectorThreshold').addEventListener('change', function() {
+                    const customInput = document.getElementById('rsSectorCustom');
+                    customInput.style.display = this.value === 'custom' ? 'block' : 'none';
+                });
+            }
+            
+            setupCustomThresholdHandlers();
+        
+            // Apply multiple filters
+            document.getElementById('applyMultipleFilterButton').addEventListener('click', async function() {
+                const filters = getActiveFilters();
+                
+                if (filters.length === 0) {
+                    alert('Please select at least one filter');
+                    return;
+                }
+                
+                try {
+                    // Apply filters locally with AND logic
+                    filteredStocks = allStocks.filter(stock => {
+                        return filters.every(filter => {
+                            const value = getStockValue(stock, filter.metric);
+                            return value !== null && value > filter.threshold;
+                        });
+                    });
+                    
+                    updateTable();
+                    updateStats();
+                    
+                    // Show filter result message
+                    const filterNames = filters.map(f => `${f.name} > ${f.threshold}%`).join(' AND ');
+                    const message = `Filters applied: ${filteredStocks.length} stocks found with ${filterNames}`;
+                    showFilterMessage(message, 'success');
+                    
+                } catch (error) {
+                    console.error('Filter error:', error);
+                    alert('Error applying filters');
+                }
+            });
+        
+        // Helper functions for multiple filters
+        function getActiveFilters() {
+            const filters = [];
+            
+            // EPS Growth filter
+            if (document.getElementById('epsGrowthCheck').checked) {
+                const threshold = getThresholdValue('epsGrowthThreshold', 'epsGrowthCustom');
+                if (threshold !== null) {
+                    filters.push({
+                        metric: 'eps_growth',
+                        name: 'EPS Growth',
+                        threshold: threshold
+                    });
+                }
+            }
+            
+            // RS vs SPY filter
+            if (document.getElementById('rsSpyCheck').checked) {
+                const threshold = getThresholdValue('rsSpyThreshold', 'rsSpyCustom');
+                if (threshold !== null) {
+                    filters.push({
+                        metric: 'rs_spy',
+                        name: 'RS vs SPY',
+                        threshold: threshold
+                    });
+                }
+            }
+            
+            // RS vs Sector filter
+            if (document.getElementById('rsSectorCheck').checked) {
+                const threshold = getThresholdValue('rsSectorThreshold', 'rsSectorCustom');
+                if (threshold !== null) {
+                    filters.push({
+                        metric: 'rs_sector',
+                        name: 'RS vs Sector',
+                        threshold: threshold
+                    });
+                }
+            }
+            
+            return filters;
+        }
+        
+        function getThresholdValue(selectId, customId) {
+            const select = document.getElementById(selectId);
+            if (select.value === 'custom') {
+                const customValue = parseFloat(document.getElementById(customId).value);
+                return isNaN(customValue) ? null : customValue;
+            } else {
+                return parseFloat(select.value);
+            }
+        }
+        
+        function getStockValue(stock, metric) {
+            switch (metric) {
+                case 'eps_growth':
+                    return stock.eps_growth?.quarter_over_quarter;
+                case 'rs_spy':
+                    return stock.relative_strength?.rs_spy;
+                case 'rs_sector':
+                    return stock.relative_strength?.rs_sector;
+                default:
+                    return null;
+            }
+        }
+        
+        // Clear all filters
+        document.getElementById('clearAllFiltersButton').addEventListener('click', function() {
+            // Uncheck all filters
+            document.getElementById('epsGrowthCheck').checked = false;
+            document.getElementById('rsSpyCheck').checked = false;
+            document.getElementById('rsSectorCheck').checked = false;
+            
+            // Reset all thresholds to defaults
+            document.getElementById('epsGrowthThreshold').value = '25';
+            document.getElementById('rsSpyThreshold').value = '10';
+            document.getElementById('rsSectorThreshold').value = '5';
+            
+            // Hide custom inputs
+            document.getElementById('epsGrowthCustom').style.display = 'none';
+            document.getElementById('rsSpyCustom').style.display = 'none';
+            document.getElementById('rsSectorCustom').style.display = 'none';
+            
+            // Show all stocks
+            filteredStocks = allStocks;
+            updateTable();
+            updateStats();
+            showFilterMessage('All filters cleared - showing all stocks', 'info');
+        });
+        
+        // Update table with current stocks
+        function updateTable() {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            filteredStocks.forEach(stock => {
+                const row = tbody.insertRow();
+                row.className = 'stock-row';
+                
+                // Symbol
+                const symbolCell = row.insertCell();
+                symbolCell.innerHTML = `<strong>${stock.symbol}</strong>`;
+                
+                // Company
+                row.insertCell().textContent = stock.company_name;
+                
+                // Market Cap
+                const marketCapCell = row.insertCell();
+                marketCapCell.className = 'market-cap';
+                marketCapCell.textContent = `$${(stock.market_cap / 1000000000000).toFixed(1)}T`;
+                
+                    // Price
+                    row.insertCell().textContent = `$${stock.price.toFixed(2)}`;
+                    
+                    // EPS Growth %
+                    const growthCell = row.insertCell();
+                    if (stock.eps_growth && stock.eps_growth.quarter_over_quarter !== null) {
+                        const growth = stock.eps_growth.quarter_over_quarter;
+                        growthCell.className = growth > 0 ? 'positive-eps' : growth < 0 ? 'negative-eps' : '';
+                        growthCell.textContent = `${growth.toFixed(1)}%`;
+                    } else {
+                        growthCell.innerHTML = '<span class="text-muted">N/A</span>';
+                    }
+                    
+                    // RS vs SPY
+                    const rsSpyCell = row.insertCell();
+                    if (stock.relative_strength && stock.relative_strength.rs_spy !== null) {
+                        const rsSpy = stock.relative_strength.rs_spy;
+                        rsSpyCell.className = rsSpy > 0 ? 'positive-eps' : rsSpy < 0 ? 'negative-eps' : '';
+                        rsSpyCell.textContent = `${rsSpy.toFixed(1)}%`;
+                    } else {
+                        rsSpyCell.innerHTML = '<span class="text-muted">N/A</span>';
+                    }
+                    
+                    // RS vs Sector
+                    const rsSectorCell = row.insertCell();
+                    if (stock.relative_strength && stock.relative_strength.rs_sector !== null) {
+                        const rsSector = stock.relative_strength.rs_sector;
+                        rsSectorCell.className = rsSector > 0 ? 'positive-eps' : rsSector < 0 ? 'negative-eps' : '';
+                        rsSectorCell.textContent = `${rsSector.toFixed(1)}%`;
+                    } else {
+                        rsSectorCell.innerHTML = '<span class="text-muted">N/A</span>';
+                    }
+                
+                // EPS History
+                const historyCell = row.insertCell();
+                if (stock.eps_history && stock.eps_history.quarterly) {
+                    const historyDiv = document.createElement('div');
+                    historyDiv.className = 'eps-history';
+                    Object.entries(stock.eps_history.quarterly).forEach(([quarterDate, eps]) => {
+                        const small = document.createElement('small');
+                        small.className = 'd-block';
+                        
+                        // Convert date to Q1 2024 format
+                        const year = quarterDate.substring(0, 4);
+                        const month = quarterDate.substring(5, 7);
+                        let quarter;
+                        
+                        if (month === "01" || month === "02" || month === "03") {
+                            quarter = "Q1";
+                        } else if (month === "04" || month === "05" || month === "06") {
+                            quarter = "Q2";
+                        } else if (month === "07" || month === "08" || month === "09") {
+                            quarter = "Q3";
+                        } else {
+                            quarter = "Q4";
+                        }
+                        
+                        small.innerHTML = `${quarter} ${year}: <span class="eps-value">$${eps.toFixed(2)}</span>`;
+                        historyDiv.appendChild(small);
+                    });
+                    historyCell.appendChild(historyDiv);
+                } else {
+                    historyCell.innerHTML = '<small class="text-muted">N/A</small>';
+                }
+                
+                // Sector
+                row.insertCell().textContent = stock.sector;
+            });
+        }
+        
+        // Show filter message
+        function showFilterMessage(message, type) {
+            // Remove existing message
+            const existingMessage = document.querySelector('.filter-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            // Create new message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `alert alert-${type} filter-message mt-3`;
+            messageDiv.textContent = message;
+            
+            // Insert after filter card
+            const filterCard = document.querySelector('.card .card-header');
+            if (filterCard && filterCard.textContent.includes('EPS Growth Filter')) {
+                filterCard.closest('.card').parentNode.insertBefore(messageDiv, filterCard.closest('.card').nextSibling);
+            }
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 5000);
         }
         
         // Initialize stats on page load
