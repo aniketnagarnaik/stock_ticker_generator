@@ -233,6 +233,32 @@
             font-size: 0.85rem;
             font-weight: 500;
         }
+        
+        /* EMA Signal Button Styling */
+        .ema-signal-btn {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            border-width: 2px !important;
+            font-weight: 600;
+            position: relative;
+        }
+        .ema-signal-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            border-color: #0dcaf0 !important;
+            background-color: rgba(13, 202, 240, 0.1);
+        }
+        .ema-signal-btn:active {
+            transform: translateY(0);
+        }
+        .ema-signal-btn::after {
+            content: '📊';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -243,7 +269,7 @@
                     <h4 class="mb-1">📈 Stock Data Viewer</h4>
                     <div class="timestamp mt-1">
                         <small class="timestamp-text">App version updated: <span id="appVersionTime">{{ server_start_time }}</span></small>
-                    </div>
+                </div>
                     <div class="mt-2">
                         <button class="btn btn-light btn-sm" onclick="refreshData()">
                             🔄 Refresh
@@ -307,6 +333,91 @@
                                 <input type="number" class="form-control" id="rsSectorCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
             </div>
 
+                            <!-- EMA Filters - Collapsible Groups -->
+                            <div class="filter-group">
+                                <div class="accordion" id="emaFiltersAccordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="emaFiltersHeader">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#emaFiltersCollapse" aria-expanded="false" aria-controls="emaFiltersCollapse">
+                                                📊 EMA Filters
+                                            </button>
+                                        </h2>
+                                        <div id="emaFiltersCollapse" class="accordion-collapse collapse" aria-labelledby="emaFiltersHeader" data-bs-parent="#emaFiltersAccordion">
+                                            <div class="accordion-body">
+                                                <!-- Daily EMAs -->
+                                                <div class="mb-2">
+                                                    <label class="form-label fw-bold">📅 Daily EMAs:</label>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" id="d9emaCheck">
+                                                                <label class="form-check-label" for="d9emaCheck">D_9EMA > Price</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" id="d21emaCheck">
+                                                                <label class="form-check-label" for="d21emaCheck">D_21EMA > Price</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" id="d50emaCheck">
+                                                                <label class="form-check-label" for="d50emaCheck">D_50EMA > Price</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Weekly EMAs -->
+                                                <div class="mb-2">
+                                                    <label class="form-label fw-bold">📆 Weekly EMAs:</label>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" id="w9emaCheck">
+                                                                <label class="form-check-label" for="w9emaCheck">W_9EMA > Price</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" id="w21emaCheck">
+                                                                <label class="form-check-label" for="w21emaCheck">W_21EMA > Price</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" id="w50emaCheck">
+                                                                <label class="form-check-label" for="w50emaCheck">W_50EMA > Price</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Monthly EMAs -->
+                                                <div class="mb-2">
+                                                    <label class="form-label fw-bold">📅 Monthly EMAs:</label>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" id="m9emaCheck">
+                                                                <label class="form-check-label" for="m9emaCheck">M_9EMA > Price</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" id="m21emaCheck">
+                                                                <label class="form-check-label" for="m21emaCheck">M_21EMA > Price</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Action Buttons -->
                             <div class="filter-actions">
                                 <button class="btn btn-success btn-sm" id="applyMultipleFilterButton">Apply Filters</button>
@@ -337,6 +448,7 @@
                                         <th>EPS Growth %</th>
                                         <th>RS vs SPY</th>
                                         <th>RS vs Sector</th>
+                                        <th>EMA Signal</th>
                                         <th>EPS History</th>
                                 <th>Sector</th>
                             </tr>
@@ -368,6 +480,38 @@
                                             {% else %}
                                                 <span class="text-muted">N/A</span>
                                             {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-info ema-signal-btn" onclick="showEmaDetails('{{ stock.symbol }}')" title="📊 Click to view detailed EMA analysis" style="cursor: pointer;">
+                                                {% if stock.ema_data %}
+                                                    {% set above_count = 0 %}
+                                                    {% set below_count = 0 %}
+                                                    {% set total_valid_emas = 0 %}
+                                                    {% for ema_key, ema_value in stock.ema_data.items() %}
+                                                        {% if ema_value is not none %}
+                                                            {% set total_valid_emas = total_valid_emas + 1 %}
+                                                            {% if stock.price > ema_value %}
+                                                                {% set above_count = above_count + 1 %}
+                                                            {% else %}
+                                                                {% set below_count = below_count + 1 %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% if total_valid_emas > 0 %}
+                                                        {% if above_count == total_valid_emas %}
+                                                            🟢 Bullish
+                                                        {% elif below_count == total_valid_emas %}
+                                                            🔴 Bearish
+                                                        {% else %}
+                                                            🟡 Mixed
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="text-muted">N/A</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">N/A</span>
+                                                {% endif %}
+                                            </button>
                                         </td>
                                         <td>
                                             {% if stock.eps_history and stock.eps_history.quarterly %}
@@ -467,6 +611,9 @@
             }
             
             setupCustomThresholdHandlers();
+            
+            // Fix EMA signals on page load
+            updateTable();
         
             // Apply multiple filters
             document.getElementById('applyMultipleFilterButton').addEventListener('click', async function() {
@@ -482,6 +629,10 @@
                     filteredStocks = allStocks.filter(stock => {
                         return filters.every(filter => {
                             const value = getStockValue(stock, filter.metric);
+                            if (filter.metric.startsWith('d_') || filter.metric.startsWith('w_') || filter.metric.startsWith('m_')) {
+                                // EMA filters - check if EMA > Price (boolean)
+                                return value === true;
+                            }
                             return value !== null && value > filter.threshold;
                         });
                     });
@@ -540,6 +691,28 @@
                 }
             }
             
+            // Individual EMA filters
+            const emaFilters = [
+                { id: 'd9emaCheck', ema: 'D_9EMA' },
+                { id: 'd21emaCheck', ema: 'D_21EMA' },
+                { id: 'd50emaCheck', ema: 'D_50EMA' },
+                { id: 'w9emaCheck', ema: 'W_9EMA' },
+                { id: 'w21emaCheck', ema: 'W_21EMA' },
+                { id: 'w50emaCheck', ema: 'W_50EMA' },
+                { id: 'm9emaCheck', ema: 'M_9EMA' },
+                { id: 'm21emaCheck', ema: 'M_21EMA' }
+            ];
+            
+            emaFilters.forEach(emaFilter => {
+                if (document.getElementById(emaFilter.id).checked) {
+                    filters.push({
+                        metric: emaFilter.ema.toLowerCase(),
+                        name: `${emaFilter.ema} > Price`,
+                        threshold: true
+                    });
+                }
+            });
+            
             return filters;
         }
         
@@ -561,9 +734,48 @@
                     return stock.relative_strength?.rs_spy;
                 case 'rs_sector':
                     return stock.relative_strength?.rs_sector;
+                case 'd_9ema':
+                case 'd_21ema':
+                case 'd_50ema':
+                case 'w_9ema':
+                case 'w_21ema':
+                case 'w_50ema':
+                case 'm_9ema':
+                case 'm_21ema':
+                    const emaKey = metric.toUpperCase();
+                    return stock.ema_data?.[emaKey] !== null && stock.price > stock.ema_data[emaKey];
                 default:
                     return null;
             }
+        }
+        
+        function getEmaSignal(stock) {
+            if (!stock.ema_data) return null;
+            
+            let aboveCount = 0;
+            let belowCount = 0;
+            let totalValidEmas = 0;
+            
+            for (const [emaKey, emaValue] of Object.entries(stock.ema_data)) {
+                if (emaValue !== null) {
+                    totalValidEmas++;
+                    if (stock.price > emaValue) {
+                        aboveCount++;
+                    } else {
+                        belowCount++;
+                    }
+                }
+            }
+            
+            // If no valid EMAs, return null
+            if (totalValidEmas === 0) return null;
+            
+            // Above ALL EMAs = Bullish
+            if (aboveCount === totalValidEmas) return 'bullish';
+            // Below ALL EMAs = Bearish
+            if (belowCount === totalValidEmas) return 'bearish';
+            // Otherwise = Mixed
+            return 'mixed';
         }
         
         // Clear all filters
@@ -572,6 +784,12 @@
             document.getElementById('epsGrowthCheck').checked = false;
             document.getElementById('rsSpyCheck').checked = false;
             document.getElementById('rsSectorCheck').checked = false;
+            
+            // Uncheck all EMA filters
+            const emaCheckboxes = ['d9emaCheck', 'd21emaCheck', 'd50emaCheck', 'w9emaCheck', 'w21emaCheck', 'w50emaCheck', 'm9emaCheck', 'm21emaCheck'];
+            emaCheckboxes.forEach(id => {
+                document.getElementById(id).checked = false;
+            });
             
             // Reset all thresholds to defaults
             document.getElementById('epsGrowthThreshold').value = '25';
@@ -589,6 +807,13 @@
             updateStats();
             showFilterMessage('All filters cleared - showing all stocks', 'info');
         });
+        
+        function clearAllEMAFilters() {
+            const emaCheckboxes = ['d9emaCheck', 'd21emaCheck', 'd50emaCheck', 'w9emaCheck', 'w21emaCheck', 'w50emaCheck', 'm9emaCheck', 'm21emaCheck'];
+            emaCheckboxes.forEach(id => {
+                document.getElementById(id).checked = false;
+            });
+        }
         
         // Update table with current stocks
         function updateTable() {
@@ -643,6 +868,28 @@
                     } else {
                         rsSectorCell.innerHTML = '<span class="text-muted">N/A</span>';
                     }
+                    
+                    // EMA Signal
+                    const emaCell = row.insertCell();
+                    const emaButton = document.createElement('button');
+                    emaButton.className = 'btn btn-sm btn-outline-info ema-signal-btn';
+                    emaButton.style.cursor = 'pointer';
+                    emaButton.onclick = () => showEmaDetails(stock.symbol);
+                    emaButton.title = '📊 Click to view detailed EMA analysis';
+                    
+                    if (stock.ema_data) {
+                        const emaSignal = getEmaSignal(stock);
+                        if (emaSignal === 'bullish') {
+                            emaButton.innerHTML = '🟢 Bullish';
+                        } else if (emaSignal === 'bearish') {
+                            emaButton.innerHTML = '🔴 Bearish';
+                        } else {
+                            emaButton.innerHTML = '🟡 Mixed';
+                        }
+                    } else {
+                        emaButton.innerHTML = '<span class="text-muted">N/A</span>';
+                    }
+                    emaCell.appendChild(emaButton);
                 
                 // EPS History
                 const historyCell = row.insertCell();
@@ -706,6 +953,88 @@
                     messageDiv.remove();
                 }
             }, 5000);
+        }
+        
+        // Show EMA details modal
+        function showEmaDetails(symbol) {
+            const stock = allStocks.find(s => s.symbol === symbol);
+            if (!stock || !stock.ema_data) {
+                alert('EMA data not available for ' + symbol);
+                return;
+            }
+
+            let emaDetails = `
+                <div class="mb-3">
+                    <h5 class="mb-2">EMA Analysis for ${symbol}</h5>
+                    <div class="alert alert-info mb-3">
+                        <strong>Current Price:</strong> $${stock.price.toFixed(2)}
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>EMA</th>
+                            <th>Value</th>
+                            <th>vs Current Price</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            const emaKeys = ['D_9EMA', 'D_21EMA', 'D_50EMA', 'W_9EMA', 'W_21EMA', 'W_50EMA', 'M_9EMA', 'M_21EMA'];
+            
+            emaKeys.forEach(emaKey => {
+                const emaValue = stock.ema_data[emaKey];
+                if (emaValue !== null) {
+                    const difference = ((stock.price - emaValue) / emaValue * 100).toFixed(1);
+                    const vsPrice = stock.price > emaValue ? '🟢 Above' : '🔴 Below';
+                    const diffClass = stock.price > emaValue ? 'text-success' : 'text-danger';
+                    emaDetails += `
+                        <tr>
+                            <td><strong>${emaKey}</strong></td>
+                            <td>$${emaValue.toFixed(2)}</td>
+                            <td>${vsPrice}</td>
+                            <td class="${diffClass}">${difference > 0 ? '+' : ''}${difference}%</td>
+                        </tr>
+                    `;
+                } else {
+                    emaDetails += `
+                        <tr>
+                            <td><strong>${emaKey}</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    `;
+                }
+            });
+            
+            emaDetails += '</tbody></table>';
+            
+            // Create and show modal
+            const modal = document.createElement('div');
+            modal.className = 'modal fade show';
+            modal.style.display = 'block';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">📊 EMA Technical Analysis</h5>
+                            <button type="button" class="btn-close btn-close-white" onclick="this.closest('.modal').remove()"></button>
+                        </div>
+                        <div class="modal-body">
+                            ${emaDetails}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="this.closest('.modal').remove()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
         
         // Initialize stats on page load

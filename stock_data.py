@@ -6,6 +6,7 @@ Clean and focused implementation
 import yfinance as yf
 import time
 import pandas as pd
+import numpy as np
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 
@@ -116,6 +117,73 @@ class StockData:
     def _get_sector_etf(self, sector: str) -> str:
         """Get the ETF symbol for a given sector"""
         return self.sector_etf_map.get(sector, "SPY")
+    
+    def _calculate_ema(self, prices: pd.Series, period: int) -> float:
+        """Calculate Exponential Moving Average"""
+        if len(prices) < period:
+            return None
+        ema = prices.ewm(span=period).mean()
+        return float(ema.iloc[-1])
+    
+    def _calculate_all_emas(self, symbol: str) -> Dict[str, Optional[float]]:
+        """Calculate all EMAs for a symbol"""
+        try:
+            # Fetch daily data (1 year for D_9, D_21, D_50)
+            daily_data = yf.download(symbol, period="1y", interval="1d", progress=False)
+            if daily_data.empty:
+                return self._get_empty_ema_dict()
+            
+            daily_closes = daily_data['Close']
+            
+            # Calculate daily EMAs
+            d_9_ema = self._calculate_ema(daily_closes, 9)
+            d_21_ema = self._calculate_ema(daily_closes, 21)
+            d_50_ema = self._calculate_ema(daily_closes, 50)
+            
+            # Fetch weekly data (2 years for W_9, W_21, W_50)
+            weekly_data = yf.download(symbol, period="2y", interval="1wk", progress=False)
+            weekly_closes = weekly_data['Close'] if not weekly_data.empty else pd.Series()
+            
+            # Calculate weekly EMAs
+            w_9_ema = self._calculate_ema(weekly_closes, 9) if not weekly_closes.empty else None
+            w_21_ema = self._calculate_ema(weekly_closes, 21) if not weekly_closes.empty else None
+            w_50_ema = self._calculate_ema(weekly_closes, 50) if not weekly_closes.empty else None
+            
+            # Fetch monthly data (5 years for M_9, M_21)
+            monthly_data = yf.download(symbol, period="5y", interval="1mo", progress=False)
+            monthly_closes = monthly_data['Close'] if not monthly_data.empty else pd.Series()
+            
+            # Calculate monthly EMAs
+            m_9_ema = self._calculate_ema(monthly_closes, 9) if not monthly_closes.empty else None
+            m_21_ema = self._calculate_ema(monthly_closes, 21) if not monthly_closes.empty else None
+            
+            return {
+                'D_9EMA': d_9_ema,
+                'D_21EMA': d_21_ema,
+                'D_50EMA': d_50_ema,
+                'W_9EMA': w_9_ema,
+                'W_21EMA': w_21_ema,
+                'W_50EMA': w_50_ema,
+                'M_9EMA': m_9_ema,
+                'M_21EMA': m_21_ema
+            }
+            
+        except Exception as e:
+            print(f"Error calculating EMAs for {symbol}: {e}")
+            return self._get_empty_ema_dict()
+    
+    def _get_empty_ema_dict(self) -> Dict[str, Optional[float]]:
+        """Return empty EMA dictionary"""
+        return {
+            'D_9EMA': None,
+            'D_21EMA': None,
+            'D_50EMA': None,
+            'W_9EMA': None,
+            'W_21EMA': None,
+            'W_50EMA': None,
+            'M_9EMA': None,
+            'M_21EMA': None
+        }
     
     def _bulk_download_prices(self, symbols: List[str]) -> Dict[str, List[Dict]]:
         """Bulk download 1 year of price data for multiple symbols efficiently"""
@@ -280,6 +348,9 @@ class StockData:
             # Calculate EPS growth
             eps_growth = self._calculate_eps_growth(eps_data)
             
+            # Calculate all EMAs
+            ema_data = self._calculate_all_emas(symbol)
+            
             # Calculate Relative Strength (will be done in bulk later)
             rs_data = {'rs_spy': None, 'rs_sector': None}
             
@@ -293,6 +364,7 @@ class StockData:
                 'industry': info.get('industry', 'Unknown'),
                 'eps_history': eps_data,
                 'eps_growth': eps_growth,
+                'ema_data': ema_data,
                 'relative_strength': rs_data
             }
             
