@@ -1,0 +1,2517 @@
+[
+  {
+    "symbol": "MMM",
+    "company": "3M",
+    "extracted_at": "2025-10-04T17:18:17.657865"
+  },
+  {
+    "symbol": "AOS",
+    "company": "A. O. Smith",
+    "extracted_at": "2025-10-04T17:18:17.657968"
+  },
+  {
+    "symbol": "ABT",
+    "company": "Abbott Laboratories",
+    "extracted_at": "2025-10-04T17:18:17.658039"
+  },
+  {
+    "symbol": "ABBV",
+    "company": "AbbVie",
+    "extracted_at": "2025-10-04T17:18:17.658103"
+  },
+  {
+    "symbol": "ACN",
+    "company": "Accenture",
+    "extracted_at": "2025-10-04T17:18:17.658201"
+  },
+  {
+    "symbol": "ADBE",
+    "company": "Adobe Inc.",
+    "extracted_at": "2025-10-04T17:18:17.658351"
+  },
+  {
+    "symbol": "AMD",
+    "company": "Advanced Micro Devices",
+    "extracted_at": "2025-10-04T17:18:17.658432"
+  },
+  {
+    "symbol": "AES",
+    "company": "AES Corporation",
+    "extracted_at": "2025-10-04T17:18:17.658498"
+  },
+  {
+    "symbol": "AFL",
+    "company": "Aflac",
+    "extracted_at": "2025-10-04T17:18:17.658562"
+  },
+  {
+    "symbol": "A",
+    "company": "Agilent Technologies",
+    "extracted_at": "2025-10-04T17:18:17.658624"
+  },
+  {
+    "symbol": "APD",
+    "company": "Air Products",
+    "extracted_at": "2025-10-04T17:18:17.658686"
+  },
+  {
+    "symbol": "ABNB",
+    "company": "Airbnb",
+    "extracted_at": "2025-10-04T17:18:17.658751"
+  },
+  {
+    "symbol": "AKAM",
+    "company": "Akamai Technologies",
+    "extracted_at": "2025-10-04T17:18:17.658814"
+  },
+  {
+    "symbol": "ALB",
+    "company": "Albemarle Corporation",
+    "extracted_at": "2025-10-04T17:18:17.658874"
+  },
+  {
+    "symbol": "ARE",
+    "company": "Alexandria Real Estate Equities",
+    "extracted_at": "2025-10-04T17:18:17.658935"
+  },
+  {
+    "symbol": "ALGN",
+    "company": "Align Technology",
+    "extracted_at": "2025-10-04T17:18:17.658995"
+  },
+  {
+    "symbol": "ALLE",
+    "company": "Allegion",
+    "extracted_at": "2025-10-04T17:18:17.659134"
+  },
+  {
+    "symbol": "LNT",
+    "company": "Alliant Energy",
+    "extracted_at": "2025-10-04T17:18:17.659212"
+  },
+  {
+    "symbol": "ALL",
+    "company": "Allstate",
+    "extracted_at": "2025-10-04T17:18:17.659278"
+  },
+  {
+    "symbol": "GOOGL",
+    "company": "Alphabet Inc. (Class A)",
+    "extracted_at": "2025-10-04T17:18:17.659342"
+  },
+  {
+    "symbol": "GOOG",
+    "company": "Alphabet Inc. (Class C)",
+    "extracted_at": "2025-10-04T17:18:17.659403"
+  },
+  {
+    "symbol": "MO",
+    "company": "Altria",
+    "extracted_at": "2025-10-04T17:18:17.659464"
+  },
+  {
+    "symbol": "AMZN",
+    "company": "Amazon",
+    "extracted_at": "2025-10-04T17:18:17.659529"
+  },
+  {
+    "symbol": "AMCR",
+    "company": "Amcor",
+    "extracted_at": "2025-10-04T17:18:17.659593"
+  },
+  {
+    "symbol": "AEE",
+    "company": "Ameren",
+    "extracted_at": "2025-10-04T17:18:17.659650"
+  },
+  {
+    "symbol": "AEP",
+    "company": "American Electric Power",
+    "extracted_at": "2025-10-04T17:18:17.659711"
+  },
+  {
+    "symbol": "AXP",
+    "company": "American Express",
+    "extracted_at": "2025-10-04T17:18:17.659774"
+  },
+  {
+    "symbol": "AIG",
+    "company": "American International Group",
+    "extracted_at": "2025-10-04T17:18:17.659835"
+  },
+  {
+    "symbol": "AMT",
+    "company": "American Tower",
+    "extracted_at": "2025-10-04T17:18:17.659895"
+  },
+  {
+    "symbol": "AWK",
+    "company": "American Water Works",
+    "extracted_at": "2025-10-04T17:18:17.659954"
+  },
+  {
+    "symbol": "AMP",
+    "company": "Ameriprise Financial",
+    "extracted_at": "2025-10-04T17:18:17.660013"
+  },
+  {
+    "symbol": "AME",
+    "company": "Ametek",
+    "extracted_at": "2025-10-04T17:18:17.660078"
+  },
+  {
+    "symbol": "AMGN",
+    "company": "Amgen",
+    "extracted_at": "2025-10-04T17:18:17.660138"
+  },
+  {
+    "symbol": "APH",
+    "company": "Amphenol",
+    "extracted_at": "2025-10-04T17:18:17.660199"
+  },
+  {
+    "symbol": "ADI",
+    "company": "Analog Devices",
+    "extracted_at": "2025-10-04T17:18:17.660259"
+  },
+  {
+    "symbol": "AON",
+    "company": "Aon plc",
+    "extracted_at": "2025-10-04T17:18:17.660317"
+  },
+  {
+    "symbol": "APA",
+    "company": "APA Corporation",
+    "extracted_at": "2025-10-04T17:18:17.660386"
+  },
+  {
+    "symbol": "APO",
+    "company": "Apollo Global Management",
+    "extracted_at": "2025-10-04T17:18:17.660464"
+  },
+  {
+    "symbol": "AAPL",
+    "company": "Apple Inc.",
+    "extracted_at": "2025-10-04T17:18:17.660582"
+  },
+  {
+    "symbol": "AMAT",
+    "company": "Applied Materials",
+    "extracted_at": "2025-10-04T17:18:17.660642"
+  },
+  {
+    "symbol": "APP",
+    "company": "AppLovin",
+    "extracted_at": "2025-10-04T17:18:17.660703"
+  },
+  {
+    "symbol": "APTV",
+    "company": "Aptiv",
+    "extracted_at": "2025-10-04T17:18:17.660763"
+  },
+  {
+    "symbol": "ACGL",
+    "company": "Arch Capital Group",
+    "extracted_at": "2025-10-04T17:18:17.660823"
+  },
+  {
+    "symbol": "ADM",
+    "company": "Archer Daniels Midland",
+    "extracted_at": "2025-10-04T17:18:17.660884"
+  },
+  {
+    "symbol": "ANET",
+    "company": "Arista Networks",
+    "extracted_at": "2025-10-04T17:18:17.660996"
+  },
+  {
+    "symbol": "AJG",
+    "company": "Arthur J. Gallagher & Co.",
+    "extracted_at": "2025-10-04T17:18:17.661114"
+  },
+  {
+    "symbol": "AIZ",
+    "company": "Assurant",
+    "extracted_at": "2025-10-04T17:18:17.661187"
+  },
+  {
+    "symbol": "T",
+    "company": "AT&T",
+    "extracted_at": "2025-10-04T17:18:17.661244"
+  },
+  {
+    "symbol": "ATO",
+    "company": "Atmos Energy",
+    "extracted_at": "2025-10-04T17:18:17.661304"
+  },
+  {
+    "symbol": "ADSK",
+    "company": "Autodesk",
+    "extracted_at": "2025-10-04T17:18:17.661361"
+  },
+  {
+    "symbol": "ADP",
+    "company": "Automatic Data Processing",
+    "extracted_at": "2025-10-04T17:18:17.661418"
+  },
+  {
+    "symbol": "AZO",
+    "company": "AutoZone",
+    "extracted_at": "2025-10-04T17:18:17.661473"
+  },
+  {
+    "symbol": "AVB",
+    "company": "AvalonBay Communities",
+    "extracted_at": "2025-10-04T17:18:17.661529"
+  },
+  {
+    "symbol": "AVY",
+    "company": "Avery Dennison",
+    "extracted_at": "2025-10-04T17:18:17.661586"
+  },
+  {
+    "symbol": "AXON",
+    "company": "Axon Enterprise",
+    "extracted_at": "2025-10-04T17:18:17.661642"
+  },
+  {
+    "symbol": "BKR",
+    "company": "Baker Hughes",
+    "extracted_at": "2025-10-04T17:18:17.661699"
+  },
+  {
+    "symbol": "BALL",
+    "company": "Ball Corporation",
+    "extracted_at": "2025-10-04T17:18:17.661756"
+  },
+  {
+    "symbol": "BAC",
+    "company": "Bank of America",
+    "extracted_at": "2025-10-04T17:18:17.661818"
+  },
+  {
+    "symbol": "BAX",
+    "company": "Baxter International",
+    "extracted_at": "2025-10-04T17:18:17.661876"
+  },
+  {
+    "symbol": "BDX",
+    "company": "Becton Dickinson",
+    "extracted_at": "2025-10-04T17:18:17.661935"
+  },
+  {
+    "symbol": "BRK.B",
+    "company": "Berkshire Hathaway",
+    "extracted_at": "2025-10-04T17:18:17.662020"
+  },
+  {
+    "symbol": "BBY",
+    "company": "Best Buy",
+    "extracted_at": "2025-10-04T17:18:17.662094"
+  },
+  {
+    "symbol": "TECH",
+    "company": "Bio-Techne",
+    "extracted_at": "2025-10-04T17:18:17.662167"
+  },
+  {
+    "symbol": "BIIB",
+    "company": "Biogen",
+    "extracted_at": "2025-10-04T17:18:17.662236"
+  },
+  {
+    "symbol": "BLK",
+    "company": "BlackRock",
+    "extracted_at": "2025-10-04T17:18:17.662385"
+  },
+  {
+    "symbol": "BX",
+    "company": "Blackstone Inc.",
+    "extracted_at": "2025-10-04T17:18:17.662464"
+  },
+  {
+    "symbol": "XYZ",
+    "company": "Block, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.662520"
+  },
+  {
+    "symbol": "BK",
+    "company": "BNY Mellon",
+    "extracted_at": "2025-10-04T17:18:17.662578"
+  },
+  {
+    "symbol": "BA",
+    "company": "Boeing",
+    "extracted_at": "2025-10-04T17:18:17.662636"
+  },
+  {
+    "symbol": "BKNG",
+    "company": "Booking Holdings",
+    "extracted_at": "2025-10-04T17:18:17.662694"
+  },
+  {
+    "symbol": "BSX",
+    "company": "Boston Scientific",
+    "extracted_at": "2025-10-04T17:18:17.662874"
+  },
+  {
+    "symbol": "BMY",
+    "company": "Bristol Myers Squibb",
+    "extracted_at": "2025-10-04T17:18:17.663059"
+  },
+  {
+    "symbol": "AVGO",
+    "company": "Broadcom",
+    "extracted_at": "2025-10-04T17:18:17.663283"
+  },
+  {
+    "symbol": "BR",
+    "company": "Broadridge Financial Solutions",
+    "extracted_at": "2025-10-04T17:18:17.663410"
+  },
+  {
+    "symbol": "BRO",
+    "company": "Brown & Brown",
+    "extracted_at": "2025-10-04T17:18:17.663512"
+  },
+  {
+    "symbol": "BF.B",
+    "company": "Brown\u2013Forman",
+    "extracted_at": "2025-10-04T17:18:17.663578"
+  },
+  {
+    "symbol": "BLDR",
+    "company": "Builders FirstSource",
+    "extracted_at": "2025-10-04T17:18:17.663642"
+  },
+  {
+    "symbol": "BG",
+    "company": "Bunge Global",
+    "extracted_at": "2025-10-04T17:18:17.663703"
+  },
+  {
+    "symbol": "BXP",
+    "company": "BXP, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.663764"
+  },
+  {
+    "symbol": "CHRW",
+    "company": "C.H. Robinson",
+    "extracted_at": "2025-10-04T17:18:17.663825"
+  },
+  {
+    "symbol": "CDNS",
+    "company": "Cadence Design Systems",
+    "extracted_at": "2025-10-04T17:18:17.663884"
+  },
+  {
+    "symbol": "CPT",
+    "company": "Camden Property Trust",
+    "extracted_at": "2025-10-04T17:18:17.663971"
+  },
+  {
+    "symbol": "CPB",
+    "company": "Campbell's Company (The)",
+    "extracted_at": "2025-10-04T17:18:17.664034"
+  },
+  {
+    "symbol": "COF",
+    "company": "Capital One",
+    "extracted_at": "2025-10-04T17:18:17.664170"
+  },
+  {
+    "symbol": "CAH",
+    "company": "Cardinal Health",
+    "extracted_at": "2025-10-04T17:18:17.664299"
+  },
+  {
+    "symbol": "KMX",
+    "company": "CarMax",
+    "extracted_at": "2025-10-04T17:18:17.664368"
+  },
+  {
+    "symbol": "CCL",
+    "company": "Carnival",
+    "extracted_at": "2025-10-04T17:18:17.664432"
+  },
+  {
+    "symbol": "CARR",
+    "company": "Carrier Global",
+    "extracted_at": "2025-10-04T17:18:17.664511"
+  },
+  {
+    "symbol": "CAT",
+    "company": "Caterpillar Inc.",
+    "extracted_at": "2025-10-04T17:18:17.664569"
+  },
+  {
+    "symbol": "CBOE",
+    "company": "Cboe Global Markets",
+    "extracted_at": "2025-10-04T17:18:17.664628"
+  },
+  {
+    "symbol": "CBRE",
+    "company": "CBRE Group",
+    "extracted_at": "2025-10-04T17:18:17.664685"
+  },
+  {
+    "symbol": "CDW",
+    "company": "CDW Corporation",
+    "extracted_at": "2025-10-04T17:18:17.664743"
+  },
+  {
+    "symbol": "COR",
+    "company": "Cencora",
+    "extracted_at": "2025-10-04T17:18:17.664800"
+  },
+  {
+    "symbol": "CNC",
+    "company": "Centene Corporation",
+    "extracted_at": "2025-10-04T17:18:17.664859"
+  },
+  {
+    "symbol": "CNP",
+    "company": "CenterPoint Energy",
+    "extracted_at": "2025-10-04T17:18:17.664940"
+  },
+  {
+    "symbol": "CF",
+    "company": "CF Industries",
+    "extracted_at": "2025-10-04T17:18:17.665006"
+  },
+  {
+    "symbol": "CRL",
+    "company": "Charles River Laboratories",
+    "extracted_at": "2025-10-04T17:18:17.665072"
+  },
+  {
+    "symbol": "SCHW",
+    "company": "Charles Schwab Corporation",
+    "extracted_at": "2025-10-04T17:18:17.665131"
+  },
+  {
+    "symbol": "CHTR",
+    "company": "Charter Communications",
+    "extracted_at": "2025-10-04T17:18:17.665268"
+  },
+  {
+    "symbol": "CVX",
+    "company": "Chevron Corporation",
+    "extracted_at": "2025-10-04T17:18:17.665347"
+  },
+  {
+    "symbol": "CMG",
+    "company": "Chipotle Mexican Grill",
+    "extracted_at": "2025-10-04T17:18:17.665404"
+  },
+  {
+    "symbol": "CB",
+    "company": "Chubb Limited",
+    "extracted_at": "2025-10-04T17:18:17.665461"
+  },
+  {
+    "symbol": "CHD",
+    "company": "Church & Dwight",
+    "extracted_at": "2025-10-04T17:18:17.665517"
+  },
+  {
+    "symbol": "CI",
+    "company": "Cigna",
+    "extracted_at": "2025-10-04T17:18:17.665573"
+  },
+  {
+    "symbol": "CINF",
+    "company": "Cincinnati Financial",
+    "extracted_at": "2025-10-04T17:18:17.665631"
+  },
+  {
+    "symbol": "CTAS",
+    "company": "Cintas",
+    "extracted_at": "2025-10-04T17:18:17.665686"
+  },
+  {
+    "symbol": "CSCO",
+    "company": "Cisco",
+    "extracted_at": "2025-10-04T17:18:17.665745"
+  },
+  {
+    "symbol": "C",
+    "company": "Citigroup",
+    "extracted_at": "2025-10-04T17:18:17.665802"
+  },
+  {
+    "symbol": "CFG",
+    "company": "Citizens Financial Group",
+    "extracted_at": "2025-10-04T17:18:17.665859"
+  },
+  {
+    "symbol": "CLX",
+    "company": "Clorox",
+    "extracted_at": "2025-10-04T17:18:17.665918"
+  },
+  {
+    "symbol": "CME",
+    "company": "CME Group",
+    "extracted_at": "2025-10-04T17:18:17.665974"
+  },
+  {
+    "symbol": "CMS",
+    "company": "CMS Energy",
+    "extracted_at": "2025-10-04T17:18:17.666031"
+  },
+  {
+    "symbol": "KO",
+    "company": "Coca-Cola Company (The)",
+    "extracted_at": "2025-10-04T17:18:17.666089"
+  },
+  {
+    "symbol": "CTSH",
+    "company": "Cognizant",
+    "extracted_at": "2025-10-04T17:18:17.666146"
+  },
+  {
+    "symbol": "COIN",
+    "company": "Coinbase",
+    "extracted_at": "2025-10-04T17:18:17.666203"
+  },
+  {
+    "symbol": "CL",
+    "company": "Colgate-Palmolive",
+    "extracted_at": "2025-10-04T17:18:17.666259"
+  },
+  {
+    "symbol": "CMCSA",
+    "company": "Comcast",
+    "extracted_at": "2025-10-04T17:18:17.666316"
+  },
+  {
+    "symbol": "CAG",
+    "company": "Conagra Brands",
+    "extracted_at": "2025-10-04T17:18:17.666374"
+  },
+  {
+    "symbol": "COP",
+    "company": "ConocoPhillips",
+    "extracted_at": "2025-10-04T17:18:17.666435"
+  },
+  {
+    "symbol": "ED",
+    "company": "Consolidated Edison",
+    "extracted_at": "2025-10-04T17:18:17.666493"
+  },
+  {
+    "symbol": "STZ",
+    "company": "Constellation Brands",
+    "extracted_at": "2025-10-04T17:18:17.666551"
+  },
+  {
+    "symbol": "CEG",
+    "company": "Constellation Energy",
+    "extracted_at": "2025-10-04T17:18:17.666608"
+  },
+  {
+    "symbol": "COO",
+    "company": "Cooper Companies (The)",
+    "extracted_at": "2025-10-04T17:18:17.666665"
+  },
+  {
+    "symbol": "CPRT",
+    "company": "Copart",
+    "extracted_at": "2025-10-04T17:18:17.666723"
+  },
+  {
+    "symbol": "GLW",
+    "company": "Corning Inc.",
+    "extracted_at": "2025-10-04T17:18:17.666780"
+  },
+  {
+    "symbol": "CPAY",
+    "company": "Corpay",
+    "extracted_at": "2025-10-04T17:18:17.666838"
+  },
+  {
+    "symbol": "CTVA",
+    "company": "Corteva",
+    "extracted_at": "2025-10-04T17:18:17.666898"
+  },
+  {
+    "symbol": "CSGP",
+    "company": "CoStar Group",
+    "extracted_at": "2025-10-04T17:18:17.666956"
+  },
+  {
+    "symbol": "COST",
+    "company": "Costco",
+    "extracted_at": "2025-10-04T17:18:17.667014"
+  },
+  {
+    "symbol": "CTRA",
+    "company": "Coterra",
+    "extracted_at": "2025-10-04T17:18:17.667073"
+  },
+  {
+    "symbol": "CRWD",
+    "company": "CrowdStrike",
+    "extracted_at": "2025-10-04T17:18:17.667131"
+  },
+  {
+    "symbol": "CCI",
+    "company": "Crown Castle",
+    "extracted_at": "2025-10-04T17:18:17.667188"
+  },
+  {
+    "symbol": "CSX",
+    "company": "CSX Corporation",
+    "extracted_at": "2025-10-04T17:18:17.667246"
+  },
+  {
+    "symbol": "CMI",
+    "company": "Cummins",
+    "extracted_at": "2025-10-04T17:18:17.667303"
+  },
+  {
+    "symbol": "CVS",
+    "company": "CVS Health",
+    "extracted_at": "2025-10-04T17:18:17.667360"
+  },
+  {
+    "symbol": "DHR",
+    "company": "Danaher Corporation",
+    "extracted_at": "2025-10-04T17:18:17.667418"
+  },
+  {
+    "symbol": "DRI",
+    "company": "Darden Restaurants",
+    "extracted_at": "2025-10-04T17:18:17.667475"
+  },
+  {
+    "symbol": "DDOG",
+    "company": "Datadog",
+    "extracted_at": "2025-10-04T17:18:17.667538"
+  },
+  {
+    "symbol": "DVA",
+    "company": "DaVita",
+    "extracted_at": "2025-10-04T17:18:17.667597"
+  },
+  {
+    "symbol": "DAY",
+    "company": "Dayforce",
+    "extracted_at": "2025-10-04T17:18:17.667655"
+  },
+  {
+    "symbol": "DECK",
+    "company": "Deckers Brands",
+    "extracted_at": "2025-10-04T17:18:17.667713"
+  },
+  {
+    "symbol": "DE",
+    "company": "Deere & Company",
+    "extracted_at": "2025-10-04T17:18:17.667772"
+  },
+  {
+    "symbol": "DELL",
+    "company": "Dell Technologies",
+    "extracted_at": "2025-10-04T17:18:17.667829"
+  },
+  {
+    "symbol": "DAL",
+    "company": "Delta Air Lines",
+    "extracted_at": "2025-10-04T17:18:17.667887"
+  },
+  {
+    "symbol": "DVN",
+    "company": "Devon Energy",
+    "extracted_at": "2025-10-04T17:18:17.667948"
+  },
+  {
+    "symbol": "DXCM",
+    "company": "Dexcom",
+    "extracted_at": "2025-10-04T17:18:17.668005"
+  },
+  {
+    "symbol": "FANG",
+    "company": "Diamondback Energy",
+    "extracted_at": "2025-10-04T17:18:17.668063"
+  },
+  {
+    "symbol": "DLR",
+    "company": "Digital Realty",
+    "extracted_at": "2025-10-04T17:18:17.668122"
+  },
+  {
+    "symbol": "DG",
+    "company": "Dollar General",
+    "extracted_at": "2025-10-04T17:18:17.668179"
+  },
+  {
+    "symbol": "DLTR",
+    "company": "Dollar Tree",
+    "extracted_at": "2025-10-04T17:18:17.668237"
+  },
+  {
+    "symbol": "D",
+    "company": "Dominion Energy",
+    "extracted_at": "2025-10-04T17:18:17.668299"
+  },
+  {
+    "symbol": "DPZ",
+    "company": "Domino's",
+    "extracted_at": "2025-10-04T17:18:17.668373"
+  },
+  {
+    "symbol": "DASH",
+    "company": "DoorDash",
+    "extracted_at": "2025-10-04T17:18:17.668437"
+  },
+  {
+    "symbol": "DOV",
+    "company": "Dover Corporation",
+    "extracted_at": "2025-10-04T17:18:17.668497"
+  },
+  {
+    "symbol": "DOW",
+    "company": "Dow Inc.",
+    "extracted_at": "2025-10-04T17:18:17.668558"
+  },
+  {
+    "symbol": "DHI",
+    "company": "D. R. Horton",
+    "extracted_at": "2025-10-04T17:18:17.668616"
+  },
+  {
+    "symbol": "DTE",
+    "company": "DTE Energy",
+    "extracted_at": "2025-10-04T17:18:17.668673"
+  },
+  {
+    "symbol": "DUK",
+    "company": "Duke Energy",
+    "extracted_at": "2025-10-04T17:18:17.668731"
+  },
+  {
+    "symbol": "DD",
+    "company": "DuPont",
+    "extracted_at": "2025-10-04T17:18:17.668789"
+  },
+  {
+    "symbol": "EMN",
+    "company": "Eastman Chemical Company",
+    "extracted_at": "2025-10-04T17:18:17.668848"
+  },
+  {
+    "symbol": "ETN",
+    "company": "Eaton Corporation",
+    "extracted_at": "2025-10-04T17:18:17.668905"
+  },
+  {
+    "symbol": "EBAY",
+    "company": "eBay Inc.",
+    "extracted_at": "2025-10-04T17:18:17.668964"
+  },
+  {
+    "symbol": "ECL",
+    "company": "Ecolab",
+    "extracted_at": "2025-10-04T17:18:17.669024"
+  },
+  {
+    "symbol": "EIX",
+    "company": "Edison International",
+    "extracted_at": "2025-10-04T17:18:17.669082"
+  },
+  {
+    "symbol": "EW",
+    "company": "Edwards Lifesciences",
+    "extracted_at": "2025-10-04T17:18:17.669139"
+  },
+  {
+    "symbol": "EA",
+    "company": "Electronic Arts",
+    "extracted_at": "2025-10-04T17:18:17.669195"
+  },
+  {
+    "symbol": "ELV",
+    "company": "Elevance Health",
+    "extracted_at": "2025-10-04T17:18:17.669253"
+  },
+  {
+    "symbol": "EME",
+    "company": "Emcor",
+    "extracted_at": "2025-10-04T17:18:17.669310"
+  },
+  {
+    "symbol": "EMR",
+    "company": "Emerson Electric",
+    "extracted_at": "2025-10-04T17:18:17.669368"
+  },
+  {
+    "symbol": "ETR",
+    "company": "Entergy",
+    "extracted_at": "2025-10-04T17:18:17.669427"
+  },
+  {
+    "symbol": "EOG",
+    "company": "EOG Resources",
+    "extracted_at": "2025-10-04T17:18:17.669484"
+  },
+  {
+    "symbol": "EPAM",
+    "company": "EPAM Systems",
+    "extracted_at": "2025-10-04T17:18:17.669542"
+  },
+  {
+    "symbol": "EQT",
+    "company": "EQT Corporation",
+    "extracted_at": "2025-10-04T17:18:17.669602"
+  },
+  {
+    "symbol": "EFX",
+    "company": "Equifax",
+    "extracted_at": "2025-10-04T17:18:17.669660"
+  },
+  {
+    "symbol": "EQIX",
+    "company": "Equinix",
+    "extracted_at": "2025-10-04T17:18:17.669718"
+  },
+  {
+    "symbol": "EQR",
+    "company": "Equity Residential",
+    "extracted_at": "2025-10-04T17:18:17.669776"
+  },
+  {
+    "symbol": "ERIE",
+    "company": "Erie Indemnity",
+    "extracted_at": "2025-10-04T17:18:17.669892"
+  },
+  {
+    "symbol": "ESS",
+    "company": "Essex Property Trust",
+    "extracted_at": "2025-10-04T17:18:17.670086"
+  },
+  {
+    "symbol": "EL",
+    "company": "Est\u00e9e Lauder Companies (The)",
+    "extracted_at": "2025-10-04T17:18:17.670201"
+  },
+  {
+    "symbol": "EG",
+    "company": "Everest Group",
+    "extracted_at": "2025-10-04T17:18:17.670265"
+  },
+  {
+    "symbol": "EVRG",
+    "company": "Evergy",
+    "extracted_at": "2025-10-04T17:18:17.670323"
+  },
+  {
+    "symbol": "ES",
+    "company": "Eversource Energy",
+    "extracted_at": "2025-10-04T17:18:17.670381"
+  },
+  {
+    "symbol": "EXC",
+    "company": "Exelon",
+    "extracted_at": "2025-10-04T17:18:17.670441"
+  },
+  {
+    "symbol": "EXE",
+    "company": "Expand Energy",
+    "extracted_at": "2025-10-04T17:18:17.670500"
+  },
+  {
+    "symbol": "EXPE",
+    "company": "Expedia Group",
+    "extracted_at": "2025-10-04T17:18:17.670558"
+  },
+  {
+    "symbol": "EXPD",
+    "company": "Expeditors International",
+    "extracted_at": "2025-10-04T17:18:17.670634"
+  },
+  {
+    "symbol": "EXR",
+    "company": "Extra Space Storage",
+    "extracted_at": "2025-10-04T17:18:17.670694"
+  },
+  {
+    "symbol": "XOM",
+    "company": "ExxonMobil",
+    "extracted_at": "2025-10-04T17:18:17.670755"
+  },
+  {
+    "symbol": "FFIV",
+    "company": "F5, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.670815"
+  },
+  {
+    "symbol": "FDS",
+    "company": "FactSet",
+    "extracted_at": "2025-10-04T17:18:17.670876"
+  },
+  {
+    "symbol": "FICO",
+    "company": "Fair Isaac",
+    "extracted_at": "2025-10-04T17:18:17.670940"
+  },
+  {
+    "symbol": "FAST",
+    "company": "Fastenal",
+    "extracted_at": "2025-10-04T17:18:17.671002"
+  },
+  {
+    "symbol": "FRT",
+    "company": "Federal Realty Investment Trust",
+    "extracted_at": "2025-10-04T17:18:17.671065"
+  },
+  {
+    "symbol": "FDX",
+    "company": "FedEx",
+    "extracted_at": "2025-10-04T17:18:17.671128"
+  },
+  {
+    "symbol": "FIS",
+    "company": "Fidelity National Information Services",
+    "extracted_at": "2025-10-04T17:18:17.671188"
+  },
+  {
+    "symbol": "FITB",
+    "company": "Fifth Third Bancorp",
+    "extracted_at": "2025-10-04T17:18:17.671248"
+  },
+  {
+    "symbol": "FSLR",
+    "company": "First Solar",
+    "extracted_at": "2025-10-04T17:18:17.671308"
+  },
+  {
+    "symbol": "FE",
+    "company": "FirstEnergy",
+    "extracted_at": "2025-10-04T17:18:17.671368"
+  },
+  {
+    "symbol": "FI",
+    "company": "Fiserv",
+    "extracted_at": "2025-10-04T17:18:17.671429"
+  },
+  {
+    "symbol": "F",
+    "company": "Ford Motor Company",
+    "extracted_at": "2025-10-04T17:18:17.671533"
+  },
+  {
+    "symbol": "FTNT",
+    "company": "Fortinet",
+    "extracted_at": "2025-10-04T17:18:17.671645"
+  },
+  {
+    "symbol": "FTV",
+    "company": "Fortive",
+    "extracted_at": "2025-10-04T17:18:17.671733"
+  },
+  {
+    "symbol": "FOXA",
+    "company": "Fox Corporation (Class A)",
+    "extracted_at": "2025-10-04T17:18:17.671897"
+  },
+  {
+    "symbol": "FOX",
+    "company": "Fox Corporation (Class B)",
+    "extracted_at": "2025-10-04T17:18:17.672019"
+  },
+  {
+    "symbol": "BEN",
+    "company": "Franklin Resources",
+    "extracted_at": "2025-10-04T17:18:17.672104"
+  },
+  {
+    "symbol": "FCX",
+    "company": "Freeport-McMoRan",
+    "extracted_at": "2025-10-04T17:18:17.672189"
+  },
+  {
+    "symbol": "GRMN",
+    "company": "Garmin",
+    "extracted_at": "2025-10-04T17:18:17.672274"
+  },
+  {
+    "symbol": "IT",
+    "company": "Gartner",
+    "extracted_at": "2025-10-04T17:18:17.672359"
+  },
+  {
+    "symbol": "GE",
+    "company": "GE Aerospace",
+    "extracted_at": "2025-10-04T17:18:17.672446"
+  },
+  {
+    "symbol": "GEHC",
+    "company": "GE HealthCare",
+    "extracted_at": "2025-10-04T17:18:17.672534"
+  },
+  {
+    "symbol": "GEV",
+    "company": "GE Vernova",
+    "extracted_at": "2025-10-04T17:18:17.672619"
+  },
+  {
+    "symbol": "GEN",
+    "company": "Gen Digital",
+    "extracted_at": "2025-10-04T17:18:17.672704"
+  },
+  {
+    "symbol": "GNRC",
+    "company": "Generac",
+    "extracted_at": "2025-10-04T17:18:17.672787"
+  },
+  {
+    "symbol": "GD",
+    "company": "General Dynamics",
+    "extracted_at": "2025-10-04T17:18:17.672888"
+  },
+  {
+    "symbol": "GIS",
+    "company": "General Mills",
+    "extracted_at": "2025-10-04T17:18:17.672990"
+  },
+  {
+    "symbol": "GM",
+    "company": "General Motors",
+    "extracted_at": "2025-10-04T17:18:17.673084"
+  },
+  {
+    "symbol": "GPC",
+    "company": "Genuine Parts Company",
+    "extracted_at": "2025-10-04T17:18:17.673173"
+  },
+  {
+    "symbol": "GILD",
+    "company": "Gilead Sciences",
+    "extracted_at": "2025-10-04T17:18:17.673270"
+  },
+  {
+    "symbol": "GPN",
+    "company": "Global Payments",
+    "extracted_at": "2025-10-04T17:18:17.673374"
+  },
+  {
+    "symbol": "GL",
+    "company": "Globe Life",
+    "extracted_at": "2025-10-04T17:18:17.673464"
+  },
+  {
+    "symbol": "GDDY",
+    "company": "GoDaddy",
+    "extracted_at": "2025-10-04T17:18:17.673575"
+  },
+  {
+    "symbol": "GS",
+    "company": "Goldman Sachs",
+    "extracted_at": "2025-10-04T17:18:17.673665"
+  },
+  {
+    "symbol": "HAL",
+    "company": "Halliburton",
+    "extracted_at": "2025-10-04T17:18:17.673755"
+  },
+  {
+    "symbol": "HIG",
+    "company": "Hartford (The)",
+    "extracted_at": "2025-10-04T17:18:17.673837"
+  },
+  {
+    "symbol": "HAS",
+    "company": "Hasbro",
+    "extracted_at": "2025-10-04T17:18:17.673921"
+  },
+  {
+    "symbol": "HCA",
+    "company": "HCA Healthcare",
+    "extracted_at": "2025-10-04T17:18:17.673999"
+  },
+  {
+    "symbol": "DOC",
+    "company": "Healthpeak Properties",
+    "extracted_at": "2025-10-04T17:18:17.674078"
+  },
+  {
+    "symbol": "HSIC",
+    "company": "Henry Schein",
+    "extracted_at": "2025-10-04T17:18:17.674156"
+  },
+  {
+    "symbol": "HSY",
+    "company": "Hershey Company (The)",
+    "extracted_at": "2025-10-04T17:18:17.674234"
+  },
+  {
+    "symbol": "HPE",
+    "company": "Hewlett Packard Enterprise",
+    "extracted_at": "2025-10-04T17:18:17.674300"
+  },
+  {
+    "symbol": "HLT",
+    "company": "Hilton Worldwide",
+    "extracted_at": "2025-10-04T17:18:17.674375"
+  },
+  {
+    "symbol": "HOLX",
+    "company": "Hologic",
+    "extracted_at": "2025-10-04T17:18:17.674442"
+  },
+  {
+    "symbol": "HD",
+    "company": "Home Depot (The)",
+    "extracted_at": "2025-10-04T17:18:17.674506"
+  },
+  {
+    "symbol": "HON",
+    "company": "Honeywell",
+    "extracted_at": "2025-10-04T17:18:17.674567"
+  },
+  {
+    "symbol": "HRL",
+    "company": "Hormel Foods",
+    "extracted_at": "2025-10-04T17:18:17.674627"
+  },
+  {
+    "symbol": "HST",
+    "company": "Host Hotels & Resorts",
+    "extracted_at": "2025-10-04T17:18:17.674687"
+  },
+  {
+    "symbol": "HWM",
+    "company": "Howmet Aerospace",
+    "extracted_at": "2025-10-04T17:18:17.674747"
+  },
+  {
+    "symbol": "HPQ",
+    "company": "HP Inc.",
+    "extracted_at": "2025-10-04T17:18:17.674806"
+  },
+  {
+    "symbol": "HUBB",
+    "company": "Hubbell Incorporated",
+    "extracted_at": "2025-10-04T17:18:17.674866"
+  },
+  {
+    "symbol": "HUM",
+    "company": "Humana",
+    "extracted_at": "2025-10-04T17:18:17.674930"
+  },
+  {
+    "symbol": "HBAN",
+    "company": "Huntington Bancshares",
+    "extracted_at": "2025-10-04T17:18:17.674992"
+  },
+  {
+    "symbol": "HII",
+    "company": "Huntington Ingalls Industries",
+    "extracted_at": "2025-10-04T17:18:17.675060"
+  },
+  {
+    "symbol": "IBM",
+    "company": "IBM",
+    "extracted_at": "2025-10-04T17:18:17.675120"
+  },
+  {
+    "symbol": "IEX",
+    "company": "IDEX Corporation",
+    "extracted_at": "2025-10-04T17:18:17.675180"
+  },
+  {
+    "symbol": "IDXX",
+    "company": "Idexx Laboratories",
+    "extracted_at": "2025-10-04T17:18:17.675241"
+  },
+  {
+    "symbol": "ITW",
+    "company": "Illinois Tool Works",
+    "extracted_at": "2025-10-04T17:18:17.675301"
+  },
+  {
+    "symbol": "INCY",
+    "company": "Incyte",
+    "extracted_at": "2025-10-04T17:18:17.675360"
+  },
+  {
+    "symbol": "IR",
+    "company": "Ingersoll Rand",
+    "extracted_at": "2025-10-04T17:18:17.675423"
+  },
+  {
+    "symbol": "PODD",
+    "company": "Insulet Corporation",
+    "extracted_at": "2025-10-04T17:18:17.675484"
+  },
+  {
+    "symbol": "INTC",
+    "company": "Intel",
+    "extracted_at": "2025-10-04T17:18:17.675545"
+  },
+  {
+    "symbol": "IBKR",
+    "company": "Interactive Brokers",
+    "extracted_at": "2025-10-04T17:18:17.675659"
+  },
+  {
+    "symbol": "ICE",
+    "company": "Intercontinental Exchange",
+    "extracted_at": "2025-10-04T17:18:17.675742"
+  },
+  {
+    "symbol": "IFF",
+    "company": "International Flavors & Fragrances",
+    "extracted_at": "2025-10-04T17:18:17.675809"
+  },
+  {
+    "symbol": "IP",
+    "company": "International Paper",
+    "extracted_at": "2025-10-04T17:18:17.675878"
+  },
+  {
+    "symbol": "IPG",
+    "company": "Interpublic Group of Companies (The)",
+    "extracted_at": "2025-10-04T17:18:17.675940"
+  },
+  {
+    "symbol": "INTU",
+    "company": "Intuit",
+    "extracted_at": "2025-10-04T17:18:17.675999"
+  },
+  {
+    "symbol": "ISRG",
+    "company": "Intuitive Surgical",
+    "extracted_at": "2025-10-04T17:18:17.676060"
+  },
+  {
+    "symbol": "IVZ",
+    "company": "Invesco",
+    "extracted_at": "2025-10-04T17:18:17.676121"
+  },
+  {
+    "symbol": "INVH",
+    "company": "Invitation Homes",
+    "extracted_at": "2025-10-04T17:18:17.676180"
+  },
+  {
+    "symbol": "IQV",
+    "company": "IQVIA",
+    "extracted_at": "2025-10-04T17:18:17.676240"
+  },
+  {
+    "symbol": "IRM",
+    "company": "Iron Mountain",
+    "extracted_at": "2025-10-04T17:18:17.676304"
+  },
+  {
+    "symbol": "JBHT",
+    "company": "J.B. Hunt",
+    "extracted_at": "2025-10-04T17:18:17.676366"
+  },
+  {
+    "symbol": "JBL",
+    "company": "Jabil",
+    "extracted_at": "2025-10-04T17:18:17.676429"
+  },
+  {
+    "symbol": "JKHY",
+    "company": "Jack Henry & Associates",
+    "extracted_at": "2025-10-04T17:18:17.676547"
+  },
+  {
+    "symbol": "J",
+    "company": "Jacobs Solutions",
+    "extracted_at": "2025-10-04T17:18:17.676625"
+  },
+  {
+    "symbol": "JNJ",
+    "company": "Johnson & Johnson",
+    "extracted_at": "2025-10-04T17:18:17.676691"
+  },
+  {
+    "symbol": "JCI",
+    "company": "Johnson Controls",
+    "extracted_at": "2025-10-04T17:18:17.676754"
+  },
+  {
+    "symbol": "JPM",
+    "company": "JPMorgan Chase",
+    "extracted_at": "2025-10-04T17:18:17.676816"
+  },
+  {
+    "symbol": "K",
+    "company": "Kellanova",
+    "extracted_at": "2025-10-04T17:18:17.676876"
+  },
+  {
+    "symbol": "KVUE",
+    "company": "Kenvue",
+    "extracted_at": "2025-10-04T17:18:17.676938"
+  },
+  {
+    "symbol": "KDP",
+    "company": "Keurig Dr Pepper",
+    "extracted_at": "2025-10-04T17:18:17.677005"
+  },
+  {
+    "symbol": "KEY",
+    "company": "KeyCorp",
+    "extracted_at": "2025-10-04T17:18:17.677079"
+  },
+  {
+    "symbol": "KEYS",
+    "company": "Keysight Technologies",
+    "extracted_at": "2025-10-04T17:18:17.677141"
+  },
+  {
+    "symbol": "KMB",
+    "company": "Kimberly-Clark",
+    "extracted_at": "2025-10-04T17:18:17.677244"
+  },
+  {
+    "symbol": "KIM",
+    "company": "Kimco Realty",
+    "extracted_at": "2025-10-04T17:18:17.677332"
+  },
+  {
+    "symbol": "KMI",
+    "company": "Kinder Morgan",
+    "extracted_at": "2025-10-04T17:18:17.677401"
+  },
+  {
+    "symbol": "KKR",
+    "company": "KKR & Co.",
+    "extracted_at": "2025-10-04T17:18:17.677465"
+  },
+  {
+    "symbol": "KLAC",
+    "company": "KLA Corporation",
+    "extracted_at": "2025-10-04T17:18:17.677526"
+  },
+  {
+    "symbol": "KHC",
+    "company": "Kraft Heinz",
+    "extracted_at": "2025-10-04T17:18:17.677690"
+  },
+  {
+    "symbol": "KR",
+    "company": "Kroger",
+    "extracted_at": "2025-10-04T17:18:17.677798"
+  },
+  {
+    "symbol": "LHX",
+    "company": "L3Harris",
+    "extracted_at": "2025-10-04T17:18:17.677866"
+  },
+  {
+    "symbol": "LH",
+    "company": "Labcorp",
+    "extracted_at": "2025-10-04T17:18:17.677927"
+  },
+  {
+    "symbol": "LRCX",
+    "company": "Lam Research",
+    "extracted_at": "2025-10-04T17:18:17.677988"
+  },
+  {
+    "symbol": "LW",
+    "company": "Lamb Weston",
+    "extracted_at": "2025-10-04T17:18:17.678049"
+  },
+  {
+    "symbol": "LVS",
+    "company": "Las Vegas Sands",
+    "extracted_at": "2025-10-04T17:18:17.678109"
+  },
+  {
+    "symbol": "LDOS",
+    "company": "Leidos",
+    "extracted_at": "2025-10-04T17:18:17.678175"
+  },
+  {
+    "symbol": "LEN",
+    "company": "Lennar",
+    "extracted_at": "2025-10-04T17:18:17.678238"
+  },
+  {
+    "symbol": "LII",
+    "company": "Lennox International",
+    "extracted_at": "2025-10-04T17:18:17.678299"
+  },
+  {
+    "symbol": "LLY",
+    "company": "Lilly (Eli)",
+    "extracted_at": "2025-10-04T17:18:17.678363"
+  },
+  {
+    "symbol": "LIN",
+    "company": "Linde plc",
+    "extracted_at": "2025-10-04T17:18:17.678425"
+  },
+  {
+    "symbol": "LYV",
+    "company": "Live Nation Entertainment",
+    "extracted_at": "2025-10-04T17:18:17.678488"
+  },
+  {
+    "symbol": "LKQ",
+    "company": "LKQ Corporation",
+    "extracted_at": "2025-10-04T17:18:17.678548"
+  },
+  {
+    "symbol": "LMT",
+    "company": "Lockheed Martin",
+    "extracted_at": "2025-10-04T17:18:17.678607"
+  },
+  {
+    "symbol": "L",
+    "company": "Loews Corporation",
+    "extracted_at": "2025-10-04T17:18:17.678668"
+  },
+  {
+    "symbol": "LOW",
+    "company": "Lowe's",
+    "extracted_at": "2025-10-04T17:18:17.678728"
+  },
+  {
+    "symbol": "LULU",
+    "company": "Lululemon Athletica",
+    "extracted_at": "2025-10-04T17:18:17.678789"
+  },
+  {
+    "symbol": "LYB",
+    "company": "LyondellBasell",
+    "extracted_at": "2025-10-04T17:18:17.678848"
+  },
+  {
+    "symbol": "MTB",
+    "company": "M&T Bank",
+    "extracted_at": "2025-10-04T17:18:17.678908"
+  },
+  {
+    "symbol": "MPC",
+    "company": "Marathon Petroleum",
+    "extracted_at": "2025-10-04T17:18:17.678968"
+  },
+  {
+    "symbol": "MAR",
+    "company": "Marriott International",
+    "extracted_at": "2025-10-04T17:18:17.679027"
+  },
+  {
+    "symbol": "MMC",
+    "company": "Marsh McLennan",
+    "extracted_at": "2025-10-04T17:18:17.679087"
+  },
+  {
+    "symbol": "MLM",
+    "company": "Martin Marietta Materials",
+    "extracted_at": "2025-10-04T17:18:17.679145"
+  },
+  {
+    "symbol": "MAS",
+    "company": "Masco",
+    "extracted_at": "2025-10-04T17:18:17.679206"
+  },
+  {
+    "symbol": "MA",
+    "company": "Mastercard",
+    "extracted_at": "2025-10-04T17:18:17.679266"
+  },
+  {
+    "symbol": "MTCH",
+    "company": "Match Group",
+    "extracted_at": "2025-10-04T17:18:17.679394"
+  },
+  {
+    "symbol": "MKC",
+    "company": "McCormick & Company",
+    "extracted_at": "2025-10-04T17:18:17.679460"
+  },
+  {
+    "symbol": "MCD",
+    "company": "McDonald's",
+    "extracted_at": "2025-10-04T17:18:17.679524"
+  },
+  {
+    "symbol": "MCK",
+    "company": "McKesson Corporation",
+    "extracted_at": "2025-10-04T17:18:17.679585"
+  },
+  {
+    "symbol": "MDT",
+    "company": "Medtronic",
+    "extracted_at": "2025-10-04T17:18:17.679646"
+  },
+  {
+    "symbol": "MRK",
+    "company": "Merck & Co.",
+    "extracted_at": "2025-10-04T17:18:17.679707"
+  },
+  {
+    "symbol": "META",
+    "company": "Meta Platforms",
+    "extracted_at": "2025-10-04T17:18:17.679767"
+  },
+  {
+    "symbol": "MET",
+    "company": "MetLife",
+    "extracted_at": "2025-10-04T17:18:17.679828"
+  },
+  {
+    "symbol": "MTD",
+    "company": "Mettler Toledo",
+    "extracted_at": "2025-10-04T17:18:17.679889"
+  },
+  {
+    "symbol": "MGM",
+    "company": "MGM Resorts",
+    "extracted_at": "2025-10-04T17:18:17.679949"
+  },
+  {
+    "symbol": "MCHP",
+    "company": "Microchip Technology",
+    "extracted_at": "2025-10-04T17:18:17.680007"
+  },
+  {
+    "symbol": "MU",
+    "company": "Micron Technology",
+    "extracted_at": "2025-10-04T17:18:17.680067"
+  },
+  {
+    "symbol": "MSFT",
+    "company": "Microsoft",
+    "extracted_at": "2025-10-04T17:18:17.680127"
+  },
+  {
+    "symbol": "MAA",
+    "company": "Mid-America Apartment Communities",
+    "extracted_at": "2025-10-04T17:18:17.680190"
+  },
+  {
+    "symbol": "MRNA",
+    "company": "Moderna",
+    "extracted_at": "2025-10-04T17:18:17.680251"
+  },
+  {
+    "symbol": "MHK",
+    "company": "Mohawk Industries",
+    "extracted_at": "2025-10-04T17:18:17.680375"
+  },
+  {
+    "symbol": "MOH",
+    "company": "Molina Healthcare",
+    "extracted_at": "2025-10-04T17:18:17.680439"
+  },
+  {
+    "symbol": "TAP",
+    "company": "Molson Coors Beverage Company",
+    "extracted_at": "2025-10-04T17:18:17.680500"
+  },
+  {
+    "symbol": "MDLZ",
+    "company": "Mondelez International",
+    "extracted_at": "2025-10-04T17:18:17.680560"
+  },
+  {
+    "symbol": "MPWR",
+    "company": "Monolithic Power Systems",
+    "extracted_at": "2025-10-04T17:18:17.680620"
+  },
+  {
+    "symbol": "MNST",
+    "company": "Monster Beverage",
+    "extracted_at": "2025-10-04T17:18:17.680681"
+  },
+  {
+    "symbol": "MCO",
+    "company": "Moody's Corporation",
+    "extracted_at": "2025-10-04T17:18:17.680741"
+  },
+  {
+    "symbol": "MS",
+    "company": "Morgan Stanley",
+    "extracted_at": "2025-10-04T17:18:17.680801"
+  },
+  {
+    "symbol": "MOS",
+    "company": "Mosaic Company (The)",
+    "extracted_at": "2025-10-04T17:18:17.680861"
+  },
+  {
+    "symbol": "MSI",
+    "company": "Motorola Solutions",
+    "extracted_at": "2025-10-04T17:18:17.680921"
+  },
+  {
+    "symbol": "MSCI",
+    "company": "MSCI Inc.",
+    "extracted_at": "2025-10-04T17:18:17.680982"
+  },
+  {
+    "symbol": "NDAQ",
+    "company": "Nasdaq, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.681042"
+  },
+  {
+    "symbol": "NTAP",
+    "company": "NetApp",
+    "extracted_at": "2025-10-04T17:18:17.681101"
+  },
+  {
+    "symbol": "NFLX",
+    "company": "Netflix",
+    "extracted_at": "2025-10-04T17:18:17.681164"
+  },
+  {
+    "symbol": "NEM",
+    "company": "Newmont",
+    "extracted_at": "2025-10-04T17:18:17.681224"
+  },
+  {
+    "symbol": "NWSA",
+    "company": "News Corp (Class A)",
+    "extracted_at": "2025-10-04T17:18:17.681288"
+  },
+  {
+    "symbol": "NWS",
+    "company": "News Corp (Class B)",
+    "extracted_at": "2025-10-04T17:18:17.681350"
+  },
+  {
+    "symbol": "NEE",
+    "company": "NextEra Energy",
+    "extracted_at": "2025-10-04T17:18:17.681410"
+  },
+  {
+    "symbol": "NKE",
+    "company": "Nike, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.681516"
+  },
+  {
+    "symbol": "NI",
+    "company": "NiSource",
+    "extracted_at": "2025-10-04T17:18:17.681602"
+  },
+  {
+    "symbol": "NDSN",
+    "company": "Nordson Corporation",
+    "extracted_at": "2025-10-04T17:18:17.681670"
+  },
+  {
+    "symbol": "NSC",
+    "company": "Norfolk Southern",
+    "extracted_at": "2025-10-04T17:18:17.681734"
+  },
+  {
+    "symbol": "NTRS",
+    "company": "Northern Trust",
+    "extracted_at": "2025-10-04T17:18:17.681797"
+  },
+  {
+    "symbol": "NOC",
+    "company": "Northrop Grumman",
+    "extracted_at": "2025-10-04T17:18:17.681864"
+  },
+  {
+    "symbol": "NCLH",
+    "company": "Norwegian Cruise Line Holdings",
+    "extracted_at": "2025-10-04T17:18:17.681926"
+  },
+  {
+    "symbol": "NRG",
+    "company": "NRG Energy",
+    "extracted_at": "2025-10-04T17:18:17.681986"
+  },
+  {
+    "symbol": "NUE",
+    "company": "Nucor",
+    "extracted_at": "2025-10-04T17:18:17.682047"
+  },
+  {
+    "symbol": "NVDA",
+    "company": "Nvidia",
+    "extracted_at": "2025-10-04T17:18:17.682107"
+  },
+  {
+    "symbol": "NVR",
+    "company": "NVR, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.682168"
+  },
+  {
+    "symbol": "NXPI",
+    "company": "NXP Semiconductors",
+    "extracted_at": "2025-10-04T17:18:17.682227"
+  },
+  {
+    "symbol": "ORLY",
+    "company": "O\u2019Reilly Automotive",
+    "extracted_at": "2025-10-04T17:18:17.682293"
+  },
+  {
+    "symbol": "OXY",
+    "company": "Occidental Petroleum",
+    "extracted_at": "2025-10-04T17:18:17.682355"
+  },
+  {
+    "symbol": "ODFL",
+    "company": "Old Dominion",
+    "extracted_at": "2025-10-04T17:18:17.682414"
+  },
+  {
+    "symbol": "OMC",
+    "company": "Omnicom Group",
+    "extracted_at": "2025-10-04T17:18:17.682474"
+  },
+  {
+    "symbol": "ON",
+    "company": "ON Semiconductor",
+    "extracted_at": "2025-10-04T17:18:17.682541"
+  },
+  {
+    "symbol": "OKE",
+    "company": "Oneok",
+    "extracted_at": "2025-10-04T17:18:17.682601"
+  },
+  {
+    "symbol": "ORCL",
+    "company": "Oracle Corporation",
+    "extracted_at": "2025-10-04T17:18:17.682662"
+  },
+  {
+    "symbol": "OTIS",
+    "company": "Otis Worldwide",
+    "extracted_at": "2025-10-04T17:18:17.682723"
+  },
+  {
+    "symbol": "PCAR",
+    "company": "Paccar",
+    "extracted_at": "2025-10-04T17:18:17.682783"
+  },
+  {
+    "symbol": "PKG",
+    "company": "Packaging Corporation of America",
+    "extracted_at": "2025-10-04T17:18:17.682842"
+  },
+  {
+    "symbol": "PLTR",
+    "company": "Palantir Technologies",
+    "extracted_at": "2025-10-04T17:18:17.682902"
+  },
+  {
+    "symbol": "PANW",
+    "company": "Palo Alto Networks",
+    "extracted_at": "2025-10-04T17:18:17.682962"
+  },
+  {
+    "symbol": "PSKY",
+    "company": "Paramount Skydance Corporation",
+    "extracted_at": "2025-10-04T17:18:17.683027"
+  },
+  {
+    "symbol": "PH",
+    "company": "Parker Hannifin",
+    "extracted_at": "2025-10-04T17:18:17.683088"
+  },
+  {
+    "symbol": "PAYX",
+    "company": "Paychex",
+    "extracted_at": "2025-10-04T17:18:17.683148"
+  },
+  {
+    "symbol": "PAYC",
+    "company": "Paycom",
+    "extracted_at": "2025-10-04T17:18:17.683207"
+  },
+  {
+    "symbol": "PYPL",
+    "company": "PayPal",
+    "extracted_at": "2025-10-04T17:18:17.683268"
+  },
+  {
+    "symbol": "PNR",
+    "company": "Pentair",
+    "extracted_at": "2025-10-04T17:18:17.683328"
+  },
+  {
+    "symbol": "PEP",
+    "company": "PepsiCo",
+    "extracted_at": "2025-10-04T17:18:17.683388"
+  },
+  {
+    "symbol": "PFE",
+    "company": "Pfizer",
+    "extracted_at": "2025-10-04T17:18:17.683447"
+  },
+  {
+    "symbol": "PCG",
+    "company": "PG&E Corporation",
+    "extracted_at": "2025-10-04T17:18:17.683507"
+  },
+  {
+    "symbol": "PM",
+    "company": "Philip Morris International",
+    "extracted_at": "2025-10-04T17:18:17.683567"
+  },
+  {
+    "symbol": "PSX",
+    "company": "Phillips 66",
+    "extracted_at": "2025-10-04T17:18:17.683625"
+  },
+  {
+    "symbol": "PNW",
+    "company": "Pinnacle West Capital",
+    "extracted_at": "2025-10-04T17:18:17.683685"
+  },
+  {
+    "symbol": "PNC",
+    "company": "PNC Financial Services",
+    "extracted_at": "2025-10-04T17:18:17.683745"
+  },
+  {
+    "symbol": "POOL",
+    "company": "Pool Corporation",
+    "extracted_at": "2025-10-04T17:18:17.683804"
+  },
+  {
+    "symbol": "PPG",
+    "company": "PPG Industries",
+    "extracted_at": "2025-10-04T17:18:17.683865"
+  },
+  {
+    "symbol": "PPL",
+    "company": "PPL Corporation",
+    "extracted_at": "2025-10-04T17:18:17.683924"
+  },
+  {
+    "symbol": "PFG",
+    "company": "Principal Financial Group",
+    "extracted_at": "2025-10-04T17:18:17.683984"
+  },
+  {
+    "symbol": "PG",
+    "company": "Procter & Gamble",
+    "extracted_at": "2025-10-04T17:18:17.684046"
+  },
+  {
+    "symbol": "PGR",
+    "company": "Progressive Corporation",
+    "extracted_at": "2025-10-04T17:18:17.684110"
+  },
+  {
+    "symbol": "PLD",
+    "company": "Prologis",
+    "extracted_at": "2025-10-04T17:18:17.684173"
+  },
+  {
+    "symbol": "PRU",
+    "company": "Prudential Financial",
+    "extracted_at": "2025-10-04T17:18:17.684235"
+  },
+  {
+    "symbol": "PEG",
+    "company": "Public Service Enterprise Group",
+    "extracted_at": "2025-10-04T17:18:17.684298"
+  },
+  {
+    "symbol": "PTC",
+    "company": "PTC Inc.",
+    "extracted_at": "2025-10-04T17:18:17.684359"
+  },
+  {
+    "symbol": "PSA",
+    "company": "Public Storage",
+    "extracted_at": "2025-10-04T17:18:17.684418"
+  },
+  {
+    "symbol": "PHM",
+    "company": "PulteGroup",
+    "extracted_at": "2025-10-04T17:18:17.684479"
+  },
+  {
+    "symbol": "PWR",
+    "company": "Quanta Services",
+    "extracted_at": "2025-10-04T17:18:17.684540"
+  },
+  {
+    "symbol": "QCOM",
+    "company": "Qualcomm",
+    "extracted_at": "2025-10-04T17:18:17.684600"
+  },
+  {
+    "symbol": "DGX",
+    "company": "Quest Diagnostics",
+    "extracted_at": "2025-10-04T17:18:17.684661"
+  },
+  {
+    "symbol": "RL",
+    "company": "Ralph Lauren Corporation",
+    "extracted_at": "2025-10-04T17:18:17.684721"
+  },
+  {
+    "symbol": "RJF",
+    "company": "Raymond James Financial",
+    "extracted_at": "2025-10-04T17:18:17.684780"
+  },
+  {
+    "symbol": "RTX",
+    "company": "RTX Corporation",
+    "extracted_at": "2025-10-04T17:18:17.684841"
+  },
+  {
+    "symbol": "O",
+    "company": "Realty Income",
+    "extracted_at": "2025-10-04T17:18:17.684902"
+  },
+  {
+    "symbol": "REG",
+    "company": "Regency Centers",
+    "extracted_at": "2025-10-04T17:18:17.684962"
+  },
+  {
+    "symbol": "REGN",
+    "company": "Regeneron Pharmaceuticals",
+    "extracted_at": "2025-10-04T17:18:17.685022"
+  },
+  {
+    "symbol": "RF",
+    "company": "Regions Financial Corporation",
+    "extracted_at": "2025-10-04T17:18:17.685082"
+  },
+  {
+    "symbol": "RSG",
+    "company": "Republic Services",
+    "extracted_at": "2025-10-04T17:18:17.685141"
+  },
+  {
+    "symbol": "RMD",
+    "company": "ResMed",
+    "extracted_at": "2025-10-04T17:18:17.685201"
+  },
+  {
+    "symbol": "RVTY",
+    "company": "Revvity",
+    "extracted_at": "2025-10-04T17:18:17.685260"
+  },
+  {
+    "symbol": "HOOD",
+    "company": "Robinhood Markets",
+    "extracted_at": "2025-10-04T17:18:17.685320"
+  },
+  {
+    "symbol": "ROK",
+    "company": "Rockwell Automation",
+    "extracted_at": "2025-10-04T17:18:17.685380"
+  },
+  {
+    "symbol": "ROL",
+    "company": "Rollins, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.685440"
+  },
+  {
+    "symbol": "ROP",
+    "company": "Roper Technologies",
+    "extracted_at": "2025-10-04T17:18:17.685500"
+  },
+  {
+    "symbol": "ROST",
+    "company": "Ross Stores",
+    "extracted_at": "2025-10-04T17:18:17.685559"
+  },
+  {
+    "symbol": "RCL",
+    "company": "Royal Caribbean Group",
+    "extracted_at": "2025-10-04T17:18:17.685620"
+  },
+  {
+    "symbol": "SPGI",
+    "company": "S&P Global",
+    "extracted_at": "2025-10-04T17:18:17.685680"
+  },
+  {
+    "symbol": "CRM",
+    "company": "Salesforce",
+    "extracted_at": "2025-10-04T17:18:17.685740"
+  },
+  {
+    "symbol": "SBAC",
+    "company": "SBA Communications",
+    "extracted_at": "2025-10-04T17:18:17.685799"
+  },
+  {
+    "symbol": "SLB",
+    "company": "Schlumberger",
+    "extracted_at": "2025-10-04T17:18:17.685859"
+  },
+  {
+    "symbol": "STX",
+    "company": "Seagate Technology",
+    "extracted_at": "2025-10-04T17:18:17.685918"
+  },
+  {
+    "symbol": "SRE",
+    "company": "Sempra",
+    "extracted_at": "2025-10-04T17:18:17.685978"
+  },
+  {
+    "symbol": "NOW",
+    "company": "ServiceNow",
+    "extracted_at": "2025-10-04T17:18:17.686038"
+  },
+  {
+    "symbol": "SHW",
+    "company": "Sherwin-Williams",
+    "extracted_at": "2025-10-04T17:18:17.686101"
+  },
+  {
+    "symbol": "SPG",
+    "company": "Simon Property Group",
+    "extracted_at": "2025-10-04T17:18:17.686161"
+  },
+  {
+    "symbol": "SWKS",
+    "company": "Skyworks Solutions",
+    "extracted_at": "2025-10-04T17:18:17.686220"
+  },
+  {
+    "symbol": "SJM",
+    "company": "J.M. Smucker Company (The)",
+    "extracted_at": "2025-10-04T17:18:17.686280"
+  },
+  {
+    "symbol": "SW",
+    "company": "Smurfit Westrock",
+    "extracted_at": "2025-10-04T17:18:17.686340"
+  },
+  {
+    "symbol": "SNA",
+    "company": "Snap-on",
+    "extracted_at": "2025-10-04T17:18:17.686455"
+  },
+  {
+    "symbol": "SOLV",
+    "company": "Solventum",
+    "extracted_at": "2025-10-04T17:18:17.686578"
+  },
+  {
+    "symbol": "SO",
+    "company": "Southern Company",
+    "extracted_at": "2025-10-04T17:18:17.686686"
+  },
+  {
+    "symbol": "LUV",
+    "company": "Southwest Airlines",
+    "extracted_at": "2025-10-04T17:18:17.686810"
+  },
+  {
+    "symbol": "SWK",
+    "company": "Stanley Black & Decker",
+    "extracted_at": "2025-10-04T17:18:17.686930"
+  },
+  {
+    "symbol": "SBUX",
+    "company": "Starbucks",
+    "extracted_at": "2025-10-04T17:18:17.687034"
+  },
+  {
+    "symbol": "STT",
+    "company": "State Street Corporation",
+    "extracted_at": "2025-10-04T17:18:17.687153"
+  },
+  {
+    "symbol": "STLD",
+    "company": "Steel Dynamics",
+    "extracted_at": "2025-10-04T17:18:17.687230"
+  },
+  {
+    "symbol": "STE",
+    "company": "Steris",
+    "extracted_at": "2025-10-04T17:18:17.687297"
+  },
+  {
+    "symbol": "SYK",
+    "company": "Stryker Corporation",
+    "extracted_at": "2025-10-04T17:18:17.687360"
+  },
+  {
+    "symbol": "SMCI",
+    "company": "Supermicro",
+    "extracted_at": "2025-10-04T17:18:17.687421"
+  },
+  {
+    "symbol": "SYF",
+    "company": "Synchrony Financial",
+    "extracted_at": "2025-10-04T17:18:17.687482"
+  },
+  {
+    "symbol": "SNPS",
+    "company": "Synopsys",
+    "extracted_at": "2025-10-04T17:18:17.687543"
+  },
+  {
+    "symbol": "SYY",
+    "company": "Sysco",
+    "extracted_at": "2025-10-04T17:18:17.687605"
+  },
+  {
+    "symbol": "TMUS",
+    "company": "T-Mobile US",
+    "extracted_at": "2025-10-04T17:18:17.687666"
+  },
+  {
+    "symbol": "TROW",
+    "company": "T. Rowe Price",
+    "extracted_at": "2025-10-04T17:18:17.687727"
+  },
+  {
+    "symbol": "TTWO",
+    "company": "Take-Two Interactive",
+    "extracted_at": "2025-10-04T17:18:17.687788"
+  },
+  {
+    "symbol": "TPR",
+    "company": "Tapestry, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.687851"
+  },
+  {
+    "symbol": "TRGP",
+    "company": "Targa Resources",
+    "extracted_at": "2025-10-04T17:18:17.687913"
+  },
+  {
+    "symbol": "TGT",
+    "company": "Target Corporation",
+    "extracted_at": "2025-10-04T17:18:17.687973"
+  },
+  {
+    "symbol": "TEL",
+    "company": "TE Connectivity",
+    "extracted_at": "2025-10-04T17:18:17.688068"
+  },
+  {
+    "symbol": "TDY",
+    "company": "Teledyne Technologies",
+    "extracted_at": "2025-10-04T17:18:17.688149"
+  },
+  {
+    "symbol": "TER",
+    "company": "Teradyne",
+    "extracted_at": "2025-10-04T17:18:17.688245"
+  },
+  {
+    "symbol": "TSLA",
+    "company": "Tesla, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.688319"
+  },
+  {
+    "symbol": "TXN",
+    "company": "Texas Instruments",
+    "extracted_at": "2025-10-04T17:18:17.688496"
+  },
+  {
+    "symbol": "TPL",
+    "company": "Texas Pacific Land Corporation",
+    "extracted_at": "2025-10-04T17:18:17.688655"
+  },
+  {
+    "symbol": "TXT",
+    "company": "Textron",
+    "extracted_at": "2025-10-04T17:18:17.688747"
+  },
+  {
+    "symbol": "TMO",
+    "company": "Thermo Fisher Scientific",
+    "extracted_at": "2025-10-04T17:18:17.688844"
+  },
+  {
+    "symbol": "TJX",
+    "company": "TJX Companies",
+    "extracted_at": "2025-10-04T17:18:17.688922"
+  },
+  {
+    "symbol": "TKO",
+    "company": "TKO Group Holdings",
+    "extracted_at": "2025-10-04T17:18:17.689002"
+  },
+  {
+    "symbol": "TTD",
+    "company": "Trade Desk (The)",
+    "extracted_at": "2025-10-04T17:18:17.689082"
+  },
+  {
+    "symbol": "TSCO",
+    "company": "Tractor Supply",
+    "extracted_at": "2025-10-04T17:18:17.689165"
+  },
+  {
+    "symbol": "TT",
+    "company": "Trane Technologies",
+    "extracted_at": "2025-10-04T17:18:17.689250"
+  },
+  {
+    "symbol": "TDG",
+    "company": "TransDigm Group",
+    "extracted_at": "2025-10-04T17:18:17.689336"
+  },
+  {
+    "symbol": "TRV",
+    "company": "Travelers Companies (The)",
+    "extracted_at": "2025-10-04T17:18:17.689426"
+  },
+  {
+    "symbol": "TRMB",
+    "company": "Trimble Inc.",
+    "extracted_at": "2025-10-04T17:18:17.689530"
+  },
+  {
+    "symbol": "TFC",
+    "company": "Truist Financial",
+    "extracted_at": "2025-10-04T17:18:17.689618"
+  },
+  {
+    "symbol": "TYL",
+    "company": "Tyler Technologies",
+    "extracted_at": "2025-10-04T17:18:17.689705"
+  },
+  {
+    "symbol": "TSN",
+    "company": "Tyson Foods",
+    "extracted_at": "2025-10-04T17:18:17.689781"
+  },
+  {
+    "symbol": "USB",
+    "company": "U.S. Bancorp",
+    "extracted_at": "2025-10-04T17:18:17.689863"
+  },
+  {
+    "symbol": "UBER",
+    "company": "Uber",
+    "extracted_at": "2025-10-04T17:18:17.689940"
+  },
+  {
+    "symbol": "UDR",
+    "company": "UDR, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.690016"
+  },
+  {
+    "symbol": "ULTA",
+    "company": "Ulta Beauty",
+    "extracted_at": "2025-10-04T17:18:17.690096"
+  },
+  {
+    "symbol": "UNP",
+    "company": "Union Pacific Corporation",
+    "extracted_at": "2025-10-04T17:18:17.690174"
+  },
+  {
+    "symbol": "UAL",
+    "company": "United Airlines Holdings",
+    "extracted_at": "2025-10-04T17:18:17.690253"
+  },
+  {
+    "symbol": "UPS",
+    "company": "United Parcel Service",
+    "extracted_at": "2025-10-04T17:18:17.690329"
+  },
+  {
+    "symbol": "URI",
+    "company": "United Rentals",
+    "extracted_at": "2025-10-04T17:18:17.690402"
+  },
+  {
+    "symbol": "UNH",
+    "company": "UnitedHealth Group",
+    "extracted_at": "2025-10-04T17:18:17.690473"
+  },
+  {
+    "symbol": "UHS",
+    "company": "Universal Health Services",
+    "extracted_at": "2025-10-04T17:18:17.690544"
+  },
+  {
+    "symbol": "VLO",
+    "company": "Valero Energy",
+    "extracted_at": "2025-10-04T17:18:17.690611"
+  },
+  {
+    "symbol": "VTR",
+    "company": "Ventas",
+    "extracted_at": "2025-10-04T17:18:17.690678"
+  },
+  {
+    "symbol": "VLTO",
+    "company": "Veralto",
+    "extracted_at": "2025-10-04T17:18:17.690747"
+  },
+  {
+    "symbol": "VRSN",
+    "company": "Verisign",
+    "extracted_at": "2025-10-04T17:18:17.690809"
+  },
+  {
+    "symbol": "VRSK",
+    "company": "Verisk Analytics",
+    "extracted_at": "2025-10-04T17:18:17.690869"
+  },
+  {
+    "symbol": "VZ",
+    "company": "Verizon",
+    "extracted_at": "2025-10-04T17:18:17.690930"
+  },
+  {
+    "symbol": "VRTX",
+    "company": "Vertex Pharmaceuticals",
+    "extracted_at": "2025-10-04T17:18:17.690990"
+  },
+  {
+    "symbol": "VTRS",
+    "company": "Viatris",
+    "extracted_at": "2025-10-04T17:18:17.691050"
+  },
+  {
+    "symbol": "VICI",
+    "company": "Vici Properties",
+    "extracted_at": "2025-10-04T17:18:17.691110"
+  },
+  {
+    "symbol": "V",
+    "company": "Visa Inc.",
+    "extracted_at": "2025-10-04T17:18:17.691188"
+  },
+  {
+    "symbol": "VST",
+    "company": "Vistra Corp.",
+    "extracted_at": "2025-10-04T17:18:17.691253"
+  },
+  {
+    "symbol": "VMC",
+    "company": "Vulcan Materials Company",
+    "extracted_at": "2025-10-04T17:18:17.691316"
+  },
+  {
+    "symbol": "WRB",
+    "company": "W. R. Berkley Corporation",
+    "extracted_at": "2025-10-04T17:18:17.691378"
+  },
+  {
+    "symbol": "GWW",
+    "company": "W. W. Grainger",
+    "extracted_at": "2025-10-04T17:18:17.691440"
+  },
+  {
+    "symbol": "WAB",
+    "company": "Wabtec",
+    "extracted_at": "2025-10-04T17:18:17.691502"
+  },
+  {
+    "symbol": "WMT",
+    "company": "Walmart",
+    "extracted_at": "2025-10-04T17:18:17.691563"
+  },
+  {
+    "symbol": "DIS",
+    "company": "Walt Disney Company (The)",
+    "extracted_at": "2025-10-04T17:18:17.691624"
+  },
+  {
+    "symbol": "WBD",
+    "company": "Warner Bros. Discovery",
+    "extracted_at": "2025-10-04T17:18:17.691701"
+  },
+  {
+    "symbol": "WM",
+    "company": "Waste Management",
+    "extracted_at": "2025-10-04T17:18:17.691820"
+  },
+  {
+    "symbol": "WAT",
+    "company": "Waters Corporation",
+    "extracted_at": "2025-10-04T17:18:17.691898"
+  },
+  {
+    "symbol": "WEC",
+    "company": "WEC Energy Group",
+    "extracted_at": "2025-10-04T17:18:17.691966"
+  },
+  {
+    "symbol": "WFC",
+    "company": "Wells Fargo",
+    "extracted_at": "2025-10-04T17:18:17.692030"
+  },
+  {
+    "symbol": "WELL",
+    "company": "Welltower",
+    "extracted_at": "2025-10-04T17:18:17.692093"
+  },
+  {
+    "symbol": "WST",
+    "company": "West Pharmaceutical Services",
+    "extracted_at": "2025-10-04T17:18:17.692154"
+  },
+  {
+    "symbol": "WDC",
+    "company": "Western Digital",
+    "extracted_at": "2025-10-04T17:18:17.692216"
+  },
+  {
+    "symbol": "WY",
+    "company": "Weyerhaeuser",
+    "extracted_at": "2025-10-04T17:18:17.692277"
+  },
+  {
+    "symbol": "WSM",
+    "company": "Williams-Sonoma, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.692338"
+  },
+  {
+    "symbol": "WMB",
+    "company": "Williams Companies",
+    "extracted_at": "2025-10-04T17:18:17.692405"
+  },
+  {
+    "symbol": "WTW",
+    "company": "Willis Towers Watson",
+    "extracted_at": "2025-10-04T17:18:17.692474"
+  },
+  {
+    "symbol": "WDAY",
+    "company": "Workday, Inc.",
+    "extracted_at": "2025-10-04T17:18:17.692538"
+  },
+  {
+    "symbol": "WYNN",
+    "company": "Wynn Resorts",
+    "extracted_at": "2025-10-04T17:18:17.692603"
+  },
+  {
+    "symbol": "XEL",
+    "company": "Xcel Energy",
+    "extracted_at": "2025-10-04T17:18:17.692673"
+  },
+  {
+    "symbol": "XYL",
+    "company": "Xylem Inc.",
+    "extracted_at": "2025-10-04T17:18:17.692782"
+  },
+  {
+    "symbol": "YUM",
+    "company": "Yum! Brands",
+    "extracted_at": "2025-10-04T17:18:17.692851"
+  },
+  {
+    "symbol": "ZBRA",
+    "company": "Zebra Technologies",
+    "extracted_at": "2025-10-04T17:18:17.692915"
+  },
+  {
+    "symbol": "ZBH",
+    "company": "Zimmer Biomet",
+    "extracted_at": "2025-10-04T17:18:17.692979"
+  },
+  {
+    "symbol": "ZTS",
+    "company": "Zoetis",
+    "extracted_at": "2025-10-04T17:18:17.693045"
+  }
+]
