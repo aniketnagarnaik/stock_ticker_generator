@@ -7,6 +7,7 @@ import json
 import os
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional, Tuple
+import pytz
 from stock_data import StockData
 
 class StockCacheManager:
@@ -16,6 +17,7 @@ class StockCacheManager:
         self.cache_file = cache_file
         self.max_age_hours = max_age_hours
         self.cache_metadata_file = "cache_metadata.json"
+        self.pst = pytz.timezone('US/Pacific')
     
     def _get_cache_metadata(self) -> Dict:
         """Get cache metadata (last update time, etc.)"""
@@ -54,8 +56,19 @@ class StockCacheManager:
                 print("❌ No cache timestamp found")
                 return False
             
-            last_updated = datetime.fromisoformat(metadata['last_updated'])
-            age_hours = (datetime.now() - last_updated).total_seconds() / 3600
+            # Handle both ISO format and PST format
+            last_updated_str = metadata['last_updated']
+            if 'PST' in last_updated_str:
+                # Parse PST format: "2025-10-04 20:22 PST"
+                last_updated = datetime.strptime(last_updated_str.replace(' PST', ''), '%Y-%m-%d %H:%M')
+                last_updated = self.pst.localize(last_updated)
+            else:
+                # Parse ISO format
+                last_updated = datetime.fromisoformat(last_updated_str)
+                if last_updated.tzinfo is None:
+                    last_updated = self.pst.localize(last_updated)
+            
+            age_hours = (datetime.now(self.pst) - last_updated).total_seconds() / 3600
             
             if age_hours > self.max_age_hours:
                 print(f"❌ Cache expired ({age_hours:.1f} hours old, max: {self.max_age_hours} hours)")
@@ -98,7 +111,7 @@ class StockCacheManager:
             
             # Update metadata
             metadata = {
-                'last_updated': datetime.now().isoformat(),
+                'last_updated': datetime.now(self.pst).strftime('%Y-%m-%d %H:%M PST'),
                 'stock_count': len(stock_data),
                 'cache_version': '1.0',
                 'created_by': 'StockCacheManager'
@@ -160,8 +173,19 @@ class StockCacheManager:
         # Calculate age
         if metadata.get('last_updated'):
             try:
-                last_updated = datetime.fromisoformat(metadata['last_updated'])
-                status['age_hours'] = (datetime.now() - last_updated).total_seconds() / 3600
+                # Handle both ISO format and PST format
+                last_updated_str = metadata['last_updated']
+                if 'PST' in last_updated_str:
+                    # Parse PST format: "2025-10-04 20:22 PST"
+                    last_updated = datetime.strptime(last_updated_str.replace(' PST', ''), '%Y-%m-%d %H:%M')
+                    last_updated = self.pst.localize(last_updated)
+                else:
+                    # Parse ISO format
+                    last_updated = datetime.fromisoformat(last_updated_str)
+                    if last_updated.tzinfo is None:
+                        last_updated = self.pst.localize(last_updated)
+                
+                status['age_hours'] = (datetime.now(self.pst) - last_updated).total_seconds() / 3600
             except:
                 pass
         

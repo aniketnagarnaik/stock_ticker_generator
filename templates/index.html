@@ -34,6 +34,7 @@
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            overflow-y: visible;
         }
         .table {
             margin-bottom: 0;
@@ -59,7 +60,7 @@
         
         /* Column width constraints */
         .company-column {
-            max-width: 120px;
+            max-width: 180px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -323,6 +324,15 @@
                     </div>
                     <div class="card-body py-2">
                         <div class="filter-compact">
+                            <!-- Ticker Filter -->
+                            <div class="filter-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="tickerCheck">
+                                    <label class="form-check-label" for="tickerCheck">Ticker:</label>
+                                </div>
+                                <input type="text" class="form-control" id="tickerFilter" placeholder="e.g. AAPL, MSFT" style="width: 120px;">
+                            </div>
+
                             <!-- EPS Growth Filter -->
                             <div class="filter-group">
                                 <div class="form-check form-check-inline">
@@ -490,7 +500,7 @@
                                     <tr class="stock-row">
                                         <td><strong>{{ stock.symbol }}</strong></td>
                                         <td class="company-column">{{ stock.company_name }}</td>
-                                        <td class="market-cap">${{ "%.1f"|format(stock.market_cap / 1000000000000) }}T</td>
+                                        <td class="market-cap">{{ stock.market_cap|format_market_cap }}</td>
                                         <td>${{ "%.2f"|format(stock.price) }}</td>
                                         <td class="{% if stock.eps_growth and stock.eps_growth.quarter_over_quarter and stock.eps_growth.quarter_over_quarter > 0 %}positive-eps{% elif stock.eps_growth and stock.eps_growth.quarter_over_quarter and stock.eps_growth.quarter_over_quarter < 0 %}negative-eps{% endif %}">
                                             {% if stock.eps_growth and stock.eps_growth.quarter_over_quarter is not none %}
@@ -582,6 +592,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Hidden element to store stock data -->
+    <div id="stockData" style="display: none;">{{ stocks|tojson|safe }}</div>
+    
     <script>
         // Calculate and display statistics (kept for potential future use)
         function updateStats() {
@@ -617,9 +630,21 @@
             }
         }
         
+        // Market cap formatting function
+        function formatMarketCap(marketCap) {
+            if (marketCap >= 1000000000000) {
+                return `$${(marketCap / 1000000000000).toFixed(1)}T`;
+            } else if (marketCap >= 1000000000) {
+                return `$${(marketCap / 1000000000).toFixed(1)}B`;
+            } else {
+                return `$${(marketCap / 1000000).toFixed(0)}MM`;
+            }
+        }
+        
         // Filter functionality
-        let allStocks = {{ stocks|tojson }};
+        let allStocks = JSON.parse(document.getElementById('stockData').textContent);
         let filteredStocks = allStocks;
+        
         
             // Handle custom threshold inputs for all filters
             function setupCustomThresholdHandlers() {
@@ -660,6 +685,11 @@
                     // Apply filters locally with AND logic
                     filteredStocks = allStocks.filter(stock => {
                         return filters.every(filter => {
+                            // Handle ticker filter
+                            if (filter.metric === 'ticker') {
+                                return stock.symbol.toUpperCase().includes(filter.value);
+                            }
+                            
                             const value = getStockValue(stock, filter.metric);
                             if (filter.metric.startsWith('d_') || filter.metric.startsWith('w_') || filter.metric.startsWith('m_')) {
                                 // EMA filters - check if EMA > Price (boolean)
@@ -670,14 +700,20 @@
                     });
                     
                     updateTable();
-                    updateStats();
+                updateStats();
                     
                     // Show filter result message
-                    const filterNames = filters.map(f => `${f.name} > ${f.threshold}%`).join(' AND ');
+                    const filterNames = filters.map(f => {
+                        if (f.metric === 'ticker') {
+                            return `${f.name}: ${f.value}`;
+                        } else {
+                            return `${f.name} > ${f.threshold}%`;
+                        }
+                    }).join(' AND ');
                     const message = `Filters applied: ${filteredStocks.length} stocks found with ${filterNames}`;
                     showFilterMessage(message, 'success');
                     
-                } catch (error) {
+            } catch (error) {
                     console.error('Filter error:', error);
                     alert('Error applying filters');
                 }
@@ -686,6 +722,18 @@
         // Helper functions for multiple filters
         function getActiveFilters() {
             const filters = [];
+            
+            // Ticker filter
+            if (document.getElementById('tickerCheck').checked) {
+                const tickerValue = document.getElementById('tickerFilter').value.trim().toUpperCase();
+                if (tickerValue) {
+                    filters.push({
+                        metric: 'ticker',
+                        name: 'Ticker',
+                        value: tickerValue
+                    });
+                }
+            }
             
             // EPS Growth filter
             if (document.getElementById('epsGrowthCheck').checked) {
@@ -868,7 +916,7 @@
                 // Market Cap
                 const marketCapCell = row.insertCell();
                 marketCapCell.className = 'market-cap';
-                marketCapCell.textContent = `$${(stock.market_cap / 1000000000000).toFixed(1)}T`;
+                marketCapCell.textContent = formatMarketCap(stock.market_cap);
                 
                     // Price
                     row.insertCell().textContent = `$${stock.price.toFixed(2)}`;

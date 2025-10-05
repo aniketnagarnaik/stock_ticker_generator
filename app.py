@@ -6,16 +6,29 @@ Clean, simple implementation for viewing real stock data
 from flask import Flask, render_template, jsonify, request
 import os
 from datetime import datetime
+import pytz
 from stock_data import StockData
 from cache_manager import StockCacheManager
 
 app = Flask(__name__)
 
+# Custom Jinja2 filter for market cap formatting
+@app.template_filter('format_market_cap')
+def format_market_cap(market_cap):
+    """Format market cap with appropriate units (T, B, MM)"""
+    if market_cap >= 1000000000000:
+        return f"${market_cap / 1000000000000:.1f}T"
+    elif market_cap >= 1000000000:
+        return f"${market_cap / 1000000000:.1f}B"
+    else:
+        return f"${market_cap / 1000000:.0f}MM"
+
 # Global variable to store stock data
 stocks_data = []
 
-# Server start time
-server_start_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+# Server start time in PST
+pst = pytz.timezone('US/Pacific')
+server_start_time = datetime.now(pst).strftime('%Y-%m-%d %H:%M PST')
 
 # Cache manager
 cache_manager = StockCacheManager()
