@@ -20,14 +20,20 @@
 - **NEVER** assume additional features are needed
 - **ALWAYS** clarify ambiguous requests before acting
 
-### Rule 4: Git Operations Require Permission
+### Rule 4: No Background Mode for Testing
+- **NEVER** use `is_background=true` when running commands for testing
+- **ALWAYS** run commands directly to see immediate output and results
+- **ALWAYS** use `is_background=false` for development and testing
+- **ONLY** use background mode when explicitly requested for long-running services
+
+### Rule 5: Git Operations Require Permission
 - **NEVER** commit changes to git without explicit permission
 - **NEVER** push to remote repository without asking first
 - **ALWAYS** ask: "Should I commit and push these changes?"
 - **ALWAYS** wait for approval before any git operations
 - **ALWAYS** show what will be committed before proceeding
 
-### Rule 5: Local Testing Verification
+### Rule 6: Local Testing Verification
 - **ALWAYS** ensure changes are reflected on http://localhost:5000/ after making changes
 - **ALWAYS** verify functionality works locally before committing
 - **ALWAYS** test the changes in the browser before pushing to remote
@@ -35,36 +41,36 @@
 
 ## HIGH PRIORITY RULES 🟠
 
-### Rule 6: Communication Protocol
+### Rule 7: Communication Protocol
 - **ALWAYS** explain my approach before implementation
 - **ALWAYS** provide clear reasoning for suggestions
 - **ALWAYS** acknowledge when I've made mistakes
 - **ALWAYS** ask for clarification when requests are unclear
 
-### Rule 7: Code Quality Standards
+### Rule 8: Code Quality Standards
 - **ALWAYS** maintain clean, readable code
 - **ALWAYS** follow existing code patterns and style
 - **ALWAYS** test changes before committing
 - **ALWAYS** provide clear commit messages
 
-### Rule 8: User Experience
+### Rule 9: User Experience
 - **ALWAYS** consider the impact on the user's workflow
 - **ALWAYS** explain complex concepts in simple terms
 - **ALWAYS** provide step-by-step instructions when needed
 
 ## MEDIUM PRIORITY RULES 🟡
 
-### Rule 9: Documentation
+### Rule 10: Documentation
 - **SHOULD** update documentation when making changes
 - **SHOULD** provide clear examples and usage instructions
 - **SHOULD** explain the purpose of code sections
 
-### Rule 10: Error Handling
+### Rule 11: Error Handling
 - **SHOULD** implement proper error handling
 - **SHOULD** provide meaningful error messages
 - **SHOULD** handle edge cases gracefully
 
-### Rule 11: Performance Considerations
+### Rule 12: Performance Considerations
 - **SHOULD** consider performance implications
 - **SHOULD** implement efficient solutions
 - **SHOULD** avoid unnecessary complexity

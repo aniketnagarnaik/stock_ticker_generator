@@ -9,28 +9,34 @@ import pandas as pd
 import numpy as np
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
+from performance_monitor import PerformanceMonitor
 
 
 class StockData:
     """Stock data fetcher using Yahoo Finance"""
     
-    def __init__(self):
+    def __init__(self, enable_monitoring: bool = True):
         self.last_request_time = 0
-        self.request_delay = 0.5  # Rate limiting
+        self.request_delay = 1.0  # Increased rate limiting for 503 stocks
+        self.monitor = PerformanceMonitor() if enable_monitoring else None
         
         # Simple sector to ETF mapping
         self.sector_etf_map = {
             "Industrials": "XLI",
             "Health Care": "XLV", 
+            "Healthcare": "XLV",  # Alias for Health Care
             "Technology": "XLK",
             "Utilities": "XLU",
             "Financials": "XLF",
+            "Financial Services": "XLF",  # Alias for Financials
             "Materials": "XLB",
             "Consumer Discretionary": "XLY",
+            "Consumer Cyclical": "XLY",  # Alias for Consumer Discretionary
             "Real Estate": "XLRE",
             "Communication Services": "XLC",
             "Consumer Staples": "XLP",
-            "Energy": "XLE",
+            "Consumer Defensive": "XLP",  # Alias for Consumer Staples
+            "Energy": "XLE"
         }
     
     def _rate_limit(self):
@@ -44,25 +50,29 @@ class StockData:
         
         self.last_request_time = time.time()
     
+    def _retry_api_call(self, func, max_retries=3, delay=2):
+        """Retry API calls with exponential backoff"""
+        for attempt in range(max_retries):
+            try:
+                return func()
+            except Exception as e:
+                if "Rate limited" in str(e) or "Too Many Requests" in str(e):
+                    if attempt < max_retries - 1:
+                        wait_time = delay * (2 ** attempt)  # Exponential backoff
+                        print(f"   ⏳ Rate limited, waiting {wait_time}s before retry {attempt + 1}/{max_retries}")
+                        time.sleep(wait_time)
+                        continue
+                raise e
+    
     def _get_historical_eps(self, ticker) -> Dict:
-        """Get historical EPS data (annual and quarterly)"""
+        """Get historical EPS data (quarterly only - optimized)"""
         try:
             eps_data = {
-                'annual': {},
                 'quarterly': {},
-                'latest_annual_eps': None,
                 'latest_quarterly_eps': None
             }
             
-            # Get annual EPS data
-            income_stmt = ticker.income_stmt
-            if not income_stmt.empty and 'Diluted EPS' in income_stmt.index:
-                annual_eps = income_stmt.loc['Diluted EPS'].dropna()
-                eps_data['annual'] = {str(date.date()): float(value) for date, value in annual_eps.items()}
-                if len(annual_eps) > 0:
-                    eps_data['latest_annual_eps'] = float(annual_eps.iloc[0])
-            
-            # Get quarterly EPS data
+            # Get quarterly EPS data only (annual EPS not used in web interface)
             quarterly_income = ticker.quarterly_income_stmt
             if not quarterly_income.empty and 'Diluted EPS' in quarterly_income.index:
                 quarterly_eps = quarterly_income.loc['Diluted EPS'].dropna()
@@ -74,7 +84,7 @@ class StockData:
             
         except Exception as e:
             print(f"Error getting historical EPS data: {e}")
-            return {'annual': {}, 'quarterly': {}, 'latest_annual_eps': None, 'latest_quarterly_eps': None}
+            return {'quarterly': {}, 'latest_quarterly_eps': None}
     
     def _calculate_eps_growth(self, eps_history: Dict) -> Dict:
         """Calculate EPS growth percentages from historical data"""
@@ -126,36 +136,34 @@ class StockData:
         return float(ema.iloc[-1])
     
     def _calculate_all_emas(self, symbol: str) -> Dict[str, Optional[float]]:
-        """Calculate all EMAs for a symbol"""
+        """Calculate all EMAs for a symbol - optimized with single download"""
         try:
-            # Fetch daily data (1 year for D_9, D_21, D_50)
-            daily_data = yf.download(symbol, period="1y", interval="1d", progress=False)
-            if daily_data.empty:
+            # Single download for all timeframes (1 year is sufficient for all EMAs)
+            data = yf.download(symbol, period="1y", interval="1d", progress=False)
+            if data.empty:
                 return self._get_empty_ema_dict()
             
-            daily_closes = daily_data['Close']
+            daily_closes = data['Close']
             
-            # Calculate daily EMAs
+            # Calculate daily EMAs (using daily data directly)
             d_9_ema = self._calculate_ema(daily_closes, 9)
             d_21_ema = self._calculate_ema(daily_closes, 21)
             d_50_ema = self._calculate_ema(daily_closes, 50)
             
-            # Fetch weekly data (2 years for W_9, W_21, W_50)
-            weekly_data = yf.download(symbol, period="2y", interval="1wk", progress=False)
-            weekly_closes = weekly_data['Close'] if not weekly_data.empty else pd.Series()
+            # Resample daily data to weekly (Friday close)
+            weekly_data = daily_closes.resample('W-FRI').last().dropna()
             
             # Calculate weekly EMAs
-            w_9_ema = self._calculate_ema(weekly_closes, 9) if not weekly_closes.empty else None
-            w_21_ema = self._calculate_ema(weekly_closes, 21) if not weekly_closes.empty else None
-            w_50_ema = self._calculate_ema(weekly_closes, 50) if not weekly_closes.empty else None
+            w_9_ema = self._calculate_ema(weekly_data, 9) if len(weekly_data) >= 9 else None
+            w_21_ema = self._calculate_ema(weekly_data, 21) if len(weekly_data) >= 21 else None
+            w_50_ema = self._calculate_ema(weekly_data, 50) if len(weekly_data) >= 50 else None
             
-            # Fetch monthly data (5 years for M_9, M_21)
-            monthly_data = yf.download(symbol, period="5y", interval="1mo", progress=False)
-            monthly_closes = monthly_data['Close'] if not monthly_data.empty else pd.Series()
+            # Resample daily data to monthly (last trading day of month)
+            monthly_data = daily_closes.resample('M').last().dropna()
             
             # Calculate monthly EMAs
-            m_9_ema = self._calculate_ema(monthly_closes, 9) if not monthly_closes.empty else None
-            m_21_ema = self._calculate_ema(monthly_closes, 21) if not monthly_closes.empty else None
+            m_9_ema = self._calculate_ema(monthly_data, 9) if len(monthly_data) >= 9 else None
+            m_21_ema = self._calculate_ema(monthly_data, 21) if len(monthly_data) >= 21 else None
             
             return {
                 'D_9EMA': d_9_ema,
@@ -327,15 +335,23 @@ class StockData:
     
     def get_stock_info(self, symbol: str) -> Optional[Dict]:
         """Get basic stock information for a symbol"""
+        return self._get_stock_info_internal(symbol)
+    
+    def _get_stock_info_internal(self, symbol: str) -> Optional[Dict]:
+        """Internal method for getting stock info"""
         try:
             self._rate_limit()
             
             ticker = yf.Ticker(symbol)
             info = ticker.info
+            if self.monitor:
+                self.monitor.record_api_call(success=True, response_time=0.1)
             
             # Get current price
             hist = ticker.history(period="1d")
             current_price = hist['Close'].iloc[-1] if not hist.empty else 0
+            if self.monitor:
+                self.monitor.record_api_call(success=True, response_time=0.1)
             
             # Calculate market cap
             market_cap = info.get('marketCap', 0)
@@ -344,15 +360,22 @@ class StockData:
             
             # Get historical EPS data
             eps_data = self._get_historical_eps(ticker)
+            if self.monitor:
+                self.monitor.record_api_call(success=True, response_time=0.1)
             
             # Calculate EPS growth
             eps_growth = self._calculate_eps_growth(eps_data)
             
             # Calculate all EMAs
             ema_data = self._calculate_all_emas(symbol)
+            if self.monitor:
+                self.monitor.record_api_call(success=True, response_time=0.2)
             
             # Calculate Relative Strength (will be done in bulk later)
             rs_data = {'rs_spy': None, 'rs_sector': None}
+            
+            if self.monitor:
+                self.monitor.record_data_processed(1)
             
             return {
                 'symbol': symbol,
@@ -370,6 +393,8 @@ class StockData:
             
         except Exception as e:
             print(f"Error getting data for {symbol}: {e}")
+            if self.monitor:
+                self.monitor.record_error(f"Error getting data for {symbol}: {e}")
             return None
     
     def load_symbols(self, filename: str = 'stock_symbols.txt') -> List[str]:
@@ -385,6 +410,10 @@ class StockData:
     
     def get_all_stocks(self) -> List[Dict]:
         """Get all stocks data with efficient bulk RS calculation"""
+        return self._get_all_stocks_internal()
+    
+    def _get_all_stocks_internal(self) -> List[Dict]:
+        """Internal method for getting all stocks data"""
         symbols = self.load_symbols()
         stocks = []
         
@@ -396,7 +425,6 @@ class StockData:
             stock_info = self.get_stock_info(symbol)
             if stock_info:
                 stocks.append(stock_info)
-                print(f"  ✅ {symbol}: {stock_info['company_name']} - Market Cap: ${stock_info['market_cap']:,.0f}")
             else:
                 print(f"  ❌ {symbol}: Failed to get data")
         
@@ -405,7 +433,11 @@ class StockData:
         # Calculate RS for all stocks efficiently using bulk download
         if stocks:
             print("Calculating Relative Strength using bulk download...")
-            rs_results = self._calculate_bulk_rs(stocks)
+            if self.monitor:
+                with self.monitor.monitor_operation("calculate_bulk_rs", {"stock_count": len(stocks)}):
+                    rs_results = self._calculate_bulk_rs(stocks)
+            else:
+                rs_results = self._calculate_bulk_rs(stocks)
             
             # Add RS data to each stock
             for stock in stocks:
@@ -415,7 +447,21 @@ class StockData:
                 else:
                     stock['relative_strength'] = {'rs_spy': None, 'rs_sector': None}
         
+        if self.monitor:
+            self.monitor.record_data_processed(len(stocks))
+        
         return stocks
+    
+    def get_performance_summary(self) -> Optional[Dict]:
+        """Get performance monitoring summary"""
+        if self.monitor:
+            return self.monitor.get_session_summary()
+        return None
+    
+    def print_performance_summary(self):
+        """Print performance monitoring summary"""
+        if self.monitor:
+            self.monitor.print_summary()
 
 
 # Example usage
@@ -433,15 +479,16 @@ if __name__ == "__main__":
         
         # Show EPS history
         eps_history = stock.get('eps_history', {})
-        if eps_history.get('latest_annual_eps'):
-            print(f"  Latest Annual EPS: ${eps_history['latest_annual_eps']:.2f}")
         if eps_history.get('latest_quarterly_eps'):
             print(f"  Latest Quarterly EPS: ${eps_history['latest_quarterly_eps']:.2f}")
         
-        # Show recent annual EPS data
-        if eps_history.get('annual'):
-            print("  Recent Annual EPS:")
-            for year, eps in list(eps_history['annual'].items())[:3]:  # Show last 3 years
-                print(f"    {year}: ${eps:.2f}")
+        # Show recent quarterly EPS data
+        if eps_history.get('quarterly'):
+            print("  Recent Quarterly EPS:")
+            for quarter, eps in list(eps_history['quarterly'].items())[:4]:  # Show last 4 quarters
+                print(f"    {quarter}: ${eps:.2f}")
         
         print()
+    
+    # Print performance summary
+    stock_data.print_performance_summary()

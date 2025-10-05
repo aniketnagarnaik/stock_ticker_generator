@@ -1,0 +1,27 @@
+services:
+  # Main web application
+  - type: web
+    name: stock-ticker-web
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.5
+      - key: PORT
+        value: 10000
+
+  # Daily data refresh cron job
+  - type: cron
+    name: stock-data-refresh
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    schedule: "0 23 * * *"  # 11 PM UTC = 6 PM ET (after market close)
+    startCommand: python daily_refresh_job.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.5
+      - key: STOCK_APP_URL
+        value: https://stock-ticker-web.onrender.com

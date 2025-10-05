@@ -1,0 +1,73 @@
+{
+  "session_summary": {
+    "session_info": {
+      "start_time": "2025-10-04T16:55:26.767496",
+      "duration_seconds": 372.77,
+      "total_operations": 1
+    },
+    "performance_summary": {
+      "total_duration": 372.77,
+      "average_operation_time": 372.77,
+      "slowest_operation": {
+        "name": "sp500_complete_test",
+        "duration": 372.77
+      }
+    },
+    "memory_summary": {
+      "baseline_memory_mb": 75.73,
+      "peak_memory_mb": 178.49,
+      "total_memory_delta_mb": 102.75,
+      "average_memory_delta_mb": 102.75,
+      "highest_memory_operation": {
+        "name": "sp500_complete_test",
+        "peak_memory_mb": 178.49
+      }
+    },
+    "api_summary": {
+      "total_api_calls": 0,
+      "total_successes": 0,
+      "total_failures": 0,
+      "success_rate": 0
+    },
+    "data_processing": {
+      "total_data_processed": 481,
+      "operations_per_second": 0.0
+    }
+  },
+  "operation_breakdown": [
+    {
+      "operation": "sp500_complete_test",
+      "duration_seconds": 372.77,
+      "memory_delta_mb": 102.75,
+      "peak_memory_mb": 178.49,
+      "api_calls": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "data_processed": 481,
+      "error_count": 0,
+      "metadata": {
+        "stock_count": 500
+      }
+    }
+  ],
+  "raw_metrics": [
+    {
+      "operation_name": "sp500_complete_test",
+      "start_time": 1759622126.767715,
+      "end_time": 1759622499.534562,
+      "duration": 372.7668471336365,
+      "memory_before": 75.734375,
+      "memory_after": 178.48828125,
+      "memory_delta": 102.75390625,
+      "peak_memory": 178.48828125,
+      "api_calls": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "data_processed": 481,
+      "error_messages": [],
+      "metadata": {
+        "stock_count": 500
+      }
+    }
+  ]
+}

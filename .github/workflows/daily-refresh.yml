@@ -1,0 +1,48 @@
+name: Daily Stock Data Refresh
+
+on:
+  schedule:
+    # Run daily at 6:00 AM UTC (adjust timezone as needed)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  refresh-stock-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+    
+    - name: Wait for Render deployment
+      run: |
+        echo "⏳ Waiting 30 seconds for Render deployment to be ready..."
+        sleep 30
+    
+    - name: Refresh stock data cache
+      env:
+        STOCK_APP_URL: ${{ secrets.RENDER_APP_URL || 'https://stock-ticker-generator.onrender.com' }}
+      run: |
+        python daily_refresh.py
+    
+    - name: Check cache status
+      env:
+        STOCK_APP_URL: ${{ secrets.RENDER_APP_URL || 'https://stock-ticker-generator.onrender.com' }}
+      run: |
+        python daily_refresh.py status
+    
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ Daily refresh failed! Check the logs above."
+        # You can add Slack/Discord/Email notifications here
