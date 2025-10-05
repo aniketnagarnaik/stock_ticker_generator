@@ -116,6 +116,7 @@ def main():
     print(f"🕐 Started at: {datetime.now().isoformat()}")
     print(f"🌍 Environment: {os.environ.get('RENDER', 'Local')}")
     print(f"📊 App URL: {os.environ.get('STOCK_APP_URL', 'Not set')}")
+    print(f"⏰ Scheduled: Daily at 8 PM ET (1 AM UTC)")
     
     try:
         # Step 1: Refresh stock data

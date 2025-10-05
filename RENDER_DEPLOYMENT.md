@@ -42,7 +42,7 @@ This guide explains how to deploy the stock ticker application with daily data r
    Environment: Python 3
    Build Command: pip install -r requirements.txt
    Start Command: python daily_refresh_job.py
-   Schedule: 0 23 * * *  (11 PM UTC = 6 PM ET)
+   Schedule: 0 1 * * *   (1 AM UTC = 8 PM ET)
    Plan: Free
    ```
 
@@ -55,7 +55,7 @@ This guide explains how to deploy the stock ticker application with daily data r
 ## ⏰ **Schedule Details**
 
 ### **Daily Refresh Schedule**
-- **Time**: 11 PM UTC (6 PM ET) - After US market close
+- **Time**: 1 AM UTC (8 PM ET) - After US market close
 - **Frequency**: Daily
 - **Duration**: ~10-15 minutes
 - **Purpose**: Update stock data cache with fresh Yahoo Finance data
@@ -63,12 +63,12 @@ This guide explains how to deploy the stock ticker application with daily data r
 ### **Market Hours Consideration**
 - **US Market Close**: 4 PM ET
 - **After Hours Trading**: Until 8 PM ET
-- **Refresh Time**: 6 PM ET (allows 2 hours for after-hours data)
+- **Refresh Time**: 8 PM ET (captures all after-hours trading data)
 
 ## 🔧 **How It Works**
 
 ### **Daily Workflow**
-1. **6 PM ET**: Cron job starts
+1. **8 PM ET**: Cron job starts
 2. **Data Fetch**: Downloads fresh data from Yahoo Finance (503 stocks)
 3. **Cache Update**: Saves data to `stock_cache.json`
 4. **Web App**: Automatically serves cached data (fast loading)
