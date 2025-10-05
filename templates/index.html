@@ -57,6 +57,25 @@
             white-space: nowrap;
         }
         
+        /* Column width constraints */
+        .company-column {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .eps-history-column {
+            max-width: 200px;
+            min-width: 150px;
+            font-size: 0.85rem;
+            line-height: 1.2;
+        }
+        .eps-history-column .quarterly-eps {
+            display: block;
+            margin: 1px 0;
+            font-size: 0.8rem;
+        }
+        
         /* Mobile-specific optimizations */
         @media (max-width: 768px) {
             .container {
@@ -245,23 +264,26 @@
             border-width: 2px !important;
             font-weight: 600;
             position: relative;
+            border: 2px solid #007bff !important;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+            border-radius: 8px;
         }
         .ema-signal-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            border-color: #0dcaf0 !important;
-            background-color: rgba(13, 202, 240, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.5);
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%) !important;
+            border-color: #0056b3 !important;
         }
         .ema-signal-btn:active {
             transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,123,255,0.3);
         }
-        .ema-signal-btn::after {
-            content: '📊';
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 0.7rem;
-            opacity: 0.7;
+        .ema-signal-btn::before {
+            content: "📈 ";
+            margin-right: 2px;
         }
     </style>
 </head>
@@ -452,14 +474,14 @@
                         <thead class="table-dark">
                             <tr>
                                             <th>Symbol</th>
-                                <th>Company</th>
+                                <th style="max-width: 120px;">Company</th>
                                             <th>Market Cap</th>
                                             <th>Price</th>
                                         <th>EPS Growth %</th>
                                         <th>RS vs SPY</th>
                                         <th>RS vs Sector</th>
                                         <th>EMA Signal</th>
-                                        <th>EPS History</th>
+                                        <th style="min-width: 150px; max-width: 200px;">EPS History</th>
                                 <th>Sector</th>
                             </tr>
                         </thead>
@@ -467,7 +489,7 @@
                                     {% for stock in stocks %}
                                     <tr class="stock-row">
                                         <td><strong>{{ stock.symbol }}</strong></td>
-                                        <td>{{ stock.company_name }}</td>
+                                        <td class="company-column">{{ stock.company_name }}</td>
                                         <td class="market-cap">${{ "%.1f"|format(stock.market_cap / 1000000000000) }}T</td>
                                         <td>${{ "%.2f"|format(stock.price) }}</td>
                                         <td class="{% if stock.eps_growth and stock.eps_growth.quarter_over_quarter and stock.eps_growth.quarter_over_quarter > 0 %}positive-eps{% elif stock.eps_growth and stock.eps_growth.quarter_over_quarter and stock.eps_growth.quarter_over_quarter < 0 %}negative-eps{% endif %}">
@@ -523,7 +545,7 @@
                                                 {% endif %}
                                             </button>
                                         </td>
-                                        <td>
+                                        <td class="eps-history-column">
                                             {% if stock.eps_history and stock.eps_history.quarterly %}
                                                 <div class="eps-history">
                                                     {% for quarter_date, eps in stock.eps_history.quarterly.items() %}
@@ -839,7 +861,9 @@
                 symbolCell.innerHTML = `<strong>${stock.symbol}</strong>`;
                 
                 // Company
-                row.insertCell().textContent = stock.company_name;
+                const companyCell = row.insertCell();
+                companyCell.className = 'company-column';
+                companyCell.textContent = stock.company_name;
                 
                 // Market Cap
                 const marketCapCell = row.insertCell();
@@ -903,6 +927,7 @@
                 
                 // EPS History
                 const historyCell = row.insertCell();
+                historyCell.className = 'eps-history-column';
                 if (stock.eps_history && stock.eps_history.quarterly) {
                     const historyDiv = document.createElement('div');
                     historyDiv.className = 'eps-history';
