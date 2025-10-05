@@ -13,7 +13,8 @@
 - **ALWAYS** wait for your explicit "yes" or "no" before proceeding
 - **ALWAYS** show examples or demonstrate the approach first
 - **⚠️ CRITICAL**: This includes ALL changes - UI, styling, logic, everything
-- **⚠️ REMINDER**: I just violated this by making UI changes without asking - DO NOT REPEAT
+- **⚠️ SUPER CRITICAL**: This includes ALL decisions - licensing, project structure, file organization, ANYTHING
+- **⚠️ REMINDER**: I just violated this by creating LICENSE file without asking - DO NOT REPEAT
 
 ### Rule 2: No Unauthorized File Modifications
 - **NEVER** edit files without permission

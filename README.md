@@ -41,19 +41,19 @@ A comprehensive stock analysis web application that provides real-time stock dat
 ## 🚀 Quick Start
 
 ### 1. Clone the Repository
-```bash
+   ```bash
 git clone https://github.com/aniketnagarnaik/stock_ticker_generator.git
-cd stock_ticker_generator
-```
+   cd stock_ticker_generator
+   ```
 
 ### 2. Install Dependencies
-```bash
+   ```bash
 pip install -r requirements.txt
 ```
 
 ### 3. Run the Application
-```bash
-python3 app.py
+   ```bash
+   python3 app.py
 ```
 
 ### 4. Access the Application
@@ -167,9 +167,6 @@ python3 -c "from performance_monitor import PerformanceMonitor; pm = Performance
 
 See [DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) for detailed guidelines.
 
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🙏 Acknowledgments
 
