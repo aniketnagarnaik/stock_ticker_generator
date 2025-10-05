@@ -13,10 +13,10 @@ from stock_data import StockData
 class StockCacheManager:
     """Manages caching of stock data to improve performance"""
     
-    def __init__(self, cache_file: str = "stock_cache.json", max_age_hours: int = 24):
+    def __init__(self, cache_file: str = "cache/stock_cache.json", max_age_hours: int = 24):
         self.cache_file = cache_file
         self.max_age_hours = max_age_hours
-        self.cache_metadata_file = "cache_metadata.json"
+        self.cache_metadata_file = "cache/cache_metadata.json"
         self.pst = pytz.timezone('US/Pacific')
     
     def _get_cache_metadata(self) -> Dict:

@@ -456,6 +456,63 @@
                 font-size: 1rem;
             }
         }
+
+        /* EMA Modal Dark Mode Styling */
+        .ema-modal {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .ema-modal .modal-header {
+            background-color: var(--btn-primary) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+        }
+
+        .ema-modal .modal-body {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .ema-modal .modal-footer {
+            background-color: var(--bg-card) !important;
+            border-top: 1px solid var(--border-color) !important;
+        }
+
+        .ema-modal .table {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .ema-modal .table th {
+            background-color: var(--table-header-bg) !important;
+            color: white !important;
+            border-bottom: 1px solid var(--border-color) !important;
+        }
+
+        .ema-modal .table td {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+        }
+
+        .ema-modal .alert-info {
+            background-color: var(--bg-secondary) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .ema-modal .text-success {
+            color: var(--positive-color) !important;
+        }
+
+        .ema-modal .text-danger {
+            color: var(--negative-color) !important;
+        }
+
+        .ema-modal .btn-primary {
+            background-color: var(--btn-primary) !important;
+            border-color: var(--btn-primary) !important;
+        }
     </style>
 </head>
 <body>
@@ -1258,12 +1315,12 @@
             let emaDetails = `
                 <div class="mb-3">
                     <h5 class="mb-2">EMA Analysis for ${symbol}</h5>
-                    <div class="alert alert-info mb-3">
+                    <div class="alert alert-info mb-3 ema-modal">
                         <strong>Current Price:</strong> $${stock.price.toFixed(2)}
                     </div>
                 </div>
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
+                <table class="table table-striped table-hover ema-modal">
+                    <thead class="ema-modal">
                         <tr>
                             <th>EMA</th>
                             <th>Value</th>
@@ -1283,20 +1340,20 @@
                     const vsPrice = stock.price > emaValue ? '🟢 Above' : '🔴 Below';
                     const diffClass = stock.price > emaValue ? 'text-success' : 'text-danger';
                     emaDetails += `
-                        <tr>
-                            <td><strong>${emaKey}</strong></td>
-                            <td>$${emaValue.toFixed(2)}</td>
-                            <td>${vsPrice}</td>
-                            <td class="${diffClass}">${difference > 0 ? '+' : ''}${difference}%</td>
+                        <tr class="ema-modal">
+                            <td class="ema-modal"><strong>${emaKey}</strong></td>
+                            <td class="ema-modal">$${emaValue.toFixed(2)}</td>
+                            <td class="ema-modal">${vsPrice}</td>
+                            <td class="ema-modal ${diffClass}">${difference > 0 ? '+' : ''}${difference}%</td>
                         </tr>
                     `;
                 } else {
                     emaDetails += `
-                        <tr>
-                            <td><strong>${emaKey}</strong></td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
+                        <tr class="ema-modal">
+                            <td class="ema-modal"><strong>${emaKey}</strong></td>
+                            <td class="ema-modal">-</td>
+                            <td class="ema-modal">-</td>
+                            <td class="ema-modal">-</td>
                         </tr>
                     `;
                 }
@@ -1306,21 +1363,21 @@
             
             // Create and show modal
             const modal = document.createElement('div');
-            modal.className = 'modal fade show';
+            modal.className = 'modal fade show ema-modal';
             modal.style.display = 'block';
             modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
             modal.innerHTML = `
                 <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
+                    <div class="modal-content ema-modal">
+                        <div class="modal-header ema-modal">
                             <h5 class="modal-title">📊 EMA Technical Analysis</h5>
                             <button type="button" class="btn-close btn-close-white" onclick="this.closest('.modal').remove()"></button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body ema-modal">
                             ${emaDetails}
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="this.closest('.modal').remove()">Close</button>
+                        <div class="modal-footer ema-modal">
+                            <button type="button" class="btn btn-primary ema-modal" onclick="this.closest('.modal').remove()">Close</button>
                         </div>
                     </div>
                 </div>

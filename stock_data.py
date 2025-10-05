@@ -1,6 +1,26 @@
 """
 Stock Data Fetcher - Yahoo Finance Integration
-Clean and focused implementation
+=============================================
+
+This module provides comprehensive stock data fetching and analysis capabilities
+using the Yahoo Finance API. It handles:
+
+- Real-time stock data retrieval for S&P 500 companies
+- EPS growth calculations (quarter-over-quarter)
+- Relative Strength (RS) calculations vs SPY and sector ETFs
+- EMA (Exponential Moving Average) calculations across multiple timeframes
+- Rate limiting and error handling for API calls
+- Performance monitoring and optimization
+
+Key Features:
+- Supports 503 S&P 500 stocks
+- Calculates 8 different EMAs (Daily, Weekly, Monthly)
+- Weighted RS calculations with 3, 6, 9-month periods
+- Optimized batch data fetching
+- Comprehensive error handling and retry logic
+
+Author: Stock Data Viewer Team
+Last Updated: October 2025
 """
 
 import yfinance as yf
@@ -9,7 +29,7 @@ import pandas as pd
 import numpy as np
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
-from performance_monitor import PerformanceMonitor
+from metrics.performance_monitor import PerformanceMonitor
 
 
 class StockData:
@@ -397,7 +417,7 @@ class StockData:
                 self.monitor.record_error(f"Error getting data for {symbol}: {e}")
             return None
     
-    def load_symbols(self, filename: str = 'stock_symbols.txt') -> List[str]:
+    def load_symbols(self, filename: str = 'data/stock_symbols.txt') -> List[str]:
         """Load stock symbols from file"""
         try:
             with open(filename, 'r') as f:
