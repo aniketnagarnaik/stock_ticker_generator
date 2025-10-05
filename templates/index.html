@@ -6,9 +6,47 @@
     <title>Stock Data Viewer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            /* Light mode colors */
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+            --header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --table-header-bg: #495057;
+            --table-hover: #f8f9fa;
+            --btn-primary: #007bff;
+            --btn-secondary: #6c757d;
+            --positive-color: #28a745;
+            --negative-color: #dc3545;
+        }
+
+        [data-theme="dark"] {
+            /* Dark mode colors */
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #3a3a3a;
+            --bg-card: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #e9ecef;
+            --text-muted: #adb5bd;
+            --border-color: #495057;
+            --header-bg: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            --table-header-bg: #1a202c;
+            --table-hover: #374151;
+            --btn-primary: #4299e1;
+            --btn-secondary: #718096;
+            --positive-color: #48bb78;
+            --negative-color: #f56565;
+        }
+
         body {
-            background-color: #f8f9fa;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             font-size: 0.9rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .container {
             margin-top: 10px;
@@ -18,16 +56,22 @@
             margin-bottom: 8px;
             border: none;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .card-header {
-            background-color: #007bff;
+            background-color: var(--btn-primary);
             color: white;
             font-weight: bold;
             padding: 0.4rem 0.8rem;
             font-size: 0.85rem;
+            transition: background-color 0.3s ease;
         }
         .card-body {
             padding: 0.6rem;
+            background-color: var(--bg-card);
+            transition: background-color 0.3s ease;
         }
         
         /* Mobile-first responsive table */
@@ -42,7 +86,7 @@
             min-width: 800px; /* Ensure horizontal scroll on mobile */
         }
         .table th {
-            background-color: #495057;
+            background-color: var(--table-header-bg);
             color: white;
             padding: 0.4rem 0.3rem;
             font-size: 0.75rem;
@@ -51,11 +95,16 @@
             position: sticky;
             top: 0;
             z-index: 10;
+            transition: background-color 0.3s ease;
         }
         .table td {
             padding: 0.3rem;
             vertical-align: middle;
             white-space: nowrap;
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
         }
         
         /* Column width constraints */
@@ -117,35 +166,46 @@
             }
             .timestamp small {
                 font-size: 0.8rem;
-                color: #495057 !important;
+                color: rgba(255, 255, 255, 0.9) !important;
                 font-weight: 500;
             }
             .subtitle-text {
                 font-size: 0.85rem;
-                color: #495057 !important;
+                color: rgba(255, 255, 255, 0.9) !important;
                 font-weight: 500;
             }
             .timestamp-text {
                 font-size: 0.8rem;
-                color: #495057 !important;
+                color: rgba(255, 255, 255, 0.9) !important;
                 font-weight: 500;
             }
         }
         .stock-row {
             transition: background-color 0.2s;
         }
-        .stock-row:hover {
-            background-color: #f8f9fa;
+        .stock-row:hover td {
+            background-color: var(--table-hover) !important;
+        }
+        
+        /* Fix Bootstrap table-striped for dark mode */
+        .table-striped > tbody > tr:nth-of-type(odd) > td {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        .table-striped > tbody > tr:nth-of-type(even) > td {
+            background-color: var(--bg-secondary) !important;
+            color: var(--text-primary) !important;
         }
         .market-cap {
             font-weight: bold;
         }
         .positive-eps {
-            color: #28a745;
+            color: var(--positive-color);
             font-weight: 600;
         }
         .negative-eps {
-            color: #dc3545;
+            color: var(--negative-color);
             font-weight: 600;
         }
         .eps-history {
@@ -153,18 +213,24 @@
             line-height: 1.3;
         }
         .eps-history small {
-            color: #212529;
+            color: var(--text-primary);
             font-weight: 500;
         }
         .eps-value {
             font-weight: 600;
-            color: #495057;
+            color: var(--text-secondary);
+        }
+        
+        /* Fix text-muted class for dark mode */
+        .text-muted {
+            color: var(--text-muted) !important;
         }
         .compact-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--header-bg);
             color: white;
             padding: 1rem 0;
             margin-bottom: 1rem;
+            transition: background 0.3s ease;
         }
         .stats-inline {
             display: flex;
@@ -184,9 +250,10 @@
             gap: 6px;
             align-items: center;
             padding: 4px;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
-            background-color: #f8f9fa;
+            background-color: var(--bg-secondary);
+            transition: border-color 0.3s ease, background-color 0.3s ease;
         }
         .filter-actions {
             display: flex;
@@ -240,55 +307,163 @@
         }
         .timestamp small {
             font-size: 0.85rem;
-            color: #6c757d;
+            color: rgba(255, 255, 255, 0.9);
             font-weight: 500;
+            transition: color 0.3s ease;
         }
         .subtitle-text {
-            color: #495057 !important;
+            color: rgba(255, 255, 255, 0.9) !important;
             font-size: 0.9rem;
             font-weight: 500;
+            transition: color 0.3s ease;
         }
         .timestamp-text {
-            color: #495057 !important;
+            color: rgba(255, 255, 255, 0.9) !important;
             font-size: 0.85rem;
             font-weight: 500;
+            transition: color 0.3s ease;
         }
         .badge-sm {
             font-size: 0.65rem;
             padding: 0.2rem 0.4rem;
         }
         
-        /* EMA Signal Button Styling */
+        /* EMA Signal Button Styling - Enhanced UX */
         .ema-signal-btn {
             cursor: pointer !important;
-            transition: all 0.2s ease;
-            border-width: 2px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid var(--btn-primary) !important;
             font-weight: 600;
             position: relative;
-            border: 2px solid #007bff !important;
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+            background: var(--btn-primary) !important;
             color: white !important;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border-radius: 8px;
+            padding: 6px 10px !important;
+            font-size: 0.8rem !important;
+            min-width: 110px;
+            position: relative;
+            overflow: hidden;
         }
+        
+        /* Dark mode specific EMA button styling */
+        [data-theme="dark"] .ema-signal-btn {
+            background: var(--btn-primary) !important;
+            border-color: var(--btn-primary) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: none; /* Remove pulsing in dark mode */
+        }
+        
         .ema-signal-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,123,255,0.5);
-            background: linear-gradient(135deg, #0056b3 0%, #004085 100%) !important;
-            border-color: #0056b3 !important;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            background: var(--btn-primary) !important;
+            border-color: var(--btn-primary) !important;
         }
+        
+        /* Dark mode hover - more subtle */
+        [data-theme="dark"] .ema-signal-btn:hover {
+            transform: translateY(-1px) scale(1.01);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            background: var(--btn-primary) !important;
+            opacity: 0.9;
+        }
+        
         .ema-signal-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.5);
+            transition: all 0.1s ease;
         }
+        
+        .ema-signal-btn:focus {
+            outline: 3px solid rgba(40,167,69,0.5);
+            outline-offset: 2px;
+        }
+        
+        /* Animated background effect */
         .ema-signal-btn::before {
-            content: "📈 ";
-            margin-right: 2px;
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .ema-signal-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Click here indicator - subtle */
+        .ema-signal-btn::after {
+            content: " 👆";
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+        
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+            .ema-signal-btn {
+                font-size: 0.7rem !important;
+                padding: 6px 10px !important;
+                min-width: 100px;
+            }
+            .ema-signal-btn::after {
+                content: " 👆";
+                font-size: 0.6rem;
+            }
+        }
+
+        /* Dark Mode Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Mobile theme toggle */
+        @media (max-width: 768px) {
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Dark Mode Toggle Button -->
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <span id="theme-icon">🌙</span>
+    </button>
+
     <div class="compact-header">
         <div class="container">
             <div class="row align-items-center">
@@ -541,11 +716,11 @@
                                                     {% endfor %}
                                                     {% if total_valid_emas > 0 %}
                                                         {% if above_count == total_valid_emas %}
-                                                            🟢 Bullish
+                                                            🟢 Bullish Signal
                                                         {% elif below_count == total_valid_emas %}
-                                                            🔴 Bearish
+                                                            🔴 Bearish Signal
                                                         {% else %}
-                                                            🟡 Mixed
+                                                            🟡 Mixed Signal
                                                         {% endif %}
                                                     {% else %}
                                                         <span class="text-muted">N/A</span>
@@ -596,6 +771,40 @@
     <div id="stockData" style="display: none;">{{ stocks|tojson|safe }}</div>
     
     <script>
+        // Dark Mode Toggle Function
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                // Switch to light mode
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                // Switch to dark mode
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme on page load
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            } else {
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+            }
+        }
+
         // Calculate and display statistics (kept for potential future use)
         function updateStats() {
             // Stats removed from header, keeping function for future use
@@ -962,11 +1171,11 @@
                     if (stock.ema_data) {
                         const emaSignal = getEmaSignal(stock);
                         if (emaSignal === 'bullish') {
-                            emaButton.innerHTML = '🟢 Bullish';
+                            emaButton.innerHTML = '🟢 Bullish Signal';
                         } else if (emaSignal === 'bearish') {
-                            emaButton.innerHTML = '🔴 Bearish';
+                            emaButton.innerHTML = '🔴 Bearish Signal';
                         } else {
-                            emaButton.innerHTML = '🟡 Mixed';
+                            emaButton.innerHTML = '🟡 Mixed Signal';
                         }
                     } else {
                         emaButton.innerHTML = '<span class="text-muted">N/A</span>';
@@ -1120,8 +1329,9 @@
             document.body.appendChild(modal);
         }
         
-        // Initialize stats on page load
+        // Initialize stats and theme on page load
         updateStats();
+        initializeTheme();
     </script>
 </body>
 </html>

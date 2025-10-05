@@ -32,7 +32,15 @@
 - **ALWAYS** use `is_background=false` for development and testing
 - **ONLY** use background mode when explicitly requested for long-running services
 
-### Rule 5: Git Operations Require Permission
+### Rule 5: Port Management for Local Testing
+- **ALWAYS** kill existing processes on ports 5000-5005 before testing
+- **USE** command: `lsof -ti:5000,5001,5002,5003,5004,5005 | xargs kill -9 2>/dev/null`
+- **ALWAYS** test on localhost:5000 as the standard port
+- **IF** port 5000 is busy, try ports 5001-5005 in order
+- **NEVER** leave multiple Flask servers running simultaneously
+- **⚠️ REMINDER**: Port conflicts cause "Address already in use" errors
+
+### Rule 6: Git Operations Require Permission
 - **NEVER** commit changes to git without explicit permission
 - **NEVER** push to remote repository without asking first
 - **ALWAYS** ask: "Should I commit and push these changes?"
@@ -41,7 +49,7 @@
 - **⚠️ CRITICAL**: This includes UI changes, styling updates, and any modifications
 - **⚠️ REMINDER**: I just violated this rule by pushing UI changes without asking - DO NOT REPEAT
 
-### Rule 6: Local Testing Verification
+### Rule 7: Local Testing Verification
 - **ALWAYS** ensure changes are reflected on http://localhost:5000/ after making changes
 - **ALWAYS** verify functionality works locally before committing
 - **ALWAYS** test the changes in the browser before pushing to remote
@@ -49,48 +57,48 @@
 
 ## HIGH PRIORITY RULES 🟠
 
-### Rule 7: Communication Protocol
+### Rule 8: Communication Protocol
 - **ALWAYS** explain my approach before implementation
 - **ALWAYS** provide clear reasoning for suggestions
 - **ALWAYS** acknowledge when I've made mistakes
 - **ALWAYS** ask for clarification when requests are unclear
 
-### Rule 8: Code Quality Standards
+### Rule 9: Code Quality Standards
 - **ALWAYS** maintain clean, readable code
 - **ALWAYS** follow existing code patterns and style
 - **ALWAYS** test changes before committing
 - **ALWAYS** provide clear commit messages
 
-### Rule 9: User Experience
+### Rule 10: User Experience
 - **ALWAYS** consider the impact on the user's workflow
 - **ALWAYS** explain complex concepts in simple terms
 - **ALWAYS** provide step-by-step instructions when needed
 
 ## MEDIUM PRIORITY RULES 🟡
 
-### Rule 10: Documentation
+### Rule 11: Documentation
 - **SHOULD** update documentation when making changes
 - **SHOULD** provide clear examples and usage instructions
 - **SHOULD** explain the purpose of code sections
 
-### Rule 11: Error Handling
+### Rule 12: Error Handling
 - **SHOULD** implement proper error handling
 - **SHOULD** provide meaningful error messages
 - **SHOULD** handle edge cases gracefully
 
-### Rule 12: Performance Considerations
+### Rule 13: Performance Considerations
 - **SHOULD** consider performance implications
 - **SHOULD** implement efficient solutions
 - **SHOULD** avoid unnecessary complexity
 
 ## LOW PRIORITY RULES 🟢
 
-### Rule 12: Code Organization
+### Rule 14: Code Organization
 - **COULD** suggest better code organization
 - **COULD** recommend refactoring opportunities
 - **COULD** propose architectural improvements
 
-### Rule 13: Best Practices
+### Rule 15: Best Practices
 - **COULD** suggest industry best practices
 - **COULD** recommend security improvements
 - **COULD** propose scalability enhancements
