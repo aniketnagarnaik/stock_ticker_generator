@@ -20,9 +20,12 @@ class DatabaseManager:
         database_url = os.getenv('DATABASE_URL')
         if not database_url:
             raise ValueError(
-                "DATABASE_URL environment variable is required. "
-                "Set it to your PostgreSQL connection string, e.g.: "
-                "postgresql://user@localhost:5432/stock_ticker_db"
+                "DATABASE_URL environment variable is required.\n"
+                "For Render deployment:\n"
+                "1. Create a PostgreSQL database on Render\n"
+                "2. Copy the connection string from Render dashboard\n"
+                "3. Set DATABASE_URL environment variable in your web service\n"
+                "Example: postgresql://user:password@host:5432/database"
             )
         return database_url
     
