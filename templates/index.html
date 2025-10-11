@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Data Viewer</title>
+    <title>Stock Data Viewer - Template v3</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
@@ -115,8 +115,8 @@
             white-space: nowrap;
         }
         .eps-history-column {
-            max-width: 200px;
-            min-width: 150px;
+            max-width: 250px;
+            min-width: 200px;
             font-size: 0.85rem;
             line-height: 1.2;
         }
@@ -125,6 +125,23 @@
             margin: 1px 0;
             font-size: 0.8rem;
         }
+        
+        /* EPS Bar Chart Styles */
+        .eps-bar {
+            width: 18px;
+            min-height: 5px;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .eps-bar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .eps-bar-1 { background: #667eea; }
+        .eps-bar-2 { background: #764ba2; }
+        .eps-bar-3 { background: #f093fb; }
+        .eps-bar-4 { background: #4facfe; }
         
         /* Mobile-specific optimizations */
         @media (max-width: 768px) {
@@ -584,7 +601,7 @@
                 <div class="card">
                     <div class="card-header bg-secondary text-white">
                         <h6 class="mb-0">📊 Multiple Filters</h6>
-                    </div>
+                </div>
                     <div class="card-body py-2">
                         <div class="filter-compact">
                             <!-- Ticker Filter -->
@@ -592,9 +609,9 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" id="tickerCheck">
                                     <label class="form-check-label" for="tickerCheck">Ticker:</label>
-                                </div>
+            </div>
                                 <input type="text" class="form-control" id="tickerFilter" placeholder="e.g. AAPL, MSFT" style="width: 120px;">
-                            </div>
+        </div>
 
                             <!-- EPS Growth Filter -->
                             <div class="filter-group">
@@ -606,9 +623,9 @@
                                     <option value="25">25%</option>
                                     <option value="35">35%</option>
                                     <option value="custom">Custom</option>
-                                </select>
+                    </select>
                                 <input type="number" class="form-control" id="epsGrowthCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
-        </div>
+                </div>
 
                             <!-- RS vs SPY Filter -->
                             <div class="filter-group">
@@ -622,7 +639,7 @@
                                     <option value="custom">Custom</option>
                                 </select>
                                 <input type="number" class="form-control" id="rsSpyCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
-            </div>
+                </div>
 
                             <!-- RS vs Sector Filter -->
                             <div class="filter-group">
@@ -636,7 +653,7 @@
                                     <option value="custom">Custom</option>
                                 </select>
                                 <input type="number" class="form-control" id="rsSectorCustom" placeholder="%" min="-100" max="1000" step="0.1" style="width: 80px; display: none;">
-                </div>
+            </div>
 
                             <!-- EMA Filters - Collapsible Groups -->
                             <div class="filter-group">
@@ -652,28 +669,28 @@
                                                 <!-- Daily EMAs -->
                                                 <div class="mb-2">
                                                     <label class="form-label fw-bold">📅 Daily EMAs:</label>
-                                                    <div class="row">
+            <div class="row">
                                                         <div class="col-md-4">
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="checkbox" id="d9emaCheck">
                                                                 <label class="form-check-label" for="d9emaCheck">D_9EMA > Price</label>
-                                                            </div>
-                                                        </div>
+                </div>
+                </div>
                                                         <div class="col-md-4">
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="checkbox" id="d21emaCheck">
                                                                 <label class="form-check-label" for="d21emaCheck">D_21EMA > Price</label>
-                                                            </div>
+                </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="checkbox" id="d50emaCheck">
                                                                 <label class="form-check-label" for="d50emaCheck">D_50EMA > Price</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
+                    </div>
+                </div>
+            </div>
+        </div>
+
                                                 <!-- Weekly EMAs -->
                                                 <div class="mb-2">
                                                     <label class="form-label fw-bold">📆 Weekly EMAs:</label>
@@ -682,19 +699,19 @@
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="checkbox" id="w9emaCheck">
                                                                 <label class="form-check-label" for="w9emaCheck">W_9EMA > Price</label>
-                                                            </div>
-                                                        </div>
+                </div>
+            </div>
                                                         <div class="col-md-4">
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="checkbox" id="w21emaCheck">
                                                                 <label class="form-check-label" for="w21emaCheck">W_21EMA > Price</label>
-                                                            </div>
                 </div>
+            </div>
                                                         <div class="col-md-4">
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="checkbox" id="w50emaCheck">
                                                                 <label class="form-check-label" for="w50emaCheck">W_50EMA > Price</label>
-                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -702,7 +719,7 @@
                                                 <!-- Monthly EMAs -->
                                                 <div class="mb-2">
                                                     <label class="form-label fw-bold">📅 Monthly EMAs:</label>
-                                                    <div class="row">
+        <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="checkbox" id="m9emaCheck">
@@ -720,9 +737,9 @@
                                             </div>
                 </div>
             </div>
+                    </div>
                 </div>
-            </div>
-
+                
                             <!-- Action Buttons -->
                             <div class="filter-actions">
                                 <button class="btn btn-success btn-sm" id="applyMultipleFilterButton">Apply Filters</button>
@@ -749,12 +766,12 @@
                                             <th>Symbol</th>
                                 <th style="max-width: 120px;">Company</th>
                                             <th>Market Cap</th>
-                                            <th>Price</th>
+                                <th>Price</th>
                                         <th>EPS Growth %</th>
                                         <th>RS vs SPY</th>
                                         <th>RS vs Sector</th>
                                         <th>EMA Signal</th>
-                                        <th style="min-width: 150px; max-width: 200px;">EPS History</th>
+                                        <th style="min-width: 200px; max-width: 250px;">EPS History</th>
                                 <th>Sector</th>
                             </tr>
                         </thead>
@@ -819,23 +836,35 @@
                                             </button>
                                         </td>
                                         <td class="eps-history-column">
-                                            {% if stock.eps_history and stock.eps_history.quarterly %}
-                                                <div class="eps-history">
-                                                    {% for quarter_date, eps in stock.eps_history.quarterly.items() %}
-                                                        <small class="d-block">
-                                                            {% set year = quarter_date[:4] %}
-                                                            {% set month = quarter_date[5:7] %}
-                                                            {% if month == "01" or month == "02" or month == "03" %}
-                                                                Q1 {{ year }}: <span class="eps-value">${{ "%.2f"|format(eps) }}</span>
-                                                            {% elif month == "04" or month == "05" or month == "06" %}
-                                                                Q2 {{ year }}: <span class="eps-value">${{ "%.2f"|format(eps) }}</span>
-                                                            {% elif month == "07" or month == "08" or month == "09" %}
-                                                                Q3 {{ year }}: <span class="eps-value">${{ "%.2f"|format(eps) }}</span>
-                                                            {% else %}
-                                                                Q4 {{ year }}: <span class="eps-value">${{ "%.2f"|format(eps) }}</span>
-                                                            {% endif %}
-                                                        </small>
-                                                    {% endfor %}
+                                            {% if stock.eps_growth and stock.eps_growth.latest_quarters %}
+                                                {% set quarters = stock.eps_growth.latest_quarters[:4] %}
+                                                {% set min_eps = quarters|min %}
+                                                {% set max_eps = quarters|max %}
+                                                {% set range = max_eps - min_eps if (max_eps - min_eps) > 0 else 1 %}
+                                                <div style="cursor: pointer; padding: 8px; text-align: center;" onclick="showEpsChart('{{ stock.symbol }}')">
+                                                    <svg width="120" height="60" style="display: block; margin: 0 auto;">
+                                                        <!-- Grid lines -->
+                                                        <line x1="10" y1="40" x2="110" y2="40" stroke="var(--border-color)" stroke-width="1" stroke-dasharray="2,2"/>
+                                                        <line x1="10" y1="25" x2="110" y2="25" stroke="var(--border-color)" stroke-width="1" stroke-dasharray="2,2"/>
+                                                        <line x1="10" y1="10" x2="110" y2="10" stroke="var(--border-color)" stroke-width="1" stroke-dasharray="2,2"/>
+                                                        
+                                                        <!-- Line chart -->
+                                                        <polyline points="{% for eps in quarters %}{% set x = 10 + (loop.index0 * 33.33) %}{% set y = 40 - ((eps - min_eps) / range * 30) %}{{ x }},{{ y }} {% endfor %}" fill="none" stroke="{% if quarters[-1] >= quarters[0] %}#10b981{% else %}#ef4444{% endif %}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        
+                                                        <!-- Data points -->
+                                                        {% for eps in quarters %}
+                                                            {% set x = 10 + (loop.index0 * 33.33) %}
+                                                            {% set y = 40 - ((eps - min_eps) / range * 30) %}
+                                                            <circle cx="{{ x }}" cy="{{ y }}" r="3" fill="{% if quarters[-1] >= quarters[0] %}#10b981{% else %}#ef4444{% endif %}" stroke="white" stroke-width="1.5">
+                                                                <title>Q{{ loop.index }}: ${{ '%.2f'|format(eps) }}</title>
+                                                            </circle>
+                                                        {% endfor %}
+                                                        
+                                                        <!-- Value labels - Updated positioning - v2 -->
+                                                        <text x="10" y="55" font-size="8" fill="var(--text-muted)" text-anchor="middle">${{ '%.2f'|format(quarters[0]) }}</text>
+                                                        <text x="105" y="55" font-size="8" fill="var(--text-muted)" text-anchor="middle" font-weight="bold">${{ '%.2f'|format(quarters[-1]) }}</text>
+                                                    </svg>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">📊 Click for details</small>
                                                 </div>
                                             {% else %}
                                                 <small class="text-muted">N/A</small>
@@ -854,7 +883,26 @@
 
     </div>
 
+    <!-- EPS History Chart Modal -->
+    <div class="modal fade" id="epsChartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+                    <h5 class="modal-title" id="epsChartTitle">📊 EPS History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 2rem;">
+                    <canvas id="epsChart" style="max-height: 400px;"></canvas>
+                    <div id="epsChartStats" class="mt-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <!-- Stats will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Hidden element to store stock data -->
     <div id="stockData" style="display: none;">{{ stocks|tojson|safe }}</div>
     
@@ -1270,35 +1318,107 @@
                     }
                     emaCell.appendChild(emaButton);
                 
-                // EPS History
+                // EPS History - Line Chart
                 const historyCell = row.insertCell();
                 historyCell.className = 'eps-history-column';
-                if (stock.eps_history && stock.eps_history.quarterly) {
-                    const historyDiv = document.createElement('div');
-                    historyDiv.className = 'eps-history';
-                    Object.entries(stock.eps_history.quarterly).forEach(([quarterDate, eps]) => {
-                        const small = document.createElement('small');
-                        small.className = 'd-block';
-                        
-                        // Convert date to Q1 2024 format
-                        const year = quarterDate.substring(0, 4);
-                        const month = quarterDate.substring(5, 7);
-                        let quarter;
-                        
-                        if (month === "01" || month === "02" || month === "03") {
-                            quarter = "Q1";
-                        } else if (month === "04" || month === "05" || month === "06") {
-                            quarter = "Q2";
-                        } else if (month === "07" || month === "08" || month === "09") {
-                            quarter = "Q3";
-                        } else {
-                            quarter = "Q4";
-                        }
-                        
-                        small.innerHTML = `${quarter} ${year}: <span class="eps-value">$${eps.toFixed(2)}</span>`;
-                        historyDiv.appendChild(small);
+                if (stock.eps_growth && stock.eps_growth.latest_quarters && stock.eps_growth.latest_quarters.length > 0) {
+                    const quarters = stock.eps_growth.latest_quarters.slice(0, 4);
+                    const minEps = Math.min(...quarters);
+                    const maxEps = Math.max(...quarters);
+                    const range = (maxEps - minEps) || 1;
+                    
+                    const container = document.createElement('div');
+                    container.style.cssText = 'cursor: pointer; padding: 8px; text-align: center;';
+                    container.onclick = () => showEpsChart(stock.symbol);
+                    
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '120');
+            svg.setAttribute('height', '60');
+            svg.style.cssText = 'display: block; margin: 0 auto;';
+                    
+                    // Grid lines
+                    [40, 25, 10].forEach(y => {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', '10');
+                        line.setAttribute('y1', y);
+                        line.setAttribute('x2', '110');
+                        line.setAttribute('y2', y);
+                        line.setAttribute('stroke', 'var(--border-color)');
+                        line.setAttribute('stroke-width', '1');
+                        line.setAttribute('stroke-dasharray', '2,2');
+                        svg.appendChild(line);
                     });
-                    historyCell.appendChild(historyDiv);
+                    
+                    // Calculate points for line
+                    const points = quarters.map((eps, i) => {
+                        const x = 10 + (i * 33.33);
+                        const y = 40 - ((eps - minEps) / range * 30);
+                        return `${x},${y}`;
+                    }).join(' ');
+                    
+                    // Determine color based on trend
+                    const trend = quarters[quarters.length - 1] >= quarters[0];
+                    const color = trend ? '#10b981' : '#ef4444';
+                    
+                    // Draw line
+                    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                    polyline.setAttribute('points', points);
+                    polyline.setAttribute('fill', 'none');
+                    polyline.setAttribute('stroke', color);
+                    polyline.setAttribute('stroke-width', '2.5');
+                    polyline.setAttribute('stroke-linecap', 'round');
+                    polyline.setAttribute('stroke-linejoin', 'round');
+                    svg.appendChild(polyline);
+                    
+                    // Draw points
+                    quarters.forEach((eps, i) => {
+                        const x = 10 + (i * 33.33);
+                        const y = 40 - ((eps - minEps) / range * 30);
+                        
+                        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        circle.setAttribute('cx', x);
+                        circle.setAttribute('cy', y);
+                        circle.setAttribute('r', '3');
+                        circle.setAttribute('fill', color);
+                        circle.setAttribute('stroke', 'white');
+                        circle.setAttribute('stroke-width', '1.5');
+                        
+                        const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                        title.textContent = `Q${i + 1}: $${eps.toFixed(2)}`;
+                        circle.appendChild(title);
+                        
+                        svg.appendChild(circle);
+                    });
+                    
+            // Add value labels
+            const textFirst = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textFirst.setAttribute('x', '10');
+            textFirst.setAttribute('y', '55');
+            textFirst.setAttribute('font-size', '8');
+            textFirst.setAttribute('fill', 'var(--text-muted)');
+            textFirst.setAttribute('text-anchor', 'middle');
+            textFirst.textContent = `$${quarters[0].toFixed(2)}`;
+            svg.appendChild(textFirst);
+            
+            const textLast = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textLast.setAttribute('x', '105');
+            textLast.setAttribute('y', '55');
+            textLast.setAttribute('font-size', '8');
+            textLast.setAttribute('fill', 'var(--text-muted)');
+            textLast.setAttribute('text-anchor', 'middle');
+            textLast.setAttribute('font-weight', 'bold');
+            textLast.textContent = `$${quarters[quarters.length - 1].toFixed(2)}`;
+            svg.appendChild(textLast);
+                    
+                    container.appendChild(svg);
+                    
+                    const clickText = document.createElement('small');
+                    clickText.className = 'text-muted';
+                    clickText.style.fontSize = '0.7rem';
+                    clickText.textContent = '📊 Click for details';
+                    container.appendChild(clickText);
+                    
+                    historyCell.appendChild(container);
                 } else {
                     historyCell.innerHTML = '<small class="text-muted">N/A</small>';
                 }
@@ -1416,6 +1536,238 @@
             
             document.body.appendChild(modal);
         }
+
+        // EPS Chart Functions
+        let epsChartInstance = null;
+
+        function showEpsChart(symbol) {
+            const stockData = JSON.parse(document.getElementById('stockData').textContent);
+            const stock = stockData.find(s => s.symbol === symbol);
+            
+            if (!stock || !stock.eps_history || !stock.eps_history.quarterly) {
+                alert('No EPS history available for this stock');
+                return;
+            }
+
+            // Prepare data
+            const quarterly = stock.eps_history.quarterly;
+            const sortedQuarters = Object.entries(quarterly).sort((a, b) => a[0].localeCompare(b[0]));
+            
+            const labels = sortedQuarters.map(([date, _]) => {
+                const d = new Date(date);
+                const year = d.getFullYear();
+                const month = d.getMonth() + 1;
+                const quarter = Math.ceil(month / 3);
+                return `Q${quarter} ${year}`;
+            });
+            
+            const values = sortedQuarters.map(([_, eps]) => eps);
+            
+            // Calculate stats
+            const avgEPS = (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2);
+            const maxEPS = Math.max(...values).toFixed(2);
+            const minEPS = Math.min(...values).toFixed(2);
+            const latestEPS = values[values.length - 1].toFixed(2);
+            const growth = values.length >= 2 ? 
+                (((values[values.length - 1] - values[values.length - 2]) / values[values.length - 2]) * 100).toFixed(1) : 0;
+            
+            // Update modal
+            document.getElementById('epsChartTitle').textContent = `📊 EPS History - ${stock.symbol} (${stock.company_name})`;
+            
+            // Render chart
+            const ctx = document.getElementById('epsChart').getContext('2d');
+            
+            if (epsChartInstance) {
+                epsChartInstance.destroy();
+            }
+            
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#e0e0e0' : '#333';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            
+            epsChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'EPS ($)',
+                        data: values,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: isDark ? '#2d3748' : '#fff',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: gridColor,
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `EPS: $${context.parsed.y.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                color: textColor,
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Update stats
+            const statsHTML = `
+                <div style="text-align: center; padding: 1rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color);">
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Latest EPS</div>
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary);">$${latestEPS}</div>
+                    <div style="font-size: 0.9rem; margin-top: 0.5rem; color: ${growth >= 0 ? '#10b981' : '#ef4444'};">
+                        ${growth >= 0 ? '📈' : '📉'} ${growth}% QoQ
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color);">
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Average EPS</div>
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary);">$${avgEPS}</div>
+                    <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">
+                        Over ${values.length} quarters
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color);">
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Range</div>
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary);">$${minEPS} - $${maxEPS}</div>
+                    <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">
+                        Min / Max
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('epsChartStats').innerHTML = statsHTML;
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('epsChartModal'));
+            modal.show();
+        }
+
+        // Draw sparklines on page load
+        function drawSparklines() {
+            console.log('📊 Drawing sparklines...');
+            const stockDataEl = document.getElementById('stockData');
+            if (!stockDataEl) {
+                console.error('❌ stockData element not found');
+                return;
+            }
+
+            const stockData = JSON.parse(stockDataEl.textContent);
+            console.log(`Found ${stockData.length} stocks`);
+            
+            stockData.forEach(stock => {
+                if (!stock.eps_history || !stock.eps_history.quarterly) {
+                    console.log(`⚠️  ${stock.symbol}: No EPS history`);
+                    return;
+                }
+                
+                const svg = document.getElementById(`sparkline-${stock.symbol}`);
+                if (!svg) {
+                    console.log(`⚠️  ${stock.symbol}: SVG element not found`);
+                    return;
+                }
+                console.log(`✓ Drawing sparkline for ${stock.symbol}`);
+                
+                const quarterly = stock.eps_history.quarterly;
+                const sortedQuarters = Object.entries(quarterly).sort((a, b) => a[0].localeCompare(b[0]));
+                const values = sortedQuarters.map(([_, eps]) => eps);
+                
+                if (values.length < 2) return;
+                
+                // Calculate dimensions
+                const width = 100;
+                const height = 30;
+                const padding = 2;
+                
+                const maxVal = Math.max(...values);
+                const minVal = Math.min(...values);
+                const range = maxVal - minVal || 1;
+                
+                // Create points
+                const points = values.map((val, i) => {
+                    const x = padding + (i / (values.length - 1)) * (width - 2 * padding);
+                    const y = height - padding - ((val - minVal) / range) * (height - 2 * padding);
+                    return `${x},${y}`;
+                }).join(' ');
+                
+                // Determine color based on trend
+                const trend = values[values.length - 1] >= values[0];
+                const color = trend ? '#10b981' : '#ef4444';
+                
+                // Draw line
+                svg.innerHTML = `
+                    <polyline
+                        points="${points}"
+                        fill="none"
+                        stroke="${color}"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    ${values.map((val, i) => {
+                        const x = padding + (i / (values.length - 1)) * (width - 2 * padding);
+                        const y = height - padding - ((val - minVal) / range) * (height - 2 * padding);
+                        return `<circle cx="${x}" cy="${y}" r="2" fill="${color}" />`;
+                    }).join('')}
+                `;
+            });
+        }
+
+        // Call on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                drawSparklines();
+                console.log('✅ Sparklines drawn');
+            }, 100);
+        });
+        
+        // Also try on full load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                drawSparklines();
+                console.log('✅ Sparklines redrawn on full load');
+            }, 100);
+        });
         
         // Initialize stats and theme on page load
         updateStats();
