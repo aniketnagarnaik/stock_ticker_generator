@@ -26,16 +26,16 @@ class DataPublisher:
             session.commit()
             log_id = refresh_log.id
             
-            print(f"🔄 Starting data refresh (Log ID: {log_id})...")
+            print(f"🔄 Starting data refresh (Log ID: {log_id})...", flush=True)
             
             # Fetch fresh data from Yahoo Finance (use test data for initial deployment)
-            print("📥 Fetching stock data from Yahoo Finance...")
+            print("📥 Fetching stock data from Yahoo Finance...", flush=True)
             fresh_data = self.yahoo_client.get_all_stocks(use_test_data=True)
             
-            print(f"📊 Fetched {len(fresh_data) if fresh_data else 0} stocks from Yahoo Finance")
+            print(f"📊 Fetched {len(fresh_data) if fresh_data else 0} stocks from Yahoo Finance", flush=True)
             
             if not fresh_data:
-                print("❌ No data fetched from Yahoo Finance")
+                print("❌ No data fetched from Yahoo Finance", flush=True)
                 refresh_log.mark_completed(0, 0, "Failed to fetch data from Yahoo Finance")
                 session.commit()
                 return False, 0, 0
@@ -56,14 +56,14 @@ class DataPublisher:
             refresh_log.mark_completed(successful_count, failed_count)
             session.commit()
             
-            print(f"✅ Data refresh completed: {successful_count} successful, {failed_count} failed")
+            print(f"✅ Data refresh completed: {successful_count} successful, {failed_count} failed", flush=True)
             return True, successful_count, failed_count
             
         except Exception as e:
             import traceback
             error_trace = traceback.format_exc()
-            print(f"❌ Data refresh failed: {e}")
-            print(f"❌ Traceback:\n{error_trace}")
+            print(f"❌ Data refresh failed: {e}", flush=True)
+            print(f"❌ Traceback:\n{error_trace}", flush=True)
             if 'refresh_log' in locals():
                 refresh_log.mark_completed(0, 0, str(e))
                 session.commit()
