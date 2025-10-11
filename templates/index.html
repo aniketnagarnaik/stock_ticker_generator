@@ -960,11 +960,11 @@
                 const response = await fetch('/api/refresh');
                 const result = await response.json();
                 
-                if (result.message === 'Data refreshed successfully') {
+                if (result.success) {
                     // Reload the page to show updated data
                     window.location.reload();
                 } else {
-                    alert('Error refreshing data');
+                    alert('Error refreshing data: ' + result.message);
                 }
             } catch (error) {
                 console.error('Error:', error);
