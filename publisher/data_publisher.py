@@ -29,9 +29,13 @@ class DataPublisher:
             print(f"🔄 Starting data refresh (Log ID: {log_id})...")
             
             # Fetch fresh data from Yahoo Finance (use test data for initial deployment)
+            print("📥 Fetching stock data from Yahoo Finance...")
             fresh_data = self.yahoo_client.get_all_stocks(use_test_data=True)
             
+            print(f"📊 Fetched {len(fresh_data) if fresh_data else 0} stocks from Yahoo Finance")
+            
             if not fresh_data:
+                print("❌ No data fetched from Yahoo Finance")
                 refresh_log.mark_completed(0, 0, "Failed to fetch data from Yahoo Finance")
                 session.commit()
                 return False, 0, 0
@@ -56,7 +60,10 @@ class DataPublisher:
             return True, successful_count, failed_count
             
         except Exception as e:
+            import traceback
+            error_trace = traceback.format_exc()
             print(f"❌ Data refresh failed: {e}")
+            print(f"❌ Traceback:\n{error_trace}")
             if 'refresh_log' in locals():
                 refresh_log.mark_completed(0, 0, str(e))
                 session.commit()

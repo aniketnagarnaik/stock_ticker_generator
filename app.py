@@ -71,7 +71,11 @@ def refresh_data():
     """Trigger data refresh - called by GitHub Actions or manual"""
     try:
         print("🔄 Data refresh triggered...")
+        print(f"📊 Current stock count before refresh: {db_manager.get_stock_count()}")
+        
         success, successful_count, failed_count = data_publisher.publish_all_stocks()
+        
+        print(f"✅ Refresh completed - Success: {success}, Updated: {successful_count}, Failed: {failed_count}")
         
         if success:
             response_data = {
@@ -81,6 +85,8 @@ def refresh_data():
                 'success': True,
                 'timestamp': datetime.now(pst).isoformat()
             }
+            
+            print(f"✅ Returning success response: {response_data}")
             
             # For GitHub Actions, return 200 status
             if request.method == 'POST':
@@ -95,13 +101,20 @@ def refresh_data():
                 'success': False,
                 'timestamp': datetime.now(pst).isoformat()
             }
+            print(f"❌ Returning error response (success=False): {error_data}")
             return jsonify(error_data), 500
     
     except Exception as e:
+        import traceback
+        error_trace = traceback.format_exc()
+        print(f"❌ Exception in refresh_data: {e}")
+        print(f"❌ Traceback:\n{error_trace}")
+        
         error_data = {
             'message': f'Refresh error: {str(e)}',
             'success': False,
-            'timestamp': datetime.now(pst).isoformat()
+            'timestamp': datetime.now(pst).isoformat(),
+            'error_details': error_trace
         }
         return jsonify(error_data), 500
 
