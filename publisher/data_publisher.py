@@ -28,8 +28,8 @@ class DataPublisher:
             
             print(f"🔄 Starting data refresh (Log ID: {log_id})...")
             
-            # Fetch fresh data from Yahoo Finance
-            fresh_data = self.yahoo_client.get_all_stocks()
+            # Fetch fresh data from Yahoo Finance (use test data for initial deployment)
+            fresh_data = self.yahoo_client.get_all_stocks(use_test_data=True)
             
             if not fresh_data:
                 refresh_log.mark_completed(0, 0, "Failed to fetch data from Yahoo Finance")

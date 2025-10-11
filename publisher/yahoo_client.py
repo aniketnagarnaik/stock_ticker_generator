@@ -14,7 +14,7 @@ class YahooFinanceClient:
     
     def __init__(self):
         self.last_request_time = 0
-        self.request_delay = 1.0  # Rate limiting for 503 stocks
+        self.request_delay = 3.0  # Rate limiting for 503 stocks - increased to avoid Yahoo Finance limits
         
         # Sector to ETF mapping
         self.sector_etf_map = {
@@ -440,9 +440,12 @@ class YahooFinanceClient:
             print(f"Error loading symbols: {e}")
             return []
     
-    def get_all_stocks(self) -> List[Dict]:
+    def get_all_stocks(self, use_test_data=False) -> List[Dict]:
         """Get all stocks data with efficient bulk RS calculation"""
-        symbols = self.load_symbols()
+        if use_test_data:
+            symbols = self.load_symbols('data/stock_symbols_test.txt')
+        else:
+            symbols = self.load_symbols()
         stocks = []
         
         print(f"Fetching basic data for {len(symbols)} stocks...")
