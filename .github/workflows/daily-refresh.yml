@@ -1,0 +1,49 @@
+name: Daily Stock Data Refresh
+
+on:
+  schedule:
+    # Run daily at 4:45 PM Pacific Time
+    # Note: GitHub Actions uses UTC
+    # 4:45 PM PDT (summer) = 11:45 PM UTC
+    # 4:45 PM PST (winter) = 12:45 AM UTC next day
+    # Using 11:45 PM UTC for Pacific Daylight Time (current)
+    - cron: '45 23 * * *'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  refresh-stock-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger Stock Data Refresh
+        run: |
+          echo "🔄 Triggering daily stock data refresh..."
+          
+          # Make HTTP POST request to refresh endpoint
+          response=$(curl -s -w "\n%{http_code}" -X POST "${{ secrets.RENDER_APP_URL }}/api/refresh")
+          
+          # Extract response body and status code
+          http_code=$(echo "$response" | tail -n1)
+          response_body=$(echo "$response" | head -n -1)
+          
+          echo "📊 Response Status: $http_code"
+          echo "📈 Response Body: $response_body"
+          
+          # Check if refresh was successful
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Stock data refresh completed successfully!"
+            echo "$response_body" | jq '.'
+          else
+            echo "❌ Stock data refresh failed with status $http_code"
+            echo "$response_body"
+            exit 1
+          fi
+      
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          echo "❌ Daily stock refresh failed!"
+          echo "Please check your Render app logs for more details."
+          echo "App URL: ${{ secrets.RENDER_APP_URL }}"
