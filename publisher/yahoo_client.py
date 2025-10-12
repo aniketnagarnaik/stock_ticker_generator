@@ -1,5 +1,6 @@
 """
 Yahoo Finance API client for fetching stock data
+Uses curl_cffi to bypass TLS fingerprinting and avoid rate limiting
 """
 
 import yfinance as yf
@@ -8,6 +9,10 @@ import pandas as pd
 import numpy as np
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
+from curl_cffi import requests
+
+# Create a session that impersonates Chrome to bypass Yahoo's TLS fingerprinting
+chrome_session = requests.Session(impersonate="chrome")
 
 class YahooFinanceClient:
     """Client for fetching data from Yahoo Finance API"""
@@ -120,8 +125,8 @@ class YahooFinanceClient:
     def _calculate_all_emas(self, symbol: str) -> Dict[str, Optional[float]]:
         """Calculate all EMAs for a symbol"""
         try:
-            # Single download for all timeframes
-            data = yf.download(symbol, period="1y", interval="1d", progress=False)
+            # Single download for all timeframes (using Chrome session to bypass TLS fingerprinting)
+            data = yf.download(symbol, period="1y", interval="1d", progress=False, session=chrome_session)
             if data.empty:
                 return self._get_empty_ema_dict()
             
@@ -181,8 +186,8 @@ class YahooFinanceClient:
             print(f"Bulk downloading price data for {len(symbols)} symbols...")
             self._rate_limit()
             
-            # Use yfinance bulk download
-            data = yf.download(symbols, period="1y", interval="1d", threads=True, progress=False)
+            # Use yfinance bulk download (with Chrome session)
+            data = yf.download(symbols, period="1y", interval="1d", threads=True, progress=False, session=chrome_session)
             
             result = {}
             for symbol in symbols:
@@ -314,7 +319,8 @@ class YahooFinanceClient:
         try:
             self._rate_limit()
             
-            ticker = yf.Ticker(symbol)
+            # Use curl_cffi session to impersonate Chrome and bypass TLS fingerprinting
+            ticker = yf.Ticker(symbol, session=chrome_session)
             info = ticker.info
             
             # Get current price
@@ -359,8 +365,8 @@ class YahooFinanceClient:
     def _calculate_single_stock_rs(self, symbol: str) -> Dict:
         """Calculate relative strength for a single stock"""
         try:
-            # Get price data for the stock
-            price_data = yf.download([symbol, 'SPY'], period="2y", interval="1d", progress=False)
+            # Get price data for the stock (with Chrome session)
+            price_data = yf.download([symbol, 'SPY'], period="2y", interval="1d", progress=False, session=chrome_session)
             
             # Check if we have data for the symbol
             symbol_close_col = ('Close', symbol)
@@ -379,7 +385,7 @@ class YahooFinanceClient:
             sector_data = None
             sector_close_col = None
             if sector_etf != 'SPY':
-                sector_data = yf.download([sector_etf], period="2y", interval="1d", progress=False)
+                sector_data = yf.download([sector_etf], period="2y", interval="1d", progress=False, session=chrome_session)
                 if not sector_data.empty:
                     sector_close_col = ('Close', sector_etf)
                 else:

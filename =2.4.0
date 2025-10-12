@@ -1,0 +1,10 @@
+Collecting finnhub-python
+  Downloading finnhub_python-2.4.25-py3-none-any.whl.metadata (9.2 kB)
+Requirement already satisfied: requests>=2.22.0 in /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages (from finnhub-python) (2.31.0)
+Requirement already satisfied: charset-normalizer<4,>=2 in /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages (from requests>=2.22.0->finnhub-python) (3.3.2)
+Requirement already satisfied: idna<4,>=2.5 in /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages (from requests>=2.22.0->finnhub-python) (3.7)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages (from requests>=2.22.0->finnhub-python) (2.2.1)
+Requirement already satisfied: certifi>=2017.4.17 in /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages (from requests>=2.22.0->finnhub-python) (2024.2.2)
+Downloading finnhub_python-2.4.25-py3-none-any.whl (11 kB)
+Installing collected packages: finnhub-python
+Successfully installed finnhub-python-2.4.25

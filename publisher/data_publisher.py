@@ -28,14 +28,14 @@ class DataPublisher:
             
             print(f"🔄 Starting data refresh (Log ID: {log_id})...", flush=True)
             
-            # Fetch fresh data from Yahoo Finance (use test data for initial deployment)
+            # Fetch fresh data from Yahoo Finance (with curl_cffi Chrome impersonation)
             print("📥 Fetching stock data from Yahoo Finance...", flush=True)
             fresh_data = self.yahoo_client.get_all_stocks(use_test_data=True)
             
-            print(f"📊 Fetched {len(fresh_data) if fresh_data else 0} stocks from Yahoo Finance", flush=True)
+            print(f"📊 Fetched {len(fresh_data) if fresh_data else 0} stocks", flush=True)
             
             if not fresh_data:
-                print("❌ No data fetched from Yahoo Finance", flush=True)
+                print("❌ No data fetched from data sources", flush=True)
                 refresh_log.mark_completed(0, 0, "Failed to fetch data from Yahoo Finance")
                 session.commit()
                 return False, 0, 0
