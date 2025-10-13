@@ -458,6 +458,30 @@
             transition: all 0.1s ease;
         }
         
+        /* Modal dark mode styling */
+        [data-theme="dark"] .modal-content {
+            background-color: var(--bg-card) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        
+        [data-theme="dark"] .modal-header {
+            background-color: var(--bg-card) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+        }
+        
+        [data-theme="dark"] .modal-title {
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .modal-body {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        
         .ema-signal-btn:focus {
             outline: 3px solid rgba(40,167,69,0.5);
             outline-offset: 2px;
@@ -1680,8 +1704,9 @@
             }
             
             const isDark = document.body.getAttribute('data-theme') === 'dark';
-            const textColor = isDark ? '#e0e0e0' : '#333333';
-            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.15)';
+            const textColor = isDark ? '#ffffff' : '#333333';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.15)';
+            const backgroundColor = isDark ? '#2d2d2d' : '#ffffff';
             
             epsChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -1710,10 +1735,10 @@
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: isDark ? '#2d3748' : '#fff',
+                            backgroundColor: backgroundColor,
                             titleColor: textColor,
                             bodyColor: textColor,
-                            borderColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+                            borderColor: isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)',
                             borderWidth: 1,
                             padding: 12,
                             displayColors: false,
