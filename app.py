@@ -4,14 +4,24 @@ Clean implementation for viewing stock data from database
 """
 
 from flask import Flask, render_template, jsonify, request
+from flask.json.provider import DefaultJSONProvider
 import os
 import sys
 from datetime import datetime
 import pytz
+import math
 from database.database import db_manager
 from publisher.data_publisher import DataPublisher
 
+# Custom JSON provider to handle NaN values
+class CustomJSONProvider(DefaultJSONProvider):
+    def default(self, obj):
+        if isinstance(obj, float) and math.isnan(obj):
+            return None
+        return super().default(obj)
+
 app = Flask(__name__)
+app.json = CustomJSONProvider(app)
 
 # Force stdout to flush immediately (for Render logging)
 sys.stdout.flush()
@@ -41,6 +51,12 @@ def index():
     try:
         # Get all stocks from database
         stocks = db_manager.get_all_stocks()
+        
+        # DEBUG: Check first stock's EMA data
+        if stocks:
+            print(f"🔍 DEBUG: First stock EMA data: {stocks[0].get('ema_data')}", flush=True)
+            print(f"🔍 DEBUG: Type: {type(stocks[0].get('ema_data'))}", flush=True)
+            print(f"🔍 DEBUG: Bool: {bool(stocks[0].get('ema_data'))}", flush=True)
         
         # Get refresh status
         refresh_status = data_publisher.get_refresh_status()

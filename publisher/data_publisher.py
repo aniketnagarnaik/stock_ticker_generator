@@ -17,8 +17,18 @@ class DataPublisher:
     @staticmethod
     def _convert_numpy_types(value):
         """Convert numpy types to Python native types for PostgreSQL compatibility"""
+        import math
+        
+        # Handle NaN values (convert to None for JSON compatibility)
+        if isinstance(value, float) and math.isnan(value):
+            return None
+        
         if isinstance(value, (np.integer, np.floating)):
-            return value.item()
+            val = value.item()
+            # Check if the converted value is NaN
+            if isinstance(val, float) and math.isnan(val):
+                return None
+            return val
         elif isinstance(value, np.ndarray):
             return value.tolist()
         return value
