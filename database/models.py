@@ -82,6 +82,27 @@ class StockMetrics(Base):
         """Store EPS history as JSON string"""
         self.eps_history = json.dumps(eps_dict)
 
+class Index(Base):
+    """Table to store benchmark indices data (SPY, QQQ, etc.)"""
+    __tablename__ = 'indices'
+    
+    id = Column(Integer, primary_key=True)
+    symbol = Column(String(10), nullable=False, unique=True)  # SPY, QQQ, etc.
+    name = Column(String(100), nullable=False)  # S&P 500 ETF, NASDAQ ETF, etc.
+    price_data = Column(Text)  # JSON string with historical price data
+    last_updated = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    def set_price_data(self, data: dict):
+        """Set price data as JSON string"""
+        self.price_data = json.dumps(data)
+    
+    def get_price_data(self) -> dict:
+        """Get price data as dictionary"""
+        if self.price_data:
+            return json.loads(self.price_data)
+        return {}
+
 class RefreshLog(Base):
     """Log of data refresh operations"""
     __tablename__ = 'refresh_logs'

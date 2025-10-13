@@ -32,6 +32,24 @@ class DefeatBetaProvider(BaseDataProvider):
         """Get provider name"""
         return "defeatbeta-api (Hugging Face)"
     
+    def get_data_snapshot_date(self) -> Optional[str]:
+        """Get the latest data snapshot date from the dataset"""
+        if not self.is_available():
+            return None
+        
+        try:
+            # Use AAPL as a reference to get the latest data date
+            ticker = DefeatBetaTicker('AAPL')
+            price_df = ticker.price()
+            
+            if not price_df.empty:
+                latest_date = price_df.iloc[-1]['report_date']
+                return str(latest_date)
+            return None
+        except Exception as e:
+            print(f"Error getting data snapshot date: {e}", flush=True)
+            return None
+    
     def get_stock_info(self, symbol: str) -> Optional[Dict]:
         """Get complete stock information for a single symbol"""
         if not self.is_available():
@@ -104,7 +122,7 @@ class DefeatBetaProvider(BaseDataProvider):
                     'eps_growth': {'quarter_over_quarter': None, 'year_over_year': None, 'latest_quarters': []}
                 }
             
-            # Build quarterly EPS dictionary
+            # Build quarterly EPS dictionary (all quarters)
             quarterly_eps = {}
             for idx, row in ttm_eps.iterrows():
                 date_str = str(row['report_date'])
@@ -199,37 +217,35 @@ class DefeatBetaProvider(BaseDataProvider):
             return None
     
     def _calculate_rs(self, symbol: str, price_df: pd.DataFrame) -> Dict:
-        """Calculate relative strength vs SPY (fallback method for defeatbeta-api)"""
+        """Calculate relative strength vs SPY using database benchmark data"""
         try:
-            # Since defeatbeta-api doesn't provide benchmark data (SPY, etc.),
-            # we'll use a simplified calculation based on recent price performance
-            if price_df.empty or len(price_df) < 252:  # Need at least 1 year of data
-                return {'rs_spy': None, 'rs_sector': None}
+            print(f"  📊 Calculating real RS for {symbol} using database benchmarks...", flush=True)
             
-            stock_closes = price_df.set_index('report_date')['close']
+            # Get benchmark data from database
+            from database.indices_manager import indices_manager
             
-            # Calculate 3-month, 6-month, 9-month, and 12-month returns
-            weights = {3: 0.25, 6: 0.25, 9: 0.25, 12: 0.25}
-            total_return = 0
+            benchmark_data = indices_manager.get_all_indices_data()
             
-            for months, weight in weights.items():
-                days = months * 21  # Approximate trading days
-                if len(stock_closes) < days:
-                    continue
+            if benchmark_data:
+                # Prepare stock price data for RS calculation
+                stock_prices = price_df[['report_date', 'close']].copy()
+                stock_prices.columns = ['date', 'close']
                 
-                # Calculate return for this period
-                period_return = ((stock_closes.iloc[-1] - stock_closes.iloc[-days]) / stock_closes.iloc[-days]) * 100
-                total_return += period_return * weight
+                # Calculate real relative strength using Polygon provider's method
+                from .polygon_provider import PolygonProvider
+                polygon_provider = PolygonProvider()
+                rs_values = polygon_provider.calculate_relative_strength(stock_prices, benchmark_data)
+                
+                print(f"    ✅ {symbol} RS vs SPY: {rs_values.get('rs_spy', 'N/A')}", flush=True)
+                print(f"    ✅ {symbol} RS vs Sector: {rs_values.get('rs_sector', 'N/A')}", flush=True)
+                
+                return rs_values
+            else:
+                print(f"    ⚠️ No benchmark data available in database", flush=True)
             
-            # For defeatbeta-api, we'll use a mock RS calculation
-            # This is a placeholder - in a real implementation, you'd need benchmark data
-            mock_rs_spy = round(total_return * 0.8, 2)  # Simulate relative performance
-            mock_rs_sector = round(total_return * 0.9, 2)  # Simulate sector performance
-            
-            return {
-                'rs_spy': mock_rs_spy if mock_rs_spy != 0 else None,
-                'rs_sector': mock_rs_sector if mock_rs_sector != 0 else None
-            }
+            # No fallback - return None if no real benchmark data available
+            print(f"  ⚠️ No real benchmark data available for {symbol}, returning N/A", flush=True)
+            return {'rs_spy': None, 'rs_sector': None}
             
         except Exception as e:
             print(f"Error calculating RS for {symbol}: {e}", flush=True)

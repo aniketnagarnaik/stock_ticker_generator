@@ -6,6 +6,7 @@ import os
 from typing import List, Dict, Optional
 from data_providers.defeatbeta_provider import DefeatBetaProvider
 from data_providers.yahoo_provider import YahooProvider
+from data_providers.polygon_provider import PolygonProvider
 
 
 class ProviderManager:
@@ -15,6 +16,7 @@ class ProviderManager:
         # Initialize all available providers
         self.defeatbeta = DefeatBetaProvider()
         self.yahoo = YahooProvider()
+        self.polygon = PolygonProvider()
         
         # Define provider priority (can be configured via env var)
         self.provider_priority = self._get_provider_priority()
@@ -36,6 +38,7 @@ class ProviderManager:
         print("\n📡 Data Provider Status:", flush=True)
         print(f"   • defeatbeta-api: {'✅ Available' if self.defeatbeta.is_available() else '❌ Not installed'}", flush=True)
         print(f"   • Yahoo Finance: {'✅ Available' if self.yahoo.is_available() else '❌ Not available'}", flush=True)
+        print(f"   • Polygon.io: {'✅ Available' if self.polygon.is_available() else '❌ Not configured'}", flush=True)
         print()
     
     def get_stock_info(self, symbol: str) -> Optional[Dict]:
@@ -89,6 +92,7 @@ class ProviderManager:
             'defeatbeta': self.defeatbeta,
             'yahoo': self.yahoo,
             'yahoo_finance': self.yahoo,
+            'polygon': self.polygon,
         }
         return providers.get(provider_name.lower())
     
@@ -99,4 +103,12 @@ class ProviderManager:
             if provider and provider.is_available():
                 return provider.get_provider_name()
         return "No provider available"
+    
+    def get_current_provider(self):
+        """Get the currently active (first available) provider instance"""
+        for provider_name in self.provider_priority:
+            provider = self._get_provider(provider_name)
+            if provider and provider.is_available():
+                return provider
+        return None
 

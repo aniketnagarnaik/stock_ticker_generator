@@ -6,6 +6,7 @@ from typing import List, Dict, Tuple
 import numpy as np
 from database.database import db_manager
 from database.models import Stock, StockMetrics, RefreshLog
+from database.indices_manager import indices_manager
 from data_providers.provider_manager import ProviderManager
 
 class DataPublisher:
@@ -33,6 +34,63 @@ class DataPublisher:
             return value.tolist()
         return value
     
+    def refresh_benchmark_data(self) -> bool:
+        """
+        Refresh benchmark indices data from Polygon.io
+        
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            print("📊 Refreshing benchmark indices data...", flush=True)
+            
+            # Check if we have Polygon.io available
+            from data_providers.polygon_provider import PolygonProvider
+            polygon_provider = PolygonProvider()
+            
+            if not polygon_provider.is_available():
+                print("  ⚠️ Polygon.io not available, skipping benchmark refresh", flush=True)
+                return False
+            
+            # Define benchmark indices to fetch
+            benchmarks = {
+                'SPY': 'S&P 500 ETF',
+                'QQQ': 'NASDAQ ETF'
+            }
+            
+            success_count = 0
+            for symbol, name in benchmarks.items():
+                # Check if data is fresh (less than 24 hours old)
+                if indices_manager.is_index_data_fresh(symbol, max_age_hours=24):
+                    print(f"  ✅ {symbol} data is fresh, skipping", flush=True)
+                    success_count += 1
+                    continue
+                
+                print(f"  📊 Fetching {symbol} data from Polygon.io...", flush=True)
+                
+                # Fetch data from Polygon.io
+                price_data = polygon_provider.get_benchmark_data(symbol, days=252)
+                
+                if price_data is not None:
+                    # Save to database
+                    if indices_manager.save_index_data(symbol, name, price_data):
+                        success_count += 1
+                    else:
+                        print(f"    ❌ Failed to save {symbol} to database", flush=True)
+                else:
+                    print(f"    ❌ Failed to fetch {symbol} data", flush=True)
+                
+                # Rate limiting: 12 seconds between calls
+                import time
+                time.sleep(12)
+            
+            print(f"📊 Benchmark refresh completed: {success_count}/{len(benchmarks)} successful", flush=True)
+            return success_count > 0
+            
+        except Exception as e:
+            print(f"Error refreshing benchmark data: {e}", flush=True)
+            return False
+    
     def publish_all_stocks(self) -> Tuple[bool, int, int]:
         """
         Fetch all stock data and publish to database
@@ -47,6 +105,9 @@ class DataPublisher:
             log_id = refresh_log.id
             
             print(f"Starting data refresh (Log ID: {log_id})...", flush=True)
+            
+            # First, refresh benchmark data if needed
+            self.refresh_benchmark_data()
             
             # Fetch fresh data using provider manager (defeatbeta primary, Yahoo fallback)
             print("Fetching stock data...", flush=True)
@@ -173,27 +234,53 @@ class DataPublisher:
         """Get status of last refresh operation"""
         session = db_manager.get_session()
         try:
-            last_refresh = session.query(RefreshLog).order_by(
-                RefreshLog.started_at.desc()
+            last_refresh = session.query(RefreshLog).filter(
+                RefreshLog.status == 'completed'
+            ).order_by(
+                RefreshLog.completed_at.desc()
             ).first()
             
-            if not last_refresh:
+            if not last_refresh or not last_refresh.completed_at:
                 return {
                     'status': 'never_run',
                     'last_run': None,
+                    'last_updated': None,
                     'stocks_processed': 0,
-                    'duration_seconds': 0
+                    'duration_seconds': 0,
+                    'cache_valid': False
                 }
+            
+            # Format the completed time in PST
+            from datetime import datetime, timedelta
+            import pytz
+            pst = pytz.timezone('US/Pacific')
+            
+            # Convert completed_at to PST
+            if last_refresh.completed_at.tzinfo is None:
+                # Assume UTC if no timezone
+                completed_utc = pytz.utc.localize(last_refresh.completed_at)
+            else:
+                completed_utc = last_refresh.completed_at
+            
+            completed_pst = completed_utc.astimezone(pst)
+            last_updated_str = completed_pst.strftime('%Y-%m-%d %H:%M:%S %Z')
+            
+            # Check if data is fresh (less than 24 hours old)
+            now = datetime.now(pytz.utc)
+            age_hours = (now - completed_utc).total_seconds() / 3600
+            cache_valid = age_hours < 24
             
             return {
                 'status': last_refresh.status,
                 'last_run': last_refresh.started_at,
                 'completed_at': last_refresh.completed_at,
+                'last_updated': last_updated_str,  # Add formatted string for template
                 'stocks_processed': last_refresh.stocks_successful + last_refresh.stocks_failed,
                 'stocks_successful': last_refresh.stocks_successful,
                 'stocks_failed': last_refresh.stocks_failed,
                 'duration_seconds': last_refresh.duration_seconds,
-                'error_message': last_refresh.error_message
+                'error_message': last_refresh.error_message,
+                'cache_valid': cache_valid  # Add cache validity flag
             }
             
         finally:

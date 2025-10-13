@@ -63,6 +63,15 @@ class BaseDataProvider(ABC):
         """
         pass
     
+    def get_data_snapshot_date(self) -> Optional[str]:
+        """
+        Get the latest data snapshot date from the provider
+        
+        Returns:
+            Date string in YYYY-MM-DD format, or None if not available
+        """
+        return None
+    
     def load_symbols(self, file_path: str = 'data/stock_symbols.txt') -> List[str]:
         """
         Load stock symbols from file (common implementation for all providers)

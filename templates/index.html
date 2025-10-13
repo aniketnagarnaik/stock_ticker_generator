@@ -641,11 +641,21 @@
                     <h4 class="mb-1">📈 Stock Data Viewer</h4>
                     <div class="timestamp mt-1">
                         <small class="timestamp-text">App version updated: <span id="appVersionTime">{{ server_start_time }}</span></small>
-                        {% if cache_status.last_updated %}
-                        <br><small class="timestamp-text">Data updated: <span id="cacheTime">{{ cache_status.last_updated }}</span> 
-                        <span class="badge bg-{% if cache_status.cache_valid %}success{% else %}warning{% endif %} badge-sm">
-                            {% if cache_status.cache_valid %}Fresh{% else %}Stale{% endif %}
-                        </span></small>
+                        
+                        {% if data_snapshot_date or cache_status.last_updated %}
+                        <br><small class="timestamp-text">
+                            {% if data_snapshot_date %}
+                            📊 Dataset: <span id="dataSnapshotDate">{{ data_snapshot_date }}</span> 
+                            <span class="badge badge-sm" id="datasetFreshnessBadge">Loading...</span>
+                            {% endif %}
+                            {% if data_snapshot_date and cache_status.last_updated %} | {% endif %}
+                            {% if cache_status.last_updated %}
+                            🔄 Refreshed: <span id="cacheTime">{{ cache_status.last_updated }}</span> 
+                            <span class="badge bg-{% if cache_status.cache_valid %}success{% else %}warning{% endif %} badge-sm">
+                                {% if cache_status.cache_valid %}Fresh{% else %}Stale{% endif %}
+                            </span>
+                            {% endif %}
+                        </small>
                         {% endif %}
                 </div>
                     <div class="mt-2">
@@ -835,8 +845,8 @@
                                         <th class="sortable" data-sort="eps_growth">EPS Growth %</th>
                                         <th class="sortable" data-sort="rs_spy">RS vs SPY</th>
                                         <th class="sortable" data-sort="rs_sector">RS vs Sector</th>
-                                        <th>EMA Signal</th>
-                                        <th style="min-width: 200px; max-width: 250px;">EPS History</th>
+                                        <th style="text-align: center;">EMA Signal</th>
+                                        <th style="min-width: 200px; max-width: 250px; text-align: center;">EPS History</th>
                                 <th class="sortable" data-sort="sector">Sector</th>
                             </tr>
                         </thead>
@@ -1402,10 +1412,12 @@
                         emaButton.innerHTML = '<span class="text-muted">N/A</span>';
                     }
                     emaCell.appendChild(emaButton);
+                    emaCell.style.textAlign = 'center';
                 
                 // EPS History - Line Chart
                 const historyCell = row.insertCell();
                 historyCell.className = 'eps-history-column';
+                historyCell.style.textAlign = 'center';
                 if (stock.eps_growth && stock.eps_growth.latest_quarters && stock.eps_growth.latest_quarters.length > 0) {
                     const quarters = stock.eps_growth.latest_quarters.slice(0, 4);
                     const minEps = Math.min(...quarters);
@@ -1634,11 +1646,12 @@
                 return;
             }
 
-            // Prepare data
+            // Prepare data (last 8 quarters = 2 years)
             const quarterly = stock.eps_history.quarterly;
             const sortedQuarters = Object.entries(quarterly).sort((a, b) => a[0].localeCompare(b[0]));
+            const last8Quarters = sortedQuarters.slice(-8);  // Only show last 8 quarters
             
-            const labels = sortedQuarters.map(([date, _]) => {
+            const labels = last8Quarters.map(([date, _]) => {
                 const d = new Date(date);
                 const year = d.getFullYear();
                 const month = d.getMonth() + 1;
@@ -1646,7 +1659,7 @@
                 return `Q${quarter} ${year}`;
             });
             
-            const values = sortedQuarters.map(([_, eps]) => eps);
+            const values = last8Quarters.map(([_, eps]) => eps);
             
             // Calculate stats
             const avgEPS = (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2);
@@ -1857,6 +1870,38 @@
         // Initialize stats and theme on page load
         updateStats();
         initializeTheme();
+        
+        // Update dataset freshness badge
+        updateDatasetFreshness();
+        
+        function updateDatasetFreshness() {
+            const dataSnapshotElement = document.getElementById('dataSnapshotDate');
+            const badgeElement = document.getElementById('datasetFreshnessBadge');
+            
+            if (!dataSnapshotElement || !badgeElement) {
+                return;
+            }
+            
+            try {
+                const snapshotDate = new Date(dataSnapshotElement.textContent);
+                const now = new Date();
+                
+                // Calculate time difference in hours
+                const ageHours = (now - snapshotDate) / (1000 * 60 * 60);
+                
+                // Determine freshness (< 24 hours = Fresh, >= 24 hours = Stale)
+                const isFresh = ageHours < 24;
+                
+                // Update badge
+                badgeElement.className = `badge badge-sm bg-${isFresh ? 'success' : 'warning'}`;
+                badgeElement.textContent = isFresh ? 'Fresh' : 'Stale';
+                
+            } catch (error) {
+                console.error('Error calculating dataset freshness:', error);
+                badgeElement.className = 'badge badge-sm bg-secondary';
+                badgeElement.textContent = 'Unknown';
+            }
+        }
         
         // Table sorting functionality
         let currentSort = { column: null, direction: 'asc' };

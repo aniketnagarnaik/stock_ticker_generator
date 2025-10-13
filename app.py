@@ -64,11 +64,22 @@ def index():
         # Get database stats
         db_stats = data_publisher.get_database_stats()
         
+        # Get data snapshot date from the current provider
+        data_snapshot_date = None
+        try:
+            # Use defeatbeta provider directly since it's the primary provider
+            defeatbeta_provider = data_publisher.provider_manager.defeatbeta
+            if defeatbeta_provider and defeatbeta_provider.is_available():
+                data_snapshot_date = defeatbeta_provider.get_data_snapshot_date()
+        except Exception as e:
+            print(f"Could not get data snapshot date: {e}", flush=True)
+        
         return render_template('index.html', 
                              stocks=stocks, 
                              server_start_time=server_start_time,
                              cache_status=refresh_status,
-                             db_stats=db_stats)
+                             db_stats=db_stats,
+                             data_snapshot_date=data_snapshot_date)
     
     except Exception as e:
         print(f"Error loading main page: {e}")
