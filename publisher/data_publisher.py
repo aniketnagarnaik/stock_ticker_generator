@@ -111,7 +111,7 @@ class DataPublisher:
             
             # Fetch fresh data using provider manager (defeatbeta primary, Yahoo fallback)
             print("Fetching stock data...", flush=True)
-            fresh_data = self.provider_manager.get_all_stocks(use_test_data=True)
+            fresh_data = self.provider_manager.get_all_stocks(use_test_data=False)
             
             print(f"Fetched {len(fresh_data) if fresh_data else 0} stocks", flush=True)
             
