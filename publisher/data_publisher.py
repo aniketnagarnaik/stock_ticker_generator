@@ -5,13 +5,13 @@ Data publisher for storing stock data in database
 from typing import List, Dict, Tuple
 from database.database import db_manager
 from database.models import Stock, StockMetrics, RefreshLog
-from publisher.yahoo_client import YahooFinanceClient
+from data_providers.provider_manager import ProviderManager
 
 class DataPublisher:
     """Publishes stock data to database"""
     
     def __init__(self):
-        self.yahoo_client = YahooFinanceClient()
+        self.provider_manager = ProviderManager()
     
     def publish_all_stocks(self) -> Tuple[bool, int, int]:
         """
@@ -28,9 +28,9 @@ class DataPublisher:
             
             print(f"Starting data refresh (Log ID: {log_id})...", flush=True)
             
-            # Fetch fresh data from Yahoo Finance (with curl_cffi Chrome impersonation)
-            print("Fetching stock data from Yahoo Finance...", flush=True)
-            fresh_data = self.yahoo_client.get_all_stocks(use_test_data=True)
+            # Fetch fresh data using provider manager (defeatbeta primary, Yahoo fallback)
+            print("Fetching stock data...", flush=True)
+            fresh_data = self.provider_manager.get_all_stocks(use_test_data=True)
             
             print(f"Fetched {len(fresh_data) if fresh_data else 0} stocks", flush=True)
             
