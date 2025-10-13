@@ -75,12 +75,12 @@ def api_stocks():
 def refresh_data():
     """Trigger data refresh - called by GitHub Actions or manual"""
     try:
-        print("🔄 Data refresh triggered...", flush=True)
-        print(f"📊 Current stock count before refresh: {db_manager.get_stock_count()}", flush=True)
+        print("Data refresh triggered...", flush=True)
+        print(f"Current stock count before refresh: {db_manager.get_stock_count()}", flush=True)
         
         success, successful_count, failed_count = data_publisher.publish_all_stocks()
         
-        print(f"✅ Refresh completed - Success: {success}, Updated: {successful_count}, Failed: {failed_count}", flush=True)
+        print(f"Refresh completed - Success: {success}, Updated: {successful_count}, Failed: {failed_count}", flush=True)
         
         if success:
             response_data = {
@@ -91,7 +91,7 @@ def refresh_data():
                 'timestamp': datetime.now(pst).isoformat()
             }
             
-            print(f"✅ Returning success response: {response_data}", flush=True)
+            print(f"Returning success response: {response_data}", flush=True)
             
             # For GitHub Actions, return 200 status
             if request.method == 'POST':
@@ -106,14 +106,14 @@ def refresh_data():
                 'success': False,
                 'timestamp': datetime.now(pst).isoformat()
             }
-            print(f"❌ Returning error response (success=False): {error_data}", flush=True)
+            print(f"Returning error response (success=False): {error_data}", flush=True)
             return jsonify(error_data), 500
     
     except Exception as e:
         import traceback
         error_trace = traceback.format_exc()
-        print(f"❌ Exception in refresh_data: {e}", flush=True)
-        print(f"❌ Traceback:\n{error_trace}", flush=True)
+        print(f"Exception in refresh_data: {e}", flush=True)
+        print(f"Traceback:\n{error_trace}", flush=True)
         
         error_data = {
             'message': f'Refresh error: {str(e)}',
@@ -227,12 +227,12 @@ if __name__ == '__main__':
     stock_count = db_manager.get_stock_count()
     
     if stock_count == 0:
-        print("⚠️ No stock data found in database")
-        print("💡 Run the scheduler or manual refresh to populate data:")
+        print("WARNING: No stock data found in database")
+        print("Run the scheduler or manual refresh to populate data:")
         print("   python scheduler/scheduler.py")
         print("   python scheduler/refresh_job.py")
     
-    print(f"✅ Flask app starting with {stock_count} stocks in database")
+    print(f"Flask app starting with {stock_count} stocks in database")
     
     # Start the app
     port = int(os.environ.get('PORT', 5000))

@@ -97,6 +97,38 @@
             z-index: 10;
             transition: background-color 0.3s ease;
         }
+        
+        /* Sortable table headers */
+        .table th.sortable {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            padding-right: 20px;
+        }
+        
+        .table th.sortable:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .table th.sortable::after {
+            content: '↕';
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
+        
+        .table th.sortable.asc::after {
+            content: '↑';
+            opacity: 1;
+        }
+        
+        .table th.sortable.desc::after {
+            content: '↓';
+            opacity: 1;
+        }
         .table td {
             padding: 0.3rem;
             vertical-align: middle;
@@ -763,16 +795,16 @@
                     <table class="table table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
-                                            <th>Symbol</th>
-                                <th style="max-width: 120px;">Company</th>
-                                            <th>Market Cap</th>
-                                <th>Price</th>
-                                        <th>EPS Growth %</th>
-                                        <th>RS vs SPY</th>
-                                        <th>RS vs Sector</th>
+                                            <th class="sortable" data-sort="symbol">Symbol</th>
+                                <th class="sortable" data-sort="company_name" style="max-width: 120px;">Company</th>
+                                            <th class="sortable" data-sort="market_cap">Market Cap</th>
+                                <th class="sortable" data-sort="price">Price</th>
+                                        <th class="sortable" data-sort="eps_growth">EPS Growth %</th>
+                                        <th class="sortable" data-sort="rs_spy">RS vs SPY</th>
+                                        <th class="sortable" data-sort="rs_sector">RS vs Sector</th>
                                         <th>EMA Signal</th>
                                         <th style="min-width: 200px; max-width: 250px;">EPS History</th>
-                                <th>Sector</th>
+                                <th class="sortable" data-sort="sector">Sector</th>
                             </tr>
                         </thead>
                                 <tbody>
@@ -1772,6 +1804,103 @@
         // Initialize stats and theme on page load
         updateStats();
         initializeTheme();
+        
+        // Table sorting functionality
+        let currentSort = { column: null, direction: 'asc' };
+        
+        function sortTable(column) {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Remove existing sort classes
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.classList.remove('asc', 'desc');
+            });
+            
+            // Determine sort direction
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.direction = 'asc';
+            }
+            currentSort.column = column;
+            
+            // Add sort class to current column header
+            const header = document.querySelector(`th[data-sort="${column}"]`);
+            header.classList.add(currentSort.direction);
+            
+            // Sort rows
+            rows.sort((a, b) => {
+                let aValue, bValue;
+                
+                switch(column) {
+                    case 'symbol':
+                        aValue = a.cells[0].textContent.trim();
+                        bValue = b.cells[0].textContent.trim();
+                        break;
+                    case 'company_name':
+                        aValue = a.cells[1].textContent.trim();
+                        bValue = b.cells[1].textContent.trim();
+                        break;
+                    case 'market_cap':
+                        aValue = parseFloat(a.cells[2].textContent.replace(/[$,TBM]/g, '')) || 0;
+                        bValue = parseFloat(b.cells[2].textContent.replace(/[$,TBM]/g, '')) || 0;
+                        break;
+                    case 'price':
+                        aValue = parseFloat(a.cells[3].textContent.replace('$', '')) || 0;
+                        bValue = parseFloat(b.cells[3].textContent.replace('$', '')) || 0;
+                        break;
+                    case 'eps_growth':
+                        // Handle EPS Growth column - look for percentage or "N/A"
+                        const aEpsText = a.cells[4].textContent.trim();
+                        const bEpsText = b.cells[4].textContent.trim();
+                        aValue = aEpsText === 'N/A' ? -999999 : parseFloat(aEpsText.replace('%', '')) || 0;
+                        bValue = bEpsText === 'N/A' ? -999999 : parseFloat(bEpsText.replace('%', '')) || 0;
+                        break;
+                    case 'rs_spy':
+                        const aRsSpyText = a.cells[5].textContent.trim();
+                        const bRsSpyText = b.cells[5].textContent.trim();
+                        aValue = aRsSpyText === 'N/A' ? -999999 : parseFloat(aRsSpyText.replace('%', '')) || 0;
+                        bValue = bRsSpyText === 'N/A' ? -999999 : parseFloat(bRsSpyText.replace('%', '')) || 0;
+                        break;
+                    case 'rs_sector':
+                        const aRsSectorText = a.cells[6].textContent.trim();
+                        const bRsSectorText = b.cells[6].textContent.trim();
+                        aValue = aRsSectorText === 'N/A' ? -999999 : parseFloat(aRsSectorText.replace('%', '')) || 0;
+                        bValue = bRsSectorText === 'N/A' ? -999999 : parseFloat(bRsSectorText.replace('%', '')) || 0;
+                        break;
+                    case 'sector':
+                        aValue = a.cells[9].textContent.trim();
+                        bValue = b.cells[9].textContent.trim();
+                        break;
+                    default:
+                        return 0;
+                }
+                
+                // Handle string comparison
+                if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    return currentSort.direction === 'asc' ? 
+                        aValue.localeCompare(bValue) : 
+                        bValue.localeCompare(aValue);
+                }
+                
+                // Handle numeric comparison
+                return currentSort.direction === 'asc' ? aValue - bValue : bValue - aValue;
+            });
+            
+            // Re-append sorted rows
+            rows.forEach(row => tbody.appendChild(row));
+        }
+        
+        // Add click event listeners to sortable headers
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('th.sortable').forEach(header => {
+                header.addEventListener('click', function() {
+                    const column = this.getAttribute('data-sort');
+                    sortTable(column);
+                });
+            });
+        });
     </script>
 </body>
 </html>

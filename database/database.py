@@ -16,30 +16,35 @@ class DatabaseManager:
         self._setup_database()
     
     def _get_database_url(self):
-        """Get database URL - PostgreSQL only"""
+        """Get database URL - SQLite for local development, PostgreSQL for production"""
         database_url = os.getenv('DATABASE_URL')
         if not database_url:
-            raise ValueError(
-                "DATABASE_URL environment variable is required.\n"
-                "For Render deployment:\n"
-                "1. Create a PostgreSQL database on Render\n"
-                "2. Copy the connection string from Render dashboard\n"
-                "3. Set DATABASE_URL environment variable in your web service\n"
-                "Example: postgresql://user:password@host:5432/database"
-            )
+            # Use SQLite for local development
+            sqlite_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'stocks.db')
+            database_url = f"sqlite:///{sqlite_path}"
+            print(f"Using local SQLite database: {sqlite_path}")
         return database_url
     
     def _setup_database(self):
-        """Setup PostgreSQL database connection and create tables"""
+        """Setup database connection and create tables"""
         database_url = self._get_database_url()
         
-        # Create PostgreSQL engine
-        self.engine = create_engine(
-            database_url,
-            echo=False,  # Set to True for SQL debugging
-            pool_pre_ping=True,  # Verify connections before use
-            pool_recycle=300     # Recycle connections every 5 minutes
-        )
+        # Create engine (SQLite or PostgreSQL)
+        if database_url.startswith('sqlite'):
+            self.engine = create_engine(
+                database_url,
+                echo=False,  # Set to True for SQL debugging
+                connect_args={"check_same_thread": False}  # SQLite specific
+            )
+            db_type = "SQLite"
+        else:
+            self.engine = create_engine(
+                database_url,
+                echo=False,  # Set to True for SQL debugging
+                pool_pre_ping=True,  # Verify connections before use
+                pool_recycle=300     # Recycle connections every 5 minutes
+            )
+            db_type = "PostgreSQL"
         
         # Create all tables
         Base.metadata.create_all(bind=self.engine)
@@ -49,7 +54,7 @@ class DatabaseManager:
             sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
         )
         
-        print(f"✅ Database initialized: PostgreSQL")
+        print(f"Database initialized: {db_type}")
     
     def get_session(self):
         """Get database session"""
