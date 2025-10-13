@@ -1680,8 +1680,8 @@
             }
             
             const isDark = document.body.getAttribute('data-theme') === 'dark';
-            const textColor = isDark ? '#e0e0e0' : '#333';
-            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDark ? '#e0e0e0' : '#333333';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.15)';
             
             epsChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -1713,7 +1713,7 @@
                             backgroundColor: isDark ? '#2d3748' : '#fff',
                             titleColor: textColor,
                             bodyColor: textColor,
-                            borderColor: gridColor,
+                            borderColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
                             borderWidth: 1,
                             padding: 12,
                             displayColors: false,
@@ -1729,6 +1729,10 @@
                             beginAtZero: false,
                             ticks: {
                                 color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                },
                                 callback: function(value) {
                                     return '$' + value.toFixed(2);
                                 }
@@ -1739,7 +1743,11 @@
                         },
                         x: {
                             ticks: {
-                                color: textColor
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
                             },
                             grid: {
                                 color: gridColor
