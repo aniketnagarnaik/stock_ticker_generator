@@ -3,6 +3,7 @@ Data publisher for storing stock data in database
 """
 
 from typing import List, Dict, Tuple
+import numpy as np
 from database.database import db_manager
 from database.models import Stock, StockMetrics, RefreshLog
 from data_providers.provider_manager import ProviderManager
@@ -12,6 +13,15 @@ class DataPublisher:
     
     def __init__(self):
         self.provider_manager = ProviderManager()
+    
+    @staticmethod
+    def _convert_numpy_types(value):
+        """Convert numpy types to Python native types for PostgreSQL compatibility"""
+        if isinstance(value, (np.integer, np.floating)):
+            return value.item()
+        elif isinstance(value, np.ndarray):
+            return value.tolist()
+        return value
     
     def publish_all_stocks(self) -> Tuple[bool, int, int]:
         """
@@ -85,9 +95,9 @@ class DataPublisher:
                 company_name=stock_data['company_name'],
                 sector=stock_data.get('sector'),
                 industry=stock_data.get('industry'),
-                market_cap=stock_data.get('market_cap'),
-                current_price=stock_data.get('price'),
-                eps=stock_data.get('eps')
+                market_cap=self._convert_numpy_types(stock_data.get('market_cap')),
+                current_price=self._convert_numpy_types(stock_data.get('price')),
+                eps=self._convert_numpy_types(stock_data.get('eps'))
             )
             session.add(stock)
         else:
@@ -95,9 +105,9 @@ class DataPublisher:
             stock.company_name = stock_data['company_name']
             stock.sector = stock_data.get('sector')
             stock.industry = stock_data.get('industry')
-            stock.market_cap = stock_data.get('market_cap')
-            stock.current_price = stock_data.get('price')
-            stock.eps = stock_data.get('eps')
+            stock.market_cap = self._convert_numpy_types(stock_data.get('market_cap'))
+            stock.current_price = self._convert_numpy_types(stock_data.get('price'))
+            stock.eps = self._convert_numpy_types(stock_data.get('eps'))
             stock.last_updated = stock_data.get('last_updated')
         
         # Commit stock changes
@@ -120,22 +130,29 @@ class DataPublisher:
         
         # Update EPS growth data
         eps_growth = stock_data.get('eps_growth', {})
-        metrics.eps_growth_qoq = eps_growth.get('quarter_over_quarter')
-        metrics.eps_growth_yoy = eps_growth.get('year_over_year')
+        metrics.eps_growth_qoq = self._convert_numpy_types(eps_growth.get('quarter_over_quarter'))
+        metrics.eps_growth_yoy = self._convert_numpy_types(eps_growth.get('year_over_year'))
         
         # Update relative strength data
         rs_data = stock_data.get('relative_strength', {})
-        metrics.rs_spy = rs_data.get('rs_spy')
-        metrics.rs_sector = rs_data.get('rs_sector')
+        metrics.rs_spy = self._convert_numpy_types(rs_data.get('rs_spy'))
+        metrics.rs_sector = self._convert_numpy_types(rs_data.get('rs_sector'))
         
-        # Update EMA data
+        # Update EMA data (convert numpy types)
         ema_data = stock_data.get('ema_data', {})
         if ema_data:
-            metrics.set_ema_data(ema_data)
+            ema_data_converted = {k: self._convert_numpy_types(v) for k, v in ema_data.items()}
+            metrics.set_ema_data(ema_data_converted)
         
-        # Update EPS history
+        # Update EPS history (convert numpy types in nested dict)
         eps_history = stock_data.get('eps_history', {})
-        if eps_history:
+        if eps_history and 'quarterly' in eps_history:
+            quarterly_converted = {k: self._convert_numpy_types(v) for k, v in eps_history.get('quarterly', {}).items()}
+            eps_history_converted = {'quarterly': quarterly_converted}
+            if 'latest_quarterly_eps' in eps_history:
+                eps_history_converted['latest_quarterly_eps'] = self._convert_numpy_types(eps_history['latest_quarterly_eps'])
+            metrics.set_eps_history(eps_history_converted)
+        elif eps_history:
             metrics.set_eps_history(eps_history)
         
         metrics.last_updated = stock_data.get('last_updated')

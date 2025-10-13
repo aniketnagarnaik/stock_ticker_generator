@@ -73,18 +73,19 @@ class DefeatBetaProvider(BaseDataProvider):
             # Calculate relative strength
             relative_strength = self._calculate_rs(symbol, price_df)
             
+            # Convert all numpy types to Python native types for PostgreSQL
             return {
                 'symbol': symbol,
                 'company_name': info_row.get('address', symbol),  # Using address as company name fallback
-                'market_cap': market_cap,
-                'eps': eps_data.get('latest_eps', 0),
-                'price': current_price,
-                'sector': info_row.get('sector', 'Unknown'),
-                'industry': info_row.get('industry', 'Unknown'),
+                'market_cap': int(market_cap) if market_cap else 0,
+                'eps': float(eps_data.get('latest_eps', 0)),
+                'price': float(current_price),
+                'sector': str(info_row.get('sector', 'Unknown')),
+                'industry': str(info_row.get('industry', 'Unknown')),
                 'eps_history': eps_data.get('eps_history', {}),
                 'eps_growth': eps_data.get('eps_growth', {}),
-                'ema_data': ema_data,
-                'relative_strength': relative_strength
+                'ema_data': {k: (float(v) if v is not None else None) for k, v in ema_data.items()},
+                'relative_strength': {k: (float(v) if v is not None else None) for k, v in relative_strength.items()}
             }
             
         except Exception as e:
@@ -131,11 +132,11 @@ class DefeatBetaProvider(BaseDataProvider):
             
             return {
                 'latest_eps': float(ttm_eps.iloc[-1]['tailing_eps']) if 'tailing_eps' in ttm_eps.columns else float(ttm_eps.iloc[-1]['eps']),
-                'eps_history': {'quarterly': quarterly_eps},
+                'eps_history': {'quarterly': {k: float(v) for k, v in quarterly_eps.items()}},
                 'eps_growth': {
-                    'quarter_over_quarter': qoq_growth,
-                    'year_over_year': yoy_growth,
-                    'latest_quarters': latest_quarters
+                    'quarter_over_quarter': float(qoq_growth) if qoq_growth is not None else None,
+                    'year_over_year': float(yoy_growth) if yoy_growth is not None else None,
+                    'latest_quarters': [float(x) for x in latest_quarters]
                 }
             }
             
