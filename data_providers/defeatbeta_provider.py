@@ -91,10 +91,23 @@ class DefeatBetaProvider(BaseDataProvider):
             # Calculate relative strength
             relative_strength = self._calculate_rs(symbol, price_df)
             
+            # Extract company name from business summary or use symbol as fallback
+            business_summary = info_row.get('long_business_summary', '')
+            if business_summary and 'Inc.' in business_summary:
+                # Extract company name from business summary (usually starts with company name)
+                company_name = business_summary.split(' designs,')[0].split(' manufactures,')[0].split(' Inc.')[0] + ' Inc.'
+            elif business_summary and 'Corporation' in business_summary:
+                company_name = business_summary.split(' designs,')[0].split(' manufactures,')[0].split(' Corporation')[0] + ' Corporation'
+            elif business_summary and 'LLC' in business_summary:
+                company_name = business_summary.split(' designs,')[0].split(' manufactures,')[0].split(' LLC')[0] + ' LLC'
+            else:
+                # Fallback to symbol if we can't extract company name
+                company_name = symbol
+            
             # Convert all numpy types to Python native types for PostgreSQL
             return {
                 'symbol': symbol,
-                'company_name': info_row.get('address', symbol),  # Using address as company name fallback
+                'company_name': company_name,
                 'market_cap': int(market_cap) if market_cap else 0,
                 'eps': float(eps_data.get('latest_eps', 0)),
                 'price': float(current_price),
