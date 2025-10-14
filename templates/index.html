@@ -903,7 +903,7 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-info ema-signal-btn" onclick="showEmaDetails('{{ stock.symbol }}')" title="📊 Click to view detailed EMA analysis" style="cursor: pointer;">
+                                            <button class="btn btn-sm btn-outline-info ema-signal-btn" data-symbol="{{ stock.symbol }}" title="📊 Click to view detailed EMA analysis" style="cursor: pointer;">
                                                 {% if stock.ema_data %}
                                                     {% set above_count = 0 %}
                                                     {% set below_count = 0 %}
@@ -940,7 +940,7 @@
                                                 {% set min_eps = quarters|min %}
                                                 {% set max_eps = quarters|max %}
                                                 {% set range = max_eps - min_eps if (max_eps - min_eps) > 0 else 1 %}
-                                                <div style="cursor: pointer; padding: 8px; text-align: center;" onclick="showEpsChart('{{ stock.symbol }}')">
+                                                <div class="eps-chart-trigger" data-symbol="{{ stock.symbol }}" style="cursor: pointer; padding: 8px; text-align: center;">
                                                     <svg width="120" height="60" style="display: block; margin: 0 auto;">
                                                         <!-- Grid lines -->
                                                         <line x1="10" y1="40" x2="110" y2="40" stroke="var(--border-color)" stroke-width="1" stroke-dasharray="2,2"/>
@@ -1411,7 +1411,8 @@
                     const emaButton = document.createElement('button');
                     emaButton.className = 'btn btn-sm btn-outline-info ema-signal-btn';
                     emaButton.style.cursor = 'pointer';
-                    emaButton.onclick = () => showEmaDetails(stock.symbol);
+                    emaButton.setAttribute('data-symbol', stock.symbol);
+                    emaButton.addEventListener('click', () => showEmaDetails(stock.symbol));
                     emaButton.title = '📊 Click to view detailed EMA analysis';
                     
                     // DEBUG: Log EMA data
@@ -1449,8 +1450,10 @@
                     const range = (maxEps - minEps) || 1;
                     
                     const container = document.createElement('div');
+                    container.className = 'eps-chart-trigger';
                     container.style.cssText = 'cursor: pointer; padding: 8px; text-align: center;';
-                    container.onclick = () => showEpsChart(stock.symbol);
+                    container.setAttribute('data-symbol', stock.symbol);
+                    container.addEventListener('click', () => showEpsChart(stock.symbol));
                     
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             svg.setAttribute('width', '120');
@@ -1643,19 +1646,42 @@
                     <div class="modal-content ema-modal">
                         <div class="modal-header ema-modal">
                             <h5 class="modal-title">📊 EMA Technical Analysis</h5>
-                            <button type="button" class="btn-close btn-close-white" onclick="this.closest('.modal').remove()"></button>
+                            <button type="button" class="btn-close btn-close-white" data-dismiss-modal="true"></button>
                         </div>
                         <div class="modal-body ema-modal">
                             ${emaDetails}
                         </div>
                         <div class="modal-footer ema-modal">
-                            <button type="button" class="btn btn-primary ema-modal" onclick="this.closest('.modal').remove()">Close</button>
+                            <button type="button" class="btn btn-primary ema-modal" data-dismiss-modal="true">Close</button>
                         </div>
                     </div>
                 </div>
             `;
             
             document.body.appendChild(modal);
+            
+            // Add event listeners to close buttons
+            modal.querySelectorAll('[data-dismiss-modal]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    modal.remove();
+                    // Remove any leftover backdrops
+                    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                });
+            });
+            
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                }
+            });
         }
 
         // EPS Chart Functions
@@ -1810,7 +1836,18 @@
             document.getElementById('epsChartStats').innerHTML = statsHTML;
             
             // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('epsChartModal'));
+            const modalElement = document.getElementById('epsChartModal');
+            const modal = new bootstrap.Modal(modalElement);
+            
+            // Clean up when modal is hidden
+            modalElement.addEventListener('hidden.bs.modal', function() {
+                // Remove any leftover backdrops
+                document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }, { once: true });
+            
             modal.show();
         }
 
@@ -2025,6 +2062,8 @@
         
         // Add click event listeners to sortable headers
         document.addEventListener('DOMContentLoaded', function() {
+            // Only add event listeners for sortable headers
+            // EMA and EPS buttons are handled by updateTable() function
             document.querySelectorAll('th.sortable').forEach(header => {
                 header.addEventListener('click', function() {
                     const column = this.getAttribute('data-sort');

@@ -16,7 +16,7 @@ class Stock(Base):
     
     id = Column(Integer, primary_key=True)
     symbol = Column(String(10), unique=True, nullable=False, index=True)
-    company_name = Column(String(255), nullable=False)
+    company_name = Column(Text, nullable=False)
     sector = Column(String(100))
     industry = Column(String(100))
     market_cap = Column(BigInteger)  # Store as big integer for large market caps

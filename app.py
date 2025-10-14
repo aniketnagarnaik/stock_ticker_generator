@@ -12,6 +12,7 @@ import pytz
 import math
 from database.database import db_manager
 from publisher.data_publisher import DataPublisher
+from business.data_orchestrator import DataOrchestrator
 
 # Custom JSON provider to handle NaN values
 class CustomJSONProvider(DefaultJSONProvider):
@@ -42,33 +43,28 @@ def format_market_cap(market_cap):
 pst = pytz.timezone('US/Pacific')
 server_start_time = datetime.now(pst).strftime('%Y-%m-%d %H:%M PST')
 
-# Data publisher instance
+# Data publisher instance (contains orchestrator)
 data_publisher = DataPublisher()
+data_orchestrator = data_publisher.orchestrator
 
 @app.route('/')
 def index():
     """Main page showing stock data from database"""
     try:
-        # Get all stocks from database
-        stocks = db_manager.get_all_stocks()
-        
-        # DEBUG: Check first stock's EMA data
-        if stocks:
-            print(f"🔍 DEBUG: First stock EMA data: {stocks[0].get('ema_data')}", flush=True)
-            print(f"🔍 DEBUG: Type: {type(stocks[0].get('ema_data'))}", flush=True)
-            print(f"🔍 DEBUG: Bool: {bool(stocks[0].get('ema_data'))}", flush=True)
+        # Get all stocks data using new architecture
+        stocks = data_orchestrator.get_all_stocks_data()
         
         # Get refresh status
-        refresh_status = data_publisher.get_refresh_status()
+        refresh_status = data_orchestrator.get_refresh_status()
         
         # Get database stats
-        db_stats = data_publisher.get_database_stats()
+        db_stats = data_orchestrator.get_database_stats()
         
         # Get data snapshot date from the current provider
         data_snapshot_date = None
         try:
             # Use defeatbeta provider directly since it's the primary provider
-            defeatbeta_provider = data_publisher.provider_manager.defeatbeta
+            defeatbeta_provider = data_orchestrator.provider_manager.defeatbeta
             if defeatbeta_provider and defeatbeta_provider.is_available():
                 data_snapshot_date = defeatbeta_provider.get_data_snapshot_date()
         except Exception as e:
@@ -93,7 +89,7 @@ def index():
 def api_stocks():
     """API endpoint to get stock data from database"""
     try:
-        stocks = db_manager.get_all_stocks()
+        stocks = data_orchestrator.get_all_stocks_data()
         return jsonify(stocks)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
