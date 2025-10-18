@@ -59,10 +59,20 @@
                 width: 100%;
             }
 
-            .header-controls button,
+            .header-controls {
+                align-items: stretch !important;
+            }
+
+            .header-controls button {
+                width: auto;
+                flex: 1;
+            }
+
             .header-controls .form-check {
-                width: 100%;
-                text-align: center;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
             }
 
             .timeline-indicator {
@@ -74,9 +84,14 @@
                 gap: 5px;
             }
 
+            .rrg-chart {
+                overflow-x: auto;
+            }
+
             #rrgChart svg {
-                width: 100% !important;
-                height: auto !important;
+                min-width: 600px;
+                width: 100%;
+                height: auto;
             }
 
             .quadrant-legend .row {
@@ -133,6 +148,8 @@
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
         .quadrant-legend {
@@ -230,6 +247,32 @@
             padding: 20px;
         }
 
+        /* Make Focus View button prominent */
+        #viewToggleBtn {
+            animation: subtle-pulse 2s ease-in-out infinite;
+            box-shadow: 0 2px 8px rgba(25, 135, 84, 0.3);
+        }
+
+        @keyframes subtle-pulse {
+            0%, 100% {
+                box-shadow: 0 2px 8px rgba(25, 135, 84, 0.3);
+            }
+            50% {
+                box-shadow: 0 4px 16px rgba(25, 135, 84, 0.5);
+            }
+        }
+
+        #viewToggleBtn:hover {
+            animation: none;
+            box-shadow: 0 4px 16px rgba(25, 135, 84, 0.6);
+        }
+
+        #viewToggleBtn .badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            margin-right: 4px;
+        }
+
         .spinner-border {
             width: 3rem;
             height: 3rem;
@@ -325,9 +368,9 @@
                 </div>
                 <div class="header-controls">
                     <button id="refreshBtn" class="btn btn-sm btn-outline-primary me-2">
-                        🔄
+                        🔄 Refresh
                     </button>
-                    <button id="viewToggleBtn" class="btn btn-sm btn-outline-secondary me-2">
+                    <button id="viewToggleBtn" class="btn btn-sm btn-success me-2">
                         🔍 Focus View
                     </button>
                     <div class="form-check form-switch d-inline-block">
@@ -421,10 +464,13 @@
 
         <!-- Individual ETF Focus View -->
         <div class="etf-focus-view" id="etfFocusView" style="display: none;">
+            <div class="alert alert-info mb-3">
+                <strong>🎯 Focus View:</strong> Dive deep into individual sector performance! Select an ETF below to see its complete week-over-week movement trail.
+            </div>
             <h5>🔍 Individual ETF Analysis</h5>
             <div class="etf-selector mb-3">
-                <label for="etfSelect" class="form-label">Select ETF to analyze:</label>
-                <select id="etfSelect" class="form-select">
+                <label for="etfSelect" class="form-label"><strong>Select an ETF to view its historical trail:</strong></label>
+                <select id="etfSelect" class="form-select form-select-lg">
                     <option value="">Choose an ETF...</option>
                 </select>
             </div>
@@ -607,11 +653,11 @@
                 return;
             }
 
-            // Chart dimensions - responsive
-            const containerWidth = document.getElementById('etfTrailChart').clientWidth || 800;
-            const width = Math.min(containerWidth, 800);
-            const height = Math.min(width * 0.5, 400); // Maintain aspect ratio
-            const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+            // Chart dimensions - responsive (bigger on desktop)
+            const containerWidth = document.getElementById('etfTrailChart').clientWidth || 1000;
+            const width = Math.min(containerWidth - 40, 1000);
+            const height = Math.min(width * 0.6, 600); // Maintain aspect ratio
+            const margin = { top: 40, right: 40, bottom: 80, left: 80 };
 
             const svg = d3.select('#etfTrailChart')
                 .append('svg')
@@ -849,11 +895,11 @@
                 return;
             }
 
-            // Chart dimensions - responsive
-            const containerWidth = document.getElementById('rrgChart').clientWidth || 800;
-            const width = Math.min(containerWidth, 800);
-            const height = Math.min(width * 0.75, 600); // Maintain aspect ratio
-            const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+            // Chart dimensions - responsive (bigger on desktop)
+            const containerWidth = document.getElementById('rrgChart').clientWidth || 1000;
+            const width = Math.min(containerWidth - 40, 1000); // Max 1000px on desktop
+            const height = Math.min(width * 0.7, 700); // Maintain aspect ratio, max 700px
+            const margin = { top: 40, right: 40, bottom: 80, left: 80 };
 
             // Create SVG
             const svg = d3.select('#rrgChart')
@@ -962,24 +1008,24 @@
                 .attr('stroke-width', 2)
                 .attr('stroke-dasharray', '8,4');
 
-            // Add quadrant labels with better positioning to avoid overlap
-            const quadrants = [
-                { x: width - 80, y: 50, text: 'Leading', class: 'leading' },
-                { x: width - 80, y: height - 50, text: 'Weakening', class: 'weakening' },
-                { x: 80, y: height - 50, text: 'Lagging', class: 'lagging' },
-                { x: 80, y: 50, text: 'Improving', class: 'improving' }
+            // Add quadrant labels in corners (inside the chart area)
+            const quadrantLabels = [
+                { x: width - margin.right - 10, y: margin.top + 20, text: 'Leading', color: '#28a745', anchor: 'end' },
+                { x: width - margin.right - 10, y: height - margin.bottom - 10, text: 'Weakening', color: '#ffc107', anchor: 'end' },
+                { x: margin.left + 10, y: height - margin.bottom - 10, text: 'Lagging', color: '#dc3545', anchor: 'start' },
+                { x: margin.left + 10, y: margin.top + 20, text: 'Improving', color: '#17a2b8', anchor: 'start' }
             ];
 
-            quadrants.forEach(q => {
+            quadrantLabels.forEach(q => {
                 svg.append('text')
                     .attr('x', q.x)
                     .attr('y', q.y)
-                    .attr('class', `quadrant-label ${q.class}`)
-                    .attr('text-anchor', 'middle')
-                    .style('font-size', '12px')
+                    .attr('text-anchor', q.anchor)
+                    .style('font-size', '14px')
                     .style('font-weight', 'bold')
-                    .style('fill', 'var(--text-primary)')
-                    .style('text-shadow', '1px 1px 2px rgba(255,255,255,0.8)')
+                    .style('fill', q.color)
+                    .style('opacity', '0.8')
+                    .style('pointer-events', 'none')
                     .text(q.text);
             });
 
