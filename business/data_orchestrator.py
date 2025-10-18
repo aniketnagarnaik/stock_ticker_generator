@@ -115,11 +115,13 @@ class DataOrchestrator:
         
         print(f"Processing {len(stock_symbols)} stocks...", flush=True)
         
-        # Use a single session for all operations (like the old implementation)
+        # Process in batches to balance performance and reliability
+        BATCH_SIZE = 50  # Commit every 50 stocks
         session = self.stock_dao.get_session()
+        batch_count = 0
         
         try:
-            for symbol in stock_symbols:
+            for i, symbol in enumerate(stock_symbols):
                 try:
                     print(f"Processing: {symbol}", flush=True)
                     
@@ -136,12 +138,28 @@ class DataOrchestrator:
                     
                     print(f"  ✅ {symbol}: Data processed successfully", flush=True)
                     successful_count += 1
+                    batch_count += 1
+                    
+                    # Commit every BATCH_SIZE stocks to prevent rollback cascade
+                    if batch_count >= BATCH_SIZE or i == len(stock_symbols) - 1:
+                        session.commit()
+                        print(f"  💾 Batch committed ({batch_count} stocks saved)", flush=True)
+                        batch_count = 0
                     
                 except Exception as e:
                     print(f"  ❌ {symbol}: Error processing - {e}", flush=True)
                     session.rollback()
                     failed_count += 1
+                    batch_count = 0  # Reset batch count after rollback
+                    
         finally:
+            # Final commit for any remaining stocks
+            if batch_count > 0:
+                try:
+                    session.commit()
+                    print(f"  💾 Final batch committed ({batch_count} stocks saved)", flush=True)
+                except:
+                    session.rollback()
             session.close()
         
         return successful_count, failed_count
