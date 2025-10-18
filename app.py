@@ -50,8 +50,13 @@ data_publisher = DataPublisher()
 data_orchestrator = data_publisher.orchestrator
 
 @app.route('/')
-def index():
-    """Main page showing stock data from database"""
+def home():
+    """Home page with navigation to Stock Table and RRG Chart"""
+    return render_template('home.html')
+
+@app.route('/stocks')
+def stocks_page():
+    """Stock table page showing stock data from database"""
     try:
         # Get all stocks data using new architecture
         stocks = data_orchestrator.get_all_stocks_data()
@@ -276,6 +281,7 @@ def get_rrg_data():
                     'quadrant': record.quadrant,
                     'current_price': record.current_price,
                     'spy_price': record.spy_price,
+                    'week_number': record.week_number,
                     'calculated_at': record.calculated_at.isoformat() if record.calculated_at else None
                 })
             
@@ -294,12 +300,26 @@ def get_rrg_data():
 
 @app.route('/api/rrg/refresh', methods=['POST'])
 def refresh_rrg_data():
-    """Refresh RRG data by recalculating from indices data"""
+    """Refresh RRG data by fetching fresh indices from Polygon and recalculating"""
     try:
+        # Step 1: Refresh benchmark indices data from Polygon
+        print("📊 Step 1: Refreshing benchmark indices from Polygon...", flush=True)
+        benchmark_success = data_orchestrator.refresh_benchmark_data()
+        
+        if not benchmark_success:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to refresh benchmark data from Polygon'
+            }), 400
+        
+        print("✅ Benchmark data refreshed from Polygon", flush=True)
+        
+        # Step 2: Calculate and save RRG data
+        print("📈 Step 2: Calculating RRG data...", flush=True)
         return calculate_and_return_rrg_data()
         
     except Exception as e:
-        print(f"Error refreshing RRG data: {e}")
+        print(f"❌ Error refreshing RRG data: {e}", flush=True)
         return jsonify({
             'success': False,
             'error': str(e)
@@ -329,9 +349,10 @@ def calculate_and_return_rrg_data():
                     'last_updated': index.last_updated.isoformat() if index.last_updated else None
                 })
             
-            # Calculate RRG data
+            # Calculate RRG data with historical trails
             rrg_calculator = RRGCalculator()
-            rrg_data = rrg_calculator.calculate_rrg_data(indices_data)
+            # Calculate 12 weeks so we have 8 weeks with valid momentum (momentum requires 4 weeks of lookback)
+            rrg_data = rrg_calculator.calculate_rrg_data(indices_data, weeks_back=12)
             
             if not rrg_data:
                 return jsonify({
@@ -350,7 +371,8 @@ def calculate_and_return_rrg_data():
                     rs_momentum=etf_data['rs_momentum'],
                     quadrant=etf_data['quadrant'],
                     current_price=etf_data['current_price'],
-                    spy_price=etf_data['spy_price']
+                    spy_price=etf_data['spy_price'],
+                    week_number=etf_data.get('week_number', 0)
                 )
                 session.add(rrg_record)
             

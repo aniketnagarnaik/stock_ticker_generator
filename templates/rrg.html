@@ -40,8 +40,23 @@
         }
 
         .rrg-header {
-            text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timeline-indicator {
+            background: var(--bg-secondary);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
         }
 
         .rrg-chart {
@@ -52,19 +67,39 @@
         }
 
         .quadrant-legend {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
         }
 
         .quadrant {
-            padding: 10px 15px;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 8px;
             font-weight: bold;
             text-align: center;
-            min-width: 120px;
-            margin: 5px;
+            height: 100%;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .quadrant-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .quadrant-icon {
+            font-size: 1.2em;
+        }
+
+        .quadrant-count {
+            font-size: 0.9em;
+            margin-top: 5px;
+            opacity: 0.8;
         }
 
         .quadrant.leading {
@@ -205,42 +240,34 @@
 </head>
 <body>
     <div class="rrg-container">
-        <!-- Header -->
+        <!-- Header with Top Controls -->
         <div class="rrg-header">
-            <h1>📈 Relative Rotation Graph (RRG)</h1>
-            <p class="text-muted">Sector rotation analysis using RS-Ratio and RS-Momentum</p>
-        </div>
-
-        <!-- Quadrant Legend -->
-        <div class="quadrant-legend">
-            <div class="quadrant leading">
-                🟢 Leading<br>
-                <small>Strong RS + Strong Momentum</small>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="nav-links">
+                    <a href="/" class="btn btn-sm btn-outline-secondary me-2">🏠 Home</a>
+                    <a href="/stocks" class="btn btn-sm btn-outline-primary me-2">📊 Stock Table</a>
+                    <a href="/rrg" class="btn btn-sm btn-outline-success">📈 RRG Chart</a>
+                </div>
             </div>
-            <div class="quadrant weakening">
-                🟡 Weakening<br>
-                <small>Strong RS + Weak Momentum</small>
-            </div>
-            <div class="quadrant lagging">
-                🔴 Lagging<br>
-                <small>Weak RS + Weak Momentum</small>
-            </div>
-            <div class="quadrant improving">
-                🔵 Improving<br>
-                <small>Weak RS + Strong Momentum</small>
-            </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="controls">
-            <button id="refreshBtn" class="btn btn-primary btn-refresh">
-                🔄 Refresh RRG Data
-            </button>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="darkModeToggle">
-                <label class="form-check-label" for="darkModeToggle">
-                    🌙 Dark Mode
-                </label>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1>📈 Relative Rotation Graph (RRG)</h1>
+                    <p class="text-muted mb-0">Sector rotation analysis using RS-Ratio and RS-Momentum</p>
+                </div>
+                <div class="header-controls">
+                    <button id="refreshBtn" class="btn btn-sm btn-outline-primary me-2">
+                        🔄
+                    </button>
+                    <button id="viewToggleBtn" class="btn btn-sm btn-outline-secondary me-2">
+                        🔍 Focus View
+                    </button>
+                    <div class="form-check form-switch d-inline-block">
+                        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                        <label class="form-check-label" for="darkModeToggle">
+                            🌙 Dark
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -252,15 +279,92 @@
             <p class="mt-3">Calculating RRG data...</p>
         </div>
 
+        <!-- Timeline Indicator -->
+        <div class="timeline-indicator">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>📅 Timeline:</strong> 
+                    <span id="timelineText">Current Week</span>
+                </div>
+                <div class="timeline-controls">
+                    <button id="prevWeekBtn" class="btn btn-sm btn-outline-secondary me-2" disabled>
+                        ← Older
+                    </button>
+                    <span id="weekIndicator" class="badge bg-success">Current</span>
+                    <button id="nextWeekBtn" class="btn btn-sm btn-outline-secondary ms-2" disabled>
+                        (Current) →
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- RRG Chart -->
         <div class="rrg-chart">
-            <h5>📊 RRG Chart</h5>
             <div id="rrgChart"></div>
+        </div>
+
+        <!-- Quadrant Legend (Below Chart) -->
+        <div class="quadrant-legend">
+            <h5 class="mb-3">📊 Quadrant Analysis</h5>
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="quadrant leading">
+                        <div class="quadrant-header">
+                            <span class="quadrant-icon">🟢</span>
+                            <strong>Leading</strong>
+                        </div>
+                        <small>Strong RS + Strong Momentum</small>
+                        <div id="leadingCount" class="quadrant-count">0 ETFs</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="quadrant weakening">
+                        <div class="quadrant-header">
+                            <span class="quadrant-icon">🟡</span>
+                            <strong>Weakening</strong>
+                        </div>
+                        <small>Strong RS + Weak Momentum</small>
+                        <div id="weakeningCount" class="quadrant-count">0 ETFs</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="quadrant lagging">
+                        <div class="quadrant-header">
+                            <span class="quadrant-icon">🔴</span>
+                            <strong>Lagging</strong>
+                        </div>
+                        <small>Weak RS + Weak Momentum</small>
+                        <div id="laggingCount" class="quadrant-count">0 ETFs</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="quadrant improving">
+                        <div class="quadrant-header">
+                            <span class="quadrant-icon">🔵</span>
+                            <strong>Improving</strong>
+                        </div>
+                        <small>Weak RS + Strong Momentum</small>
+                        <div id="improvingCount" class="quadrant-count">0 ETFs</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Individual ETF Focus View -->
+        <div class="etf-focus-view" id="etfFocusView" style="display: none;">
+            <h5>🔍 Individual ETF Analysis</h5>
+            <div class="etf-selector mb-3">
+                <label for="etfSelect" class="form-label">Select ETF to analyze:</label>
+                <select id="etfSelect" class="form-select">
+                    <option value="">Choose an ETF...</option>
+                </select>
+            </div>
+            <div id="etfTrailChart" class="trail-chart"></div>
         </div>
 
         <!-- RRG Summary -->
         <div class="rrg-summary">
-            <h5>📋 Sector Summary</h5>
+            <h5>📋 Sector Details</h5>
             <div id="rrgSummary"></div>
         </div>
     </div>
@@ -270,6 +374,9 @@
         // Global variables
         let rrgData = [];
         let darkMode = false;
+        let currentWeek = 0;
+        let maxWeek = 0;
+        let isFocusView = false;
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
@@ -303,7 +410,276 @@
         function setupEventListeners() {
             document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
             document.getElementById('refreshBtn').addEventListener('click', refreshRRGData);
+            document.getElementById('viewToggleBtn').addEventListener('click', toggleFocusView);
+            document.getElementById('etfSelect').addEventListener('change', onETFSelect);
+            
+            // Timeline navigation
+            const prevBtn = document.getElementById('prevWeekBtn');
+            const nextBtn = document.getElementById('nextWeekBtn');
+            
+            if (prevBtn) {
+                // "← Older" means go back in time (increase week number)
+                prevBtn.addEventListener('click', () => navigateWeek(1));
+            }
+            if (nextBtn) {
+                // "Newer →" means go forward in time (decrease week number)
+                nextBtn.addEventListener('click', () => navigateWeek(-1));
+            }
         }
+
+        // Timeline navigation
+        function navigateWeek(direction) {
+            console.log('navigateWeek called', {direction, currentWeek, maxWeek});
+            const newWeek = currentWeek + direction;
+            console.log('newWeek:', newWeek, 'valid range:', newWeek >= 0 && newWeek <= maxWeek);
+            if (newWeek >= 0 && newWeek <= maxWeek) {
+                currentWeek = newWeek;
+                updateTimelineUI();
+                renderRRGChart();
+                renderRRGSummary();
+            }
+        }
+
+        function updateTimelineUI() {
+            const timelineText = document.getElementById('timelineText');
+            const weekIndicator = document.getElementById('weekIndicator');
+            const prevBtn = document.getElementById('prevWeekBtn');
+            const nextBtn = document.getElementById('nextWeekBtn');
+            
+            if (timelineText) {
+                if (currentWeek === 0) {
+                    timelineText.textContent = 'Current Week';
+                } else if (currentWeek === 1) {
+                    timelineText.textContent = '1 Week Ago';
+                } else {
+                    timelineText.textContent = `${currentWeek} Weeks Ago`;
+                }
+            }
+            
+            if (weekIndicator) {
+                if (currentWeek === 0) {
+                    weekIndicator.textContent = 'Current';
+                    weekIndicator.className = 'badge bg-success';
+                } else {
+                    weekIndicator.textContent = `-${currentWeek}W`;
+                    weekIndicator.className = 'badge bg-secondary';
+                }
+            }
+            
+            if (prevBtn) {
+                prevBtn.disabled = currentWeek >= maxWeek;
+                prevBtn.textContent = currentWeek >= maxWeek ? '← (No data)' : '← Older';
+            }
+            if (nextBtn) {
+                nextBtn.disabled = currentWeek <= 0;
+                nextBtn.textContent = currentWeek <= 0 ? '(Current) →' : 'Newer →';
+            }
+        }
+
+        // Toggle focus view
+        function toggleFocusView() {
+            isFocusView = !isFocusView;
+            const focusView = document.getElementById('etfFocusView');
+            const mainChart = document.querySelector('.rrg-chart');
+            const timelineIndicator = document.querySelector('.timeline-indicator');
+            const quadrantLegend = document.querySelector('.quadrant-legend');
+            const viewToggleBtn = document.getElementById('viewToggleBtn');
+            
+            if (isFocusView) {
+                focusView.style.display = 'block';
+                mainChart.style.display = 'none';
+                timelineIndicator.style.display = 'none';
+                quadrantLegend.style.display = 'none';
+                viewToggleBtn.textContent = '📊 Overview';
+                populateETFSelector();
+            } else {
+                focusView.style.display = 'none';
+                mainChart.style.display = 'block';
+                timelineIndicator.style.display = 'block';
+                quadrantLegend.style.display = 'block';
+                viewToggleBtn.textContent = '🔍 Focus View';
+            }
+        }
+
+        // Populate ETF selector
+        function populateETFSelector() {
+            const etfSelect = document.getElementById('etfSelect');
+            const uniqueETFs = [...new Set(rrgData.map(d => d.symbol))].sort();
+            
+            etfSelect.innerHTML = '<option value="">Choose an ETF...</option>';
+            uniqueETFs.forEach(symbol => {
+                const option = document.createElement('option');
+                option.value = symbol;
+                option.textContent = symbol;
+                etfSelect.appendChild(option);
+            });
+        }
+
+        // Handle ETF selection
+        function onETFSelect() {
+            const selectedETF = document.getElementById('etfSelect').value;
+            if (selectedETF) {
+                renderETFTrail(selectedETF);
+            }
+        }
+
+        // Render individual ETF trail
+        function renderETFTrail(symbol) {
+            const container = document.getElementById('etfTrailChart');
+            container.innerHTML = '';
+
+            const etfData = rrgData.filter(d => d.symbol === symbol).sort((a, b) => a.week_number - b.week_number);
+            
+            if (etfData.length === 0) {
+                container.innerHTML = '<p class="text-muted">No data available for this ETF</p>';
+                return;
+            }
+
+            // Chart dimensions
+            const width = 800;
+            const height = 400;
+            const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+
+            const svg = d3.select('#etfTrailChart')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Calculate scales
+            const rsRatios = etfData.map(d => d.rs_ratio);
+            const rsMomentums = etfData.map(d => d.rs_momentum);
+            
+            const xMin = Math.min(...rsRatios) - 5;
+            const xMax = Math.max(...rsRatios) + 5;
+            const yMin = Math.min(...rsMomentums) - 2;
+            const yMax = Math.max(...rsMomentums) + 2;
+
+            const xScale = d3.scaleLinear()
+                .domain([xMin, xMax])
+                .range([margin.left, width - margin.right]);
+
+            const yScale = d3.scaleLinear()
+                .domain([yMin, yMax])
+                .range([height - margin.bottom, margin.top]);
+
+            // Add axes
+            svg.append('g')
+                .attr('transform', `translate(0,${height - margin.bottom})`)
+                .call(d3.axisBottom(xScale).tickFormat(d => d + '%'));
+
+            svg.append('g')
+                .attr('transform', `translate(${margin.left},0)`)
+                .call(d3.axisLeft(yScale).tickFormat(d => d + '%'));
+
+            // Add quadrant lines
+            const centerX = xScale(100);
+            const centerY = yScale(0);
+
+            svg.append('line')
+                .attr('x1', centerX)
+                .attr('y1', margin.top)
+                .attr('x2', centerX)
+                .attr('y2', height - margin.bottom)
+                .attr('stroke', '#666')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '8,4');
+
+            svg.append('line')
+                .attr('x1', margin.left)
+                .attr('y1', centerY)
+                .attr('x2', width - margin.right)
+                .attr('y2', centerY)
+                .attr('stroke', '#666')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '8,4');
+
+            // Color scale
+            const colorScale = d3.scaleOrdinal()
+                .domain(['Leading', 'Weakening', 'Lagging', 'Improving'])
+                .range(['#28a745', '#ffc107', '#dc3545', '#17a2b8']);
+
+            // Add trail line
+            const line = d3.line()
+                .x(d => xScale(d.rs_ratio))
+                .y(d => yScale(d.rs_momentum))
+                .curve(d3.curveLinear);
+
+            svg.append('path')
+                .datum(etfData)
+                .attr('d', line)
+                .attr('stroke', '#007bff')
+                .attr('stroke-width', 3)
+                .attr('fill', 'none');
+
+            // Add data points
+            svg.selectAll('.trail-point')
+                .data(etfData)
+                .enter()
+                .append('circle')
+                .attr('class', 'trail-point')
+                .attr('cx', d => xScale(d.rs_ratio))
+                .attr('cy', d => yScale(d.rs_momentum))
+                .attr('r', 8)
+                .attr('fill', d => colorScale(d.quadrant))
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2)
+                .on('mouseover', function(event, d) {
+                    const tooltip = d3.select('body').append('div')
+                        .attr('class', 'tooltip')
+                        .style('position', 'absolute')
+                        .style('background', 'rgba(0,0,0,0.9)')
+                        .style('color', 'white')
+                        .style('padding', '12px')
+                        .style('border-radius', '8px')
+                        .style('pointer-events', 'none')
+                        .style('z-index', '1000')
+                        .style('font-size', '14px');
+
+                    let weekText;
+                    if (d.week_number === 0) {
+                        weekText = 'Current Week';
+                    } else if (d.week_number === 1) {
+                        weekText = '1 Week Ago';
+                    } else {
+                        weekText = `${d.week_number} Weeks Ago`;
+                    }
+                    
+                    tooltip.html(`
+                        <strong>${d.symbol}</strong> - ${d.name}<br>
+                        <small>📅 ${weekText}</small><br>
+                        <hr style="margin: 5px 0; border-color: rgba(255,255,255,0.3);">
+                        <strong>RS-Ratio:</strong> ${d.rs_ratio}%<br>
+                        <strong>RS-Momentum:</strong> ${d.rs_momentum}%<br>
+                        <strong>Quadrant:</strong> <span style="color: ${colorScale(d.quadrant)}">${d.quadrant}</span>
+                    `);
+
+                    d3.select(this).attr('r', 12);
+                })
+                .on('mousemove', function(event) {
+                    d3.select('.tooltip')
+                        .style('left', (event.pageX + 15) + 'px')
+                        .style('top', (event.pageY - 15) + 'px');
+                })
+                .on('mouseout', function() {
+                    d3.select('.tooltip').remove();
+                    d3.select(this).attr('r', 8);
+                });
+
+            // Add labels
+            svg.selectAll('.trail-label')
+                .data(etfData)
+                .enter()
+                .append('text')
+                .attr('class', 'trail-label')
+                .attr('x', d => xScale(d.rs_ratio))
+                .attr('y', d => yScale(d.rs_momentum) - 12)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '10px')
+                .style('font-weight', 'bold')
+                .style('fill', 'var(--text-primary)')
+                .text(d => d.week_number === 0 ? 'Now' : `-${d.week_number}W`);
+        }
+
 
         // Load RRG data
         async function loadRRGData() {
@@ -313,6 +689,14 @@
                 if (response.ok) {
                     const data = await response.json();
                     rrgData = data.rrg_data || [];
+                    
+                    // Set max week for timeline navigation
+                    // Only show weeks with valid momentum (filter out weeks where momentum = 0)
+                    const validWeeks = rrgData.filter(d => d.rs_momentum !== 0).map(d => d.week_number);
+                    maxWeek = validWeeks.length > 0 ? Math.max(...validWeeks) : 0;
+                    currentWeek = 0; // Start with current week
+                    updateTimelineUI();
+                    
                     renderRRGChart();
                     renderRRGSummary();
                 } else {
@@ -339,6 +723,14 @@
                 if (response.ok) {
                     const data = await response.json();
                     rrgData = data.rrg_data || [];
+                    
+                    // Update max week and reset timeline
+                    // Only show weeks with valid momentum (filter out weeks where momentum = 0)
+                    const validWeeks = rrgData.filter(d => d.rs_momentum !== 0).map(d => d.week_number);
+                    maxWeek = validWeeks.length > 0 ? Math.max(...validWeeks) : 0;
+                    currentWeek = 0;
+                    updateTimelineUI();
+                    
                     renderRRGChart();
                     renderRRGSummary();
                 } else {
@@ -377,6 +769,13 @@
                 return;
             }
 
+            // Filter data for current week
+            const currentWeekData = rrgData.filter(d => d.week_number === currentWeek);
+            if (currentWeekData.length === 0) {
+                container.innerHTML = '<p class="text-muted">No data for this week</p>';
+                return;
+            }
+
             // Chart dimensions
             const width = 800;
             const height = 600;
@@ -388,13 +787,22 @@
                 .attr('width', width)
                 .attr('height', height);
 
+            // Calculate data ranges dynamically
+            const rsRatios = currentWeekData.map(d => d.rs_ratio);
+            const rsMomentums = currentWeekData.map(d => d.rs_momentum);
+            
+            const xMin = Math.min(...rsRatios) - 5;
+            const xMax = Math.max(...rsRatios) + 5;
+            const yMin = Math.min(...rsMomentums) - 2;
+            const yMax = Math.max(...rsMomentums) + 2;
+
             // Scales
             const xScale = d3.scaleLinear()
-                .domain([80, 120])  // RS-Ratio range
+                .domain([xMin, xMax])  // Dynamic RS-Ratio range
                 .range([margin.left, width - margin.right]);
 
             const yScale = d3.scaleLinear()
-                .domain([-20, 20])  // RS-Momentum range
+                .domain([yMin, yMax])  // Dynamic RS-Momentum range
                 .range([height - margin.bottom, margin.top]);
 
             // Add axes
@@ -419,18 +827,56 @@
                 .style('text-anchor', 'middle')
                 .text('RS-Momentum');
 
-            // Add quadrant lines
-            const centerX = xScale(100);
-            const centerY = yScale(0);
+            // Add quadrant background colors
+            const centerX = xScale(100);  // 100% RS-Ratio line
+            const centerY = yScale(0);    // 0% RS-Momentum line
 
+            // Leading quadrant (top-right)
+            svg.append('rect')
+                .attr('x', centerX)
+                .attr('y', margin.top)
+                .attr('width', width - margin.right - centerX)
+                .attr('height', centerY - margin.top)
+                .attr('fill', '#d4edda')
+                .attr('opacity', 0.3);
+
+            // Weakening quadrant (bottom-right)
+            svg.append('rect')
+                .attr('x', centerX)
+                .attr('y', centerY)
+                .attr('width', width - margin.right - centerX)
+                .attr('height', height - margin.bottom - centerY)
+                .attr('fill', '#fff3cd')
+                .attr('opacity', 0.3);
+
+            // Lagging quadrant (bottom-left)
+            svg.append('rect')
+                .attr('x', margin.left)
+                .attr('y', centerY)
+                .attr('width', centerX - margin.left)
+                .attr('height', height - margin.bottom - centerY)
+                .attr('fill', '#f8d7da')
+                .attr('opacity', 0.3);
+
+            // Improving quadrant (top-left)
+            svg.append('rect')
+                .attr('x', margin.left)
+                .attr('y', margin.top)
+                .attr('width', centerX - margin.left)
+                .attr('height', centerY - margin.top)
+                .attr('fill', '#d1ecf1')
+                .attr('opacity', 0.3);
+
+            // Add quadrant separation lines
             // Vertical line at RS-Ratio = 100
             svg.append('line')
                 .attr('x1', centerX)
                 .attr('y1', margin.top)
                 .attr('x2', centerX)
                 .attr('y2', height - margin.bottom)
-                .attr('stroke', '#ccc')
-                .attr('stroke-dasharray', '5,5');
+                .attr('stroke', '#666')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '8,4');
 
             // Horizontal line at RS-Momentum = 0
             svg.append('line')
@@ -438,15 +884,16 @@
                 .attr('y1', centerY)
                 .attr('x2', width - margin.right)
                 .attr('y2', centerY)
-                .attr('stroke', '#ccc')
-                .attr('stroke-dasharray', '5,5');
+                .attr('stroke', '#666')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '8,4');
 
-            // Add quadrant labels
+            // Add quadrant labels with better positioning to avoid overlap
             const quadrants = [
-                { x: width - 100, y: 30, text: 'Leading', class: 'leading' },
-                { x: width - 100, y: height - 30, text: 'Weakening', class: 'weakening' },
-                { x: 50, y: height - 30, text: 'Lagging', class: 'lagging' },
-                { x: 50, y: 30, text: 'Improving', class: 'improving' }
+                { x: width - 80, y: 50, text: 'Leading', class: 'leading' },
+                { x: width - 80, y: height - 50, text: 'Weakening', class: 'weakening' },
+                { x: 80, y: height - 50, text: 'Lagging', class: 'lagging' },
+                { x: 80, y: 50, text: 'Improving', class: 'improving' }
             ];
 
             quadrants.forEach(q => {
@@ -454,8 +901,11 @@
                     .attr('x', q.x)
                     .attr('y', q.y)
                     .attr('class', `quadrant-label ${q.class}`)
-                    .style('text-anchor', 'middle')
+                    .attr('text-anchor', 'middle')
+                    .style('font-size', '12px')
                     .style('font-weight', 'bold')
+                    .style('fill', 'var(--text-primary)')
+                    .style('text-shadow', '1px 1px 2px rgba(255,255,255,0.8)')
                     .text(q.text);
             });
 
@@ -464,62 +914,76 @@
                 .domain(['Leading', 'Weakening', 'Lagging', 'Improving'])
                 .range(['#28a745', '#ffc107', '#dc3545', '#17a2b8']);
 
-            // Add data points
+            // Add current week data points
             svg.selectAll('.etf-point')
-                .data(rrgData)
+                .data(currentWeekData)
                 .enter()
                 .append('circle')
                 .attr('class', 'etf-point')
                 .attr('cx', d => xScale(d.rs_ratio))
                 .attr('cy', d => yScale(d.rs_momentum))
-                .attr('r', 8)
+                .attr('r', 12)
                 .attr('fill', d => colorScale(d.quadrant))
                 .attr('stroke', '#fff')
-                .attr('stroke-width', 2)
+                .attr('stroke-width', 3)
                 .style('cursor', 'pointer')
                 .on('mouseover', function(event, d) {
                     // Show tooltip
                     const tooltip = d3.select('body').append('div')
                         .attr('class', 'tooltip')
                         .style('position', 'absolute')
-                        .style('background', 'rgba(0,0,0,0.8)')
+                        .style('background', 'rgba(0,0,0,0.9)')
                         .style('color', 'white')
-                        .style('padding', '10px')
-                        .style('border-radius', '5px')
+                        .style('padding', '12px')
+                        .style('border-radius', '8px')
                         .style('pointer-events', 'none')
-                        .style('z-index', '1000');
+                        .style('z-index', '1000')
+                        .style('font-size', '14px')
+                        .style('box-shadow', '0 4px 8px rgba(0,0,0,0.3)');
 
+                    let weekText;
+                    if (currentWeek === 0) {
+                        weekText = 'Current Week';
+                    } else if (currentWeek === 1) {
+                        weekText = '1 Week Ago';
+                    } else {
+                        weekText = `${currentWeek} Weeks Ago`;
+                    }
+                    
                     tooltip.html(`
-                        <strong>${d.symbol}</strong><br>
-                        ${d.name}<br>
-                        RS-Ratio: ${d.rs_ratio}%<br>
-                        RS-Momentum: ${d.rs_momentum}%<br>
-                        Quadrant: ${d.quadrant}
+                        <strong>${d.symbol}</strong> - ${d.name}<br>
+                        <small>📅 ${weekText}</small><br>
+                        <hr style="margin: 5px 0; border-color: rgba(255,255,255,0.3);">
+                        <strong>RS-Ratio:</strong> ${d.rs_ratio}%<br>
+                        <strong>RS-Momentum:</strong> ${d.rs_momentum}%<br>
+                        <strong>Quadrant:</strong> <span style="color: ${colorScale(d.quadrant)}">${d.quadrant}</span>
                     `);
 
-                    d3.select(this).attr('r', 12);
+                    d3.select(this).attr('r', 16);
                 })
                 .on('mousemove', function(event) {
                     d3.select('.tooltip')
-                        .style('left', (event.pageX + 10) + 'px')
-                        .style('top', (event.pageY - 10) + 'px');
+                        .style('left', (event.pageX + 15) + 'px')
+                        .style('top', (event.pageY - 15) + 'px');
                 })
                 .on('mouseout', function() {
                     d3.select('.tooltip').remove();
-                    d3.select(this).attr('r', 8);
+                    d3.select(this).attr('r', 12);
                 });
 
-            // Add ETF labels
+            // Add ETF labels with better positioning
             svg.selectAll('.etf-label')
-                .data(rrgData)
+                .data(currentWeekData)
                 .enter()
                 .append('text')
                 .attr('class', 'etf-label')
                 .attr('x', d => xScale(d.rs_ratio))
-                .attr('y', d => yScale(d.rs_momentum) - 15)
+                .attr('y', d => yScale(d.rs_momentum) - 18)
                 .attr('text-anchor', 'middle')
-                .style('font-size', '12px')
+                .style('font-size', '11px')
                 .style('font-weight', 'bold')
+                .style('fill', 'var(--text-primary)')
+                .style('text-shadow', '1px 1px 2px rgba(255,255,255,0.8)')
                 .text(d => d.symbol);
         }
 
@@ -532,13 +996,22 @@
                 return;
             }
 
+            // Filter to current week data
+            const currentData = rrgData.filter(d => d.week_number === currentWeek);
+
             // Group by quadrant
             const quadrants = {
-                'Leading': rrgData.filter(d => d.quadrant === 'Leading'),
-                'Weakening': rrgData.filter(d => d.quadrant === 'Weakening'),
-                'Lagging': rrgData.filter(d => d.quadrant === 'Lagging'),
-                'Improving': rrgData.filter(d => d.quadrant === 'Improving')
+                'Leading': currentData.filter(d => d.quadrant === 'Leading'),
+                'Weakening': currentData.filter(d => d.quadrant === 'Weakening'),
+                'Lagging': currentData.filter(d => d.quadrant === 'Lagging'),
+                'Improving': currentData.filter(d => d.quadrant === 'Improving')
             };
+
+            // Update quadrant counts
+            document.getElementById('leadingCount').textContent = `${quadrants.Leading.length} ETFs`;
+            document.getElementById('weakeningCount').textContent = `${quadrants.Weakening.length} ETFs`;
+            document.getElementById('laggingCount').textContent = `${quadrants.Lagging.length} ETFs`;
+            document.getElementById('improvingCount').textContent = `${quadrants.Improving.length} ETFs`;
 
             let html = '<div class="summary-grid">';
             

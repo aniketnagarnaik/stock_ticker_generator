@@ -32,15 +32,16 @@ class RRGCalculator:
             'XLI', 'XLB', 'XLRE', 'XLU', 'XLC'  # Sector ETFs
         ]
     
-    def calculate_rrg_data(self, indices_data: List[Dict]) -> List[Dict]:
+    def calculate_rrg_data(self, indices_data: List[Dict], weeks_back: int = 8) -> List[Dict]:
         """
-        Calculate RRG data for all ETFs
+        Calculate RRG data for all ETFs with historical trails
         
         Args:
             indices_data: List of index data from database
+            weeks_back: Number of weeks to calculate historical data for
             
         Returns:
-            List of RRG data for each ETF
+            List of RRG data for each ETF with historical trails
         """
         rrg_data = []
         
@@ -50,19 +51,31 @@ class RRGCalculator:
             print("❌ SPY data not found - cannot calculate RRG")
             return []
         
-        # Calculate RRG for each ETF
+        # First pass: Calculate raw RS values for all ETFs
+        all_etf_rs_values = {}
+        
         for etf_symbol in self.sector_etfs:
             if etf_symbol == 'SPY':
-                continue  # Skip SPY (it's the benchmark)
+                continue
                 
             etf_data = self._get_etf_data(indices_data, etf_symbol)
             if not etf_data:
                 print(f"⚠️ {etf_symbol} data not found - skipping")
                 continue
             
-            rrg_point = self._calculate_single_rrg(etf_symbol, etf_data, spy_data)
-            if rrg_point:
-                rrg_data.append(rrg_point)
+            # Calculate raw RS values for this ETF
+            etf_rs_values = self._calculate_raw_rs_values(etf_symbol, etf_data, spy_data, weeks_back)
+            if etf_rs_values:
+                all_etf_rs_values[etf_symbol] = etf_rs_values
+        
+        # Second pass: Normalize RS values and calculate final RRG data
+        for etf_symbol, etf_rs_values in all_etf_rs_values.items():
+            etf_data = self._get_etf_data(indices_data, etf_symbol)
+            etf_historical = self._calculate_historical_rrg_normalized(
+                etf_symbol, etf_data, spy_data, etf_rs_values, all_etf_rs_values, weeks_back
+            )
+            if etf_historical:
+                rrg_data.extend(etf_historical)
         
         return rrg_data
     
@@ -73,6 +86,122 @@ class RRGCalculator:
                 return index
         return None
     
+    def _calculate_raw_rs_values(self, etf_symbol: str, etf_data: Dict, spy_data: Dict, weeks_back: int) -> List[float]:
+        """
+        Calculate raw RS values (ETF/SPY ratio) for each week
+        
+        Returns:
+            List of raw RS values, indexed by week (0 = current, 1 = 1 week ago, etc.)
+        """
+        try:
+            etf_prices = self._parse_price_data(etf_data.get('price_data'))
+            spy_prices = self._parse_price_data(spy_data.get('price_data'))
+            
+            if not etf_prices or not spy_prices:
+                return []
+            
+            etf_weekly = self._get_weekly_closes(etf_prices)
+            spy_weekly = self._get_weekly_closes(spy_prices)
+            
+            if len(etf_weekly) < weeks_back + 1:
+                return []
+            
+            raw_rs_values = []
+            for week in range(weeks_back + 1):
+                if week >= len(etf_weekly):
+                    break
+                rs_value = etf_weekly[week] / spy_weekly[week]
+                raw_rs_values.append(rs_value)
+            
+            return raw_rs_values
+            
+        except Exception as e:
+            print(f"❌ Error calculating raw RS for {etf_symbol}: {e}")
+            return []
+    
+    def _calculate_historical_rrg_normalized(self, etf_symbol: str, etf_data: Dict, spy_data: Dict, 
+                                            etf_rs_values: List[float], all_etf_rs_values: Dict, 
+                                            weeks_back: int) -> List[Dict]:
+        """
+        Calculate historical RRG data with normalized RS-Ratio (100 = average of all ETFs)
+        
+        Args:
+            etf_symbol: ETF symbol
+            etf_data: ETF price data
+            spy_data: SPY price data
+            etf_rs_values: Raw RS values for this ETF
+            all_etf_rs_values: Raw RS values for all ETFs
+            weeks_back: Number of weeks to calculate
+            
+        Returns:
+            List of normalized RRG data points for each week
+        """
+        try:
+            etf_prices = self._parse_price_data(etf_data.get('price_data'))
+            spy_prices = self._parse_price_data(spy_data.get('price_data'))
+            
+            if not etf_prices or not spy_prices:
+                return []
+            
+            etf_weekly = self._get_weekly_closes(etf_prices)
+            spy_weekly = self._get_weekly_closes(spy_prices)
+            
+            historical_data = []
+            
+            # Calculate normalized RS-Ratio for each week
+            for week in range(min(len(etf_rs_values), weeks_back + 1)):
+                # Calculate average RS for this week across all ETFs
+                week_rs_values = []
+                for symbol_rs_values in all_etf_rs_values.values():
+                    if week < len(symbol_rs_values):
+                        week_rs_values.append(symbol_rs_values[week])
+                
+                if not week_rs_values:
+                    continue
+                
+                avg_rs = sum(week_rs_values) / len(week_rs_values)
+                
+                # Normalize: RS-Ratio = (ETF_RS / Average_RS) * 100
+                # This makes 100 the center point (average performance)
+                normalized_rs_ratio = (etf_rs_values[week] / avg_rs) * 100
+                
+                # Calculate RS-Momentum (4-week change in normalized RS-Ratio)
+                if week + 4 < len(etf_rs_values):
+                    week_rs_values_4weeks_ago = []
+                    for symbol_rs_values in all_etf_rs_values.values():
+                        if week + 4 < len(symbol_rs_values):
+                            week_rs_values_4weeks_ago.append(symbol_rs_values[week + 4])
+                    
+                    if week_rs_values_4weeks_ago:
+                        avg_rs_4weeks_ago = sum(week_rs_values_4weeks_ago) / len(week_rs_values_4weeks_ago)
+                        normalized_rs_ratio_4weeks_ago = (etf_rs_values[week + 4] / avg_rs_4weeks_ago) * 100
+                        rs_momentum = (normalized_rs_ratio - normalized_rs_ratio_4weeks_ago) / normalized_rs_ratio_4weeks_ago * 100
+                    else:
+                        rs_momentum = 0.0
+                else:
+                    rs_momentum = 0.0
+                
+                # Determine quadrant
+                quadrant = self._determine_quadrant(normalized_rs_ratio, rs_momentum)
+                
+                historical_data.append({
+                    'symbol': etf_symbol,
+                    'name': self._get_etf_name(etf_symbol),
+                    'rs_ratio': round(normalized_rs_ratio, 2),
+                    'rs_momentum': round(rs_momentum, 2),
+                    'quadrant': quadrant,
+                    'current_price': etf_weekly[week] if week < len(etf_weekly) else 0,
+                    'spy_price': spy_weekly[week] if week < len(spy_weekly) else 0,
+                    'week_number': week,
+                    'calculated_at': datetime.utcnow().isoformat()
+                })
+            
+            return historical_data
+            
+        except Exception as e:
+            print(f"❌ Error calculating normalized RRG for {etf_symbol}: {e}")
+            return []
+
     def _calculate_single_rrg(self, etf_symbol: str, etf_data: Dict, spy_data: Dict) -> Optional[Dict]:
         """
         Calculate RRG data for a single ETF

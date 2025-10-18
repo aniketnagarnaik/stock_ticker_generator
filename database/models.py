@@ -140,7 +140,8 @@ class RRGData(Base):
     quadrant = Column(String(20), nullable=False)  # Leading, Weakening, Lagging, Improving
     current_price = Column(Float)
     spy_price = Column(Float)
+    week_number = Column(Integer, nullable=False, default=0)  # Week number (0 = current, 1 = 1 week ago, etc.)
     calculated_at = Column(DateTime, default=datetime.utcnow)
     
     def __repr__(self):
-        return f"<RRGData(symbol='{self.symbol}', quadrant='{self.quadrant}', rs_ratio={self.rs_ratio:.2f}, rs_momentum={self.rs_momentum:.2f})>"
+        return f"<RRGData(symbol='{self.symbol}', week={self.week_number}, quadrant='{self.quadrant}', rs_ratio={self.rs_ratio:.2f}, rs_momentum={self.rs_momentum:.2f})>"
