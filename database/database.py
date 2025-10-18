@@ -16,35 +16,27 @@ class DatabaseManager:
         self._setup_database()
     
     def _get_database_url(self):
-        """Get database URL - SQLite for local development, PostgreSQL for production"""
+        """Get database URL - PostgreSQL required"""
         database_url = os.getenv('DATABASE_URL')
         if not database_url:
-            # Use SQLite for local development
-            sqlite_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'stocks.db')
-            database_url = f"sqlite:///{sqlite_path}"
-            print(f"Using local SQLite database: {sqlite_path}")
+            raise ValueError(
+                "❌ DATABASE_URL environment variable is required.\n"
+                "Set it with: export DATABASE_URL='postgresql://postgres@localhost:5432/stocks_db'"
+            )
         return database_url
     
     def _setup_database(self):
-        """Setup database connection and create tables"""
+        """Setup database connection and create tables - PostgreSQL only"""
         database_url = self._get_database_url()
         
-        # Create engine (SQLite or PostgreSQL)
-        if database_url.startswith('sqlite'):
-            self.engine = create_engine(
-                database_url,
-                echo=False,  # Set to True for SQL debugging
-                connect_args={"check_same_thread": False}  # SQLite specific
-            )
-            db_type = "SQLite"
-        else:
-            self.engine = create_engine(
-                database_url,
-                echo=False,  # Set to True for SQL debugging
-                pool_pre_ping=True,  # Verify connections before use
-                pool_recycle=300     # Recycle connections every 5 minutes
-            )
-            db_type = "PostgreSQL"
+        # Create engine (PostgreSQL only)
+        self.engine = create_engine(
+            database_url,
+            echo=False,  # Set to True for SQL debugging
+            pool_pre_ping=True,  # Verify connections before use
+            pool_recycle=300     # Recycle connections every 5 minutes
+        )
+        db_type = "PostgreSQL"
         
         # Create all tables
         Base.metadata.create_all(bind=self.engine)

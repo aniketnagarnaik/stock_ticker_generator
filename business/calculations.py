@@ -230,10 +230,15 @@ class FinancialCalculations:
             else:
                 yoy_growth = None
             
+            # Get latest 4 quarters for sparkline charts
+            latest_quarters = [quarter['eps'] for quarter in eps_data_sorted[:4]]
+            latest_quarters.reverse()  # Oldest to newest for chart display
+            
             return {
                 'qoq': qoq_growth,
                 'yoy': yoy_growth,
-                'latest_eps': eps_data_sorted[0]['eps'] if eps_data_sorted else None
+                'latest_eps': eps_data_sorted[0]['eps'] if eps_data_sorted else None,
+                'latest_quarters': latest_quarters
             }
             
         except Exception as e:

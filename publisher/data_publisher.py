@@ -3,6 +3,7 @@ Data Publisher (Refactored)
 Uses new clean architecture with DAO, Business Logic, and Provider layers
 """
 
+import os
 from typing import List, Dict, Tuple
 import numpy as np
 from database.models import RefreshLog
@@ -87,13 +88,17 @@ class DataPublisher:
     
     def _get_stock_symbols(self) -> List[str]:
         """Get list of stock symbols to process"""
+        # Check for environment variable to specify stock file
+        stock_file = os.getenv('STOCK_SYMBOLS_FILE', 'data/stock_symbols.txt')
+        
         try:
             # Read from stock symbols file
-            with open('data/stock_symbols.txt', 'r') as f:
+            with open(stock_file, 'r') as f:
                 symbols = [line.strip().upper() for line in f if line.strip()]
+            print(f"📊 Loading {len(symbols)} symbols from {stock_file}", flush=True)
             return symbols
         except FileNotFoundError:
-            print("⚠️ stock_symbols.txt not found, using test data", flush=True)
+            print(f"⚠️ {stock_file} not found, using test data", flush=True)
             # Fallback to test data
             return ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'NVDA']
     

@@ -26,6 +26,7 @@ class DataOrchestrator:
     def refresh_benchmark_data(self) -> bool:
         """
         Refresh benchmark indices data from Polygon.io
+        Uses SectorMapper to determine which ETFs to fetch
         
         Returns:
             True if successful, False otherwise
@@ -40,11 +41,15 @@ class DataOrchestrator:
                 print("  ⚠️ Polygon.io not available, skipping benchmark refresh", flush=True)
                 return False
             
-            # Define benchmark indices to fetch
+            # Build benchmarks dictionary from SectorMapper
             benchmarks = {
                 'SPY': 'S&P 500 ETF',
                 'QQQ': 'NASDAQ ETF'
             }
+            
+            # Add all sector ETFs from SectorMapper
+            for sector, etf in self.sector_mapper.sector_etf_map.items():
+                benchmarks[etf] = f'{sector} ETF'
             
             success_count = 0
             for symbol, name in benchmarks.items():
@@ -62,7 +67,13 @@ class DataOrchestrator:
                 if price_data is not None:
                     # Convert DataFrame to dictionary format for storage
                     price_data_copy = price_data.copy()
-                    price_data_copy['date'] = price_data_copy['date'].dt.strftime('%Y-%m-%d')
+                    
+                    # Convert date column to string if it's datetime
+                    if pd.api.types.is_datetime64_any_dtype(price_data_copy['date']):
+                        price_data_copy['date'] = price_data_copy['date'].dt.strftime('%Y-%m-%d')
+                    # If already string, ensure it's in correct format
+                    elif price_data_copy['date'].dtype == 'object':
+                        price_data_copy['date'] = price_data_copy['date'].astype(str)
                     
                     data_dict = {
                         'data': price_data_copy.to_dict('records'),
@@ -156,8 +167,8 @@ class DataOrchestrator:
                 company_name=stock_data.get('company_name', ''),
                 sector=stock_data.get('sector'),
                 industry=stock_data.get('industry'),
-                market_cap=stock_data.get('market_cap'),
-                current_price=stock_data.get('price')
+                market_cap=convert_numpy(stock_data.get('market_cap')),
+                current_price=convert_numpy(stock_data.get('price'))
             )
             session.add(stock)
         else:
@@ -165,8 +176,8 @@ class DataOrchestrator:
             stock.company_name = stock_data.get('company_name', '')
             stock.sector = stock_data.get('sector')
             stock.industry = stock_data.get('industry')
-            stock.market_cap = stock_data.get('market_cap')
-            stock.current_price = stock_data.get('price')
+            stock.market_cap = convert_numpy(stock_data.get('market_cap'))
+            stock.current_price = convert_numpy(stock_data.get('price'))
         
         # Commit stock changes
         session.commit()
@@ -298,11 +309,23 @@ class DataOrchestrator:
             ).order_by(desc(RefreshLog.completed_at)).first()
             
             if latest_refresh:
+                # Convert UTC to PST/PDT for display
+                import pytz
+                from datetime import datetime
+                
+                # Database stores in UTC, convert to Pacific time
+                utc_time = latest_refresh.completed_at.replace(tzinfo=pytz.UTC)
+                pacific = pytz.timezone('US/Pacific')
+                pacific_time = utc_time.astimezone(pacific)
+                
+                # Determine if PST or PDT
+                tz_name = pacific_time.strftime('%Z')  # Will be PST or PDT
+                
                 return {
                     'status': 'completed',
-                    'last_updated': latest_refresh.completed_at.strftime('%Y-%m-%d %H:%M:%S PST'),
-                    'successful_count': latest_refresh.successful_count,
-                    'failed_count': latest_refresh.failed_count,
+                    'last_updated': pacific_time.strftime(f'%Y-%m-%d %H:%M:%S {tz_name}'),
+                    'successful_count': latest_refresh.stocks_successful,
+                    'failed_count': latest_refresh.stocks_failed,
                     'cache_valid': self._is_cache_valid(latest_refresh.completed_at)
                 }
             else:

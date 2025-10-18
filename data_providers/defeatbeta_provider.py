@@ -22,7 +22,7 @@ class DefeatBetaProvider(BaseDataProvider):
     
     def __init__(self):
         self.last_request_time = 0
-        self.request_delay = 0.5  # Small delay to be polite
+        self.request_delay = 0.1  # Small delay to be polite (dataset access, no rate limits)
     
     def is_available(self) -> bool:
         """Check if defeatbeta-api is installed"""

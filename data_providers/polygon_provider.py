@@ -105,38 +105,6 @@ class PolygonProvider(BaseDataProvider):
             print(f"      ❌ Error fetching {symbol} data: {e}", flush=True)
             return None
     
-    def get_all_benchmarks_cached(self, days: int = 252) -> Dict[str, pd.DataFrame]:
-        """
-        Get historical data for all benchmark symbols with caching
-        
-        Args:
-            days: Number of days of historical data
-            
-        Returns:
-            Dictionary mapping symbol to DataFrame
-        """
-        # Define benchmark symbols to fetch
-        benchmarks = {
-            'SPY': 'S&P 500 ETF',
-            'QQQ': 'NASDAQ ETF'
-        }
-        
-        benchmark_data = {}
-        
-        for symbol in benchmarks.keys():
-            print(f"  📊 Fetching {symbol} data from Polygon.io...", flush=True)
-            data = self.get_benchmark_data(symbol, days)
-            if data is not None:
-                benchmark_data[symbol] = data
-                print(f"    ✅ {symbol}: {len(data)} days of data", flush=True)
-            else:
-                print(f"    ❌ {symbol}: No data available", flush=True)
-            
-            # Rate limiting: 5 calls/minute = 12 seconds between calls
-            time.sleep(12)
-        
-        return benchmark_data
-    
     def get_data_snapshot_date(self) -> Optional[str]:
         """Get the latest data snapshot date from SPY"""
         if not self.is_available():
