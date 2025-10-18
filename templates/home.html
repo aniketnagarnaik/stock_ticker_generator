@@ -117,20 +117,40 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             .hero-card {
                 padding: 30px 20px;
             }
 
             .hero-title {
-                font-size: 2rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1rem;
+                font-size: 1.8rem;
             }
 
             .feature-cards {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .feature-icon {
+                font-size: 3.5rem;
+            }
+
+            .feature-title {
+                font-size: 1.4rem;
+            }
+
+            .feature-description {
+                font-size: 0.95rem;
+            }
+
+            .badge-version {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 0.75rem;
             }
         }
     </style>

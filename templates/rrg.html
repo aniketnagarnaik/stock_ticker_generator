@@ -39,6 +39,75 @@
             padding: 20px;
         }
 
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .rrg-container {
+                padding: 10px;
+            }
+
+            .rrg-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .rrg-header p {
+                font-size: 0.875rem;
+            }
+
+            .header-controls {
+                flex-direction: column;
+                gap: 10px !important;
+                width: 100%;
+            }
+
+            .header-controls button,
+            .header-controls .form-check {
+                width: 100%;
+                text-align: center;
+            }
+
+            .timeline-indicator {
+                padding: 10px;
+            }
+
+            .timeline-controls {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            #rrgChart svg {
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            .quadrant-legend .row {
+                margin: 0;
+            }
+
+            .quadrant-legend .col-md-3 {
+                padding: 5px;
+            }
+
+            .nav-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .nav-links a {
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+
+            .etf-selector {
+                margin-bottom: 15px;
+            }
+
+            #etfTrailChart svg {
+                width: 100% !important;
+                height: auto !important;
+            }
+        }
+
         .rrg-header {
             margin-bottom: 20px;
             padding: 20px 0;
@@ -528,16 +597,20 @@
             const container = document.getElementById('etfTrailChart');
             container.innerHTML = '';
 
-            const etfData = rrgData.filter(d => d.symbol === symbol).sort((a, b) => a.week_number - b.week_number);
+            // Filter to only valid weeks (0-8) and sort by week
+            const etfData = rrgData
+                .filter(d => d.symbol === symbol && d.week_number <= maxWeek)
+                .sort((a, b) => a.week_number - b.week_number);
             
             if (etfData.length === 0) {
                 container.innerHTML = '<p class="text-muted">No data available for this ETF</p>';
                 return;
             }
 
-            // Chart dimensions
-            const width = 800;
-            const height = 400;
+            // Chart dimensions - responsive
+            const containerWidth = document.getElementById('etfTrailChart').clientWidth || 800;
+            const width = Math.min(containerWidth, 800);
+            const height = Math.min(width * 0.5, 400); // Maintain aspect ratio
             const margin = { top: 20, right: 20, bottom: 60, left: 60 };
 
             const svg = d3.select('#etfTrailChart')
@@ -776,9 +849,10 @@
                 return;
             }
 
-            // Chart dimensions
-            const width = 800;
-            const height = 600;
+            // Chart dimensions - responsive
+            const containerWidth = document.getElementById('rrgChart').clientWidth || 800;
+            const width = Math.min(containerWidth, 800);
+            const height = Math.min(width * 0.75, 600); // Maintain aspect ratio
             const margin = { top: 20, right: 20, bottom: 60, left: 60 };
 
             // Create SVG
