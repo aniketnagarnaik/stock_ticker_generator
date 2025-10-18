@@ -126,3 +126,21 @@ class RefreshLog(Base):
         self.error_message = error_msg
         if self.started_at:
             self.duration_seconds = (self.completed_at - self.started_at).total_seconds()
+
+
+class RRGData(Base):
+    """RRG (Relative Rotation Graph) data for sector ETFs"""
+    __tablename__ = 'rrg_data'
+    
+    id = Column(Integer, primary_key=True)
+    symbol = Column(String(10), nullable=False, index=True)
+    name = Column(String(100), nullable=False)
+    rs_ratio = Column(Float, nullable=False)  # X-axis: RS-Ratio
+    rs_momentum = Column(Float, nullable=False)  # Y-axis: RS-Momentum
+    quadrant = Column(String(20), nullable=False)  # Leading, Weakening, Lagging, Improving
+    current_price = Column(Float)
+    spy_price = Column(Float)
+    calculated_at = Column(DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f"<RRGData(symbol='{self.symbol}', quadrant='{self.quadrant}', rs_ratio={self.rs_ratio:.2f}, rs_momentum={self.rs_momentum:.2f})>"

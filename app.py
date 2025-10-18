@@ -13,6 +13,8 @@ import math
 from database.database import db_manager
 from publisher.data_publisher import DataPublisher
 from business.data_orchestrator import DataOrchestrator
+from business.rrg_calculator import RRGCalculator
+from database.models import RRGData
 
 # Custom JSON provider to handle NaN values
 class CustomJSONProvider(DefaultJSONProvider):
@@ -243,6 +245,129 @@ def health_check():
             'status': 'unhealthy',
             'error': str(e),
             'timestamp': datetime.now(pst).isoformat()
+        }), 500
+
+# RRG Routes
+@app.route('/rrg')
+def rrg_page():
+    """RRG (Relative Rotation Graph) page"""
+    return render_template('rrg.html')
+
+@app.route('/api/rrg/data')
+def get_rrg_data():
+    """Get RRG data from database"""
+    try:
+        with db_manager.get_session() as session:
+            # Get RRG data from database
+            rrg_records = session.query(RRGData).order_by(RRGData.symbol).all()
+            
+            if not rrg_records:
+                # No RRG data in database, calculate it
+                return calculate_and_return_rrg_data()
+            
+            # Convert to list of dictionaries
+            rrg_data = []
+            for record in rrg_records:
+                rrg_data.append({
+                    'symbol': record.symbol,
+                    'name': record.name,
+                    'rs_ratio': record.rs_ratio,
+                    'rs_momentum': record.rs_momentum,
+                    'quadrant': record.quadrant,
+                    'current_price': record.current_price,
+                    'spy_price': record.spy_price,
+                    'calculated_at': record.calculated_at.isoformat() if record.calculated_at else None
+                })
+            
+            return jsonify({
+                'success': True,
+                'rrg_data': rrg_data,
+                'count': len(rrg_data)
+            })
+            
+    except Exception as e:
+        print(f"Error getting RRG data: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/rrg/refresh', methods=['POST'])
+def refresh_rrg_data():
+    """Refresh RRG data by recalculating from indices data"""
+    try:
+        return calculate_and_return_rrg_data()
+        
+    except Exception as e:
+        print(f"Error refreshing RRG data: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+def calculate_and_return_rrg_data():
+    """Calculate RRG data from indices and return it"""
+    try:
+        with db_manager.get_session() as session:
+            # Get indices data from database
+            from database.models import Index
+            indices = session.query(Index).all()
+            
+            if not indices:
+                return jsonify({
+                    'success': False,
+                    'error': 'No indices data found. Please refresh benchmark data first.'
+                }), 400
+            
+            # Convert to list of dictionaries
+            indices_data = []
+            for index in indices:
+                indices_data.append({
+                    'symbol': index.symbol,
+                    'name': index.name,
+                    'price_data': index.price_data,
+                    'last_updated': index.last_updated.isoformat() if index.last_updated else None
+                })
+            
+            # Calculate RRG data
+            rrg_calculator = RRGCalculator()
+            rrg_data = rrg_calculator.calculate_rrg_data(indices_data)
+            
+            if not rrg_data:
+                return jsonify({
+                    'success': False,
+                    'error': 'Failed to calculate RRG data'
+                }), 400
+            
+            # Save to database
+            session.query(RRGData).delete()  # Clear existing data
+            
+            for etf_data in rrg_data:
+                rrg_record = RRGData(
+                    symbol=etf_data['symbol'],
+                    name=etf_data['name'],
+                    rs_ratio=etf_data['rs_ratio'],
+                    rs_momentum=etf_data['rs_momentum'],
+                    quadrant=etf_data['quadrant'],
+                    current_price=etf_data['current_price'],
+                    spy_price=etf_data['spy_price']
+                )
+                session.add(rrg_record)
+            
+            session.commit()
+            
+            return jsonify({
+                'success': True,
+                'rrg_data': rrg_data,
+                'count': len(rrg_data),
+                'message': 'RRG data calculated and saved successfully'
+            })
+            
+    except Exception as e:
+        print(f"Error calculating RRG data: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
         }), 500
 
 if __name__ == '__main__':

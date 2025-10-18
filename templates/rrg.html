@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RRG - Relative Rotation Graph | Stock Ticker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #212529;
+            --bg-secondary: #343a40;
+            --text-primary: #ffffff;
+            --text-secondary: #adb5bd;
+            --border-color: #495057;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .rrg-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .rrg-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .rrg-chart {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quadrant-legend {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quadrant {
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 120px;
+            margin: 5px;
+        }
+
+        .quadrant.leading {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .quadrant.weakening {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        .quadrant.lagging {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .quadrant.improving {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #17a2b8;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-refresh {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-refresh:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+        }
+
+        .btn-refresh:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .rrg-summary {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .summary-card h6 {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .etf-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .etf-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .etf-list li:last-child {
+            border-bottom: none;
+        }
+
+        .etf-symbol {
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .etf-name {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .rrg-values {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .rrg-container {
+                padding: 10px;
+            }
+            
+            .quadrant-legend {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="rrg-container">
+        <!-- Header -->
+        <div class="rrg-header">
+            <h1>📈 Relative Rotation Graph (RRG)</h1>
+            <p class="text-muted">Sector rotation analysis using RS-Ratio and RS-Momentum</p>
+        </div>
+
+        <!-- Quadrant Legend -->
+        <div class="quadrant-legend">
+            <div class="quadrant leading">
+                🟢 Leading<br>
+                <small>Strong RS + Strong Momentum</small>
+            </div>
+            <div class="quadrant weakening">
+                🟡 Weakening<br>
+                <small>Strong RS + Weak Momentum</small>
+            </div>
+            <div class="quadrant lagging">
+                🔴 Lagging<br>
+                <small>Weak RS + Weak Momentum</small>
+            </div>
+            <div class="quadrant improving">
+                🔵 Improving<br>
+                <small>Weak RS + Strong Momentum</small>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="refreshBtn" class="btn btn-primary btn-refresh">
+                🔄 Refresh RRG Data
+            </button>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                <label class="form-check-label" for="darkModeToggle">
+                    🌙 Dark Mode
+                </label>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Calculating RRG data...</p>
+        </div>
+
+        <!-- RRG Chart -->
+        <div class="rrg-chart">
+            <h5>📊 RRG Chart</h5>
+            <div id="rrgChart"></div>
+        </div>
+
+        <!-- RRG Summary -->
+        <div class="rrg-summary">
+            <h5>📋 Sector Summary</h5>
+            <div id="rrgSummary"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let rrgData = [];
+        let darkMode = false;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
+            loadRRGData();
+            setupEventListeners();
+        });
+
+        // Theme management
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                document.getElementById('darkModeToggle').checked = true;
+                darkMode = true;
+            }
+        }
+
+        function toggleTheme() {
+            darkMode = !darkMode;
+            if (darkMode) {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-bs-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Event listeners
+        function setupEventListeners() {
+            document.getElementById('darkModeToggle').addEventListener('change', toggleTheme);
+            document.getElementById('refreshBtn').addEventListener('click', refreshRRGData);
+        }
+
+        // Load RRG data
+        async function loadRRGData() {
+            try {
+                showLoading(true);
+                const response = await fetch('/api/rrg/data');
+                if (response.ok) {
+                    const data = await response.json();
+                    rrgData = data.rrg_data || [];
+                    renderRRGChart();
+                    renderRRGSummary();
+                } else {
+                    console.error('Failed to load RRG data');
+                }
+            } catch (error) {
+                console.error('Error loading RRG data:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Refresh RRG data
+        async function refreshRRGData() {
+            try {
+                showLoading(true);
+                const response = await fetch('/api/rrg/refresh', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    rrgData = data.rrg_data || [];
+                    renderRRGChart();
+                    renderRRGSummary();
+                } else {
+                    console.error('Failed to refresh RRG data');
+                }
+            } catch (error) {
+                console.error('Error refreshing RRG data:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Show/hide loading
+        function showLoading(show) {
+            const loading = document.getElementById('loadingIndicator');
+            const refreshBtn = document.getElementById('refreshBtn');
+            
+            if (show) {
+                loading.style.display = 'block';
+                refreshBtn.disabled = true;
+                refreshBtn.innerHTML = '⏳ Refreshing...';
+            } else {
+                loading.style.display = 'none';
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '🔄 Refresh RRG Data';
+            }
+        }
+
+        // Render RRG chart
+        function renderRRGChart() {
+            const container = document.getElementById('rrgChart');
+            container.innerHTML = '';
+
+            if (rrgData.length === 0) {
+                container.innerHTML = '<p class="text-muted">No RRG data available</p>';
+                return;
+            }
+
+            // Chart dimensions
+            const width = 800;
+            const height = 600;
+            const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+
+            // Create SVG
+            const svg = d3.select('#rrgChart')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Scales
+            const xScale = d3.scaleLinear()
+                .domain([80, 120])  // RS-Ratio range
+                .range([margin.left, width - margin.right]);
+
+            const yScale = d3.scaleLinear()
+                .domain([-20, 20])  // RS-Momentum range
+                .range([height - margin.bottom, margin.top]);
+
+            // Add axes
+            svg.append('g')
+                .attr('transform', `translate(0,${height - margin.bottom})`)
+                .call(d3.axisBottom(xScale).tickFormat(d => d + '%'))
+                .append('text')
+                .attr('x', width / 2)
+                .attr('y', 40)
+                .attr('fill', 'currentColor')
+                .style('text-anchor', 'middle')
+                .text('RS-Ratio');
+
+            svg.append('g')
+                .attr('transform', `translate(${margin.left},0)`)
+                .call(d3.axisLeft(yScale).tickFormat(d => d + '%'))
+                .append('text')
+                .attr('transform', 'rotate(-90)')
+                .attr('y', -40)
+                .attr('x', -height / 2)
+                .attr('fill', 'currentColor')
+                .style('text-anchor', 'middle')
+                .text('RS-Momentum');
+
+            // Add quadrant lines
+            const centerX = xScale(100);
+            const centerY = yScale(0);
+
+            // Vertical line at RS-Ratio = 100
+            svg.append('line')
+                .attr('x1', centerX)
+                .attr('y1', margin.top)
+                .attr('x2', centerX)
+                .attr('y2', height - margin.bottom)
+                .attr('stroke', '#ccc')
+                .attr('stroke-dasharray', '5,5');
+
+            // Horizontal line at RS-Momentum = 0
+            svg.append('line')
+                .attr('x1', margin.left)
+                .attr('y1', centerY)
+                .attr('x2', width - margin.right)
+                .attr('y2', centerY)
+                .attr('stroke', '#ccc')
+                .attr('stroke-dasharray', '5,5');
+
+            // Add quadrant labels
+            const quadrants = [
+                { x: width - 100, y: 30, text: 'Leading', class: 'leading' },
+                { x: width - 100, y: height - 30, text: 'Weakening', class: 'weakening' },
+                { x: 50, y: height - 30, text: 'Lagging', class: 'lagging' },
+                { x: 50, y: 30, text: 'Improving', class: 'improving' }
+            ];
+
+            quadrants.forEach(q => {
+                svg.append('text')
+                    .attr('x', q.x)
+                    .attr('y', q.y)
+                    .attr('class', `quadrant-label ${q.class}`)
+                    .style('text-anchor', 'middle')
+                    .style('font-weight', 'bold')
+                    .text(q.text);
+            });
+
+            // Color scale for quadrants
+            const colorScale = d3.scaleOrdinal()
+                .domain(['Leading', 'Weakening', 'Lagging', 'Improving'])
+                .range(['#28a745', '#ffc107', '#dc3545', '#17a2b8']);
+
+            // Add data points
+            svg.selectAll('.etf-point')
+                .data(rrgData)
+                .enter()
+                .append('circle')
+                .attr('class', 'etf-point')
+                .attr('cx', d => xScale(d.rs_ratio))
+                .attr('cy', d => yScale(d.rs_momentum))
+                .attr('r', 8)
+                .attr('fill', d => colorScale(d.quadrant))
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2)
+                .style('cursor', 'pointer')
+                .on('mouseover', function(event, d) {
+                    // Show tooltip
+                    const tooltip = d3.select('body').append('div')
+                        .attr('class', 'tooltip')
+                        .style('position', 'absolute')
+                        .style('background', 'rgba(0,0,0,0.8)')
+                        .style('color', 'white')
+                        .style('padding', '10px')
+                        .style('border-radius', '5px')
+                        .style('pointer-events', 'none')
+                        .style('z-index', '1000');
+
+                    tooltip.html(`
+                        <strong>${d.symbol}</strong><br>
+                        ${d.name}<br>
+                        RS-Ratio: ${d.rs_ratio}%<br>
+                        RS-Momentum: ${d.rs_momentum}%<br>
+                        Quadrant: ${d.quadrant}
+                    `);
+
+                    d3.select(this).attr('r', 12);
+                })
+                .on('mousemove', function(event) {
+                    d3.select('.tooltip')
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', function() {
+                    d3.select('.tooltip').remove();
+                    d3.select(this).attr('r', 8);
+                });
+
+            // Add ETF labels
+            svg.selectAll('.etf-label')
+                .data(rrgData)
+                .enter()
+                .append('text')
+                .attr('class', 'etf-label')
+                .attr('x', d => xScale(d.rs_ratio))
+                .attr('y', d => yScale(d.rs_momentum) - 15)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '12px')
+                .style('font-weight', 'bold')
+                .text(d => d.symbol);
+        }
+
+        // Render RRG summary
+        function renderRRGSummary() {
+            const container = document.getElementById('rrgSummary');
+            
+            if (rrgData.length === 0) {
+                container.innerHTML = '<p class="text-muted">No RRG data available</p>';
+                return;
+            }
+
+            // Group by quadrant
+            const quadrants = {
+                'Leading': rrgData.filter(d => d.quadrant === 'Leading'),
+                'Weakening': rrgData.filter(d => d.quadrant === 'Weakening'),
+                'Lagging': rrgData.filter(d => d.quadrant === 'Lagging'),
+                'Improving': rrgData.filter(d => d.quadrant === 'Improving')
+            };
+
+            let html = '<div class="summary-grid">';
+            
+            Object.entries(quadrants).forEach(([quadrant, etfs]) => {
+                const quadrantClass = quadrant.toLowerCase();
+                html += `
+                    <div class="summary-card">
+                        <h6 class="quadrant-${quadrantClass}">${quadrant} (${etfs.length})</h6>
+                        <ul class="etf-list">
+                            ${etfs.map(etf => `
+                                <li>
+                                    <div class="etf-symbol">${etf.symbol}</div>
+                                    <div class="etf-name">${etf.name}</div>
+                                    <div class="rrg-values">
+                                        RS: ${etf.rs_ratio}% | Momentum: ${etf.rs_momentum}%
+                                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
