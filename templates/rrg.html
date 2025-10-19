@@ -86,12 +86,24 @@
 
             .rrg-chart {
                 overflow-x: auto;
+                width: 100%;
+                margin: 0;
+                padding: 0;
             }
 
-            #rrgChart svg {
-                min-width: 600px;
+            #rrgChart, #etfTrailChart {
+                width: 100%;
+                min-width: 250px; /* Minimal minimum width for maximum mobile utilization */
+                height: auto;
+                margin: 0;
+                padding: 0;
+            }
+
+            #rrgChart svg, #etfTrailChart svg {
                 width: 100%;
                 height: auto;
+                max-width: none; /* Remove any max-width restrictions */
+                min-width: none; /* Remove minimum width restrictions */
             }
 
             .quadrant-legend .row {
@@ -150,6 +162,40 @@
             margin-bottom: 20px;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Mobile optimizations for chart containers */
+        @media (max-width: 768px) {
+            .rrg-chart {
+                padding: 5px;
+                margin: 0 -15px 20px -10px; /* Less aggressive on left, more on right */
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+                min-height: 450px;
+            }
+
+            #rrgChart, #etfTrailChart {
+                width: 100%;
+                max-width: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            /* Make the main container use minimal space */
+            .rrg-container {
+                padding: 0 5px;
+                margin: 0;
+            }
+
+            /* Ensure text visibility */
+            body, html {
+                margin: 0;
+                padding: 0;
+                overflow-x: hidden;
+            }
         }
 
         .quadrant-legend {
@@ -653,11 +699,22 @@
                 return;
             }
 
-            // Chart dimensions - responsive (bigger on desktop)
+            // Chart dimensions - fully responsive to use all available space
             const containerWidth = document.getElementById('etfTrailChart').clientWidth || 1000;
-            const width = Math.min(containerWidth - 40, 1000);
-            const height = Math.min(width * 0.6, 600); // Maintain aspect ratio
-            const margin = { top: 40, right: 40, bottom: 80, left: 80 };
+            const isMobile = window.innerWidth <= 768;
+            
+            // Use maximum space while preserving text visibility for focus view too
+            const width = isMobile ? 
+                Math.min(containerWidth, window.innerWidth - 20) : // Mobile: use almost full screen width
+                Math.min(containerWidth - 40, 1200); // Desktop: larger max size
+            
+            const height = isMobile ? 
+                Math.min(width * 0.8, window.innerHeight * 0.7) : // Mobile: much taller, use more vertical space
+                Math.min(width * 0.6, 700); // Desktop: maintain ratio, max 700px
+            
+            const margin = isMobile ? 
+                { top: 25, right: 25, bottom: 50, left: 60 } : // Increased left margin for Y-axis labels
+                { top: 40, right: 40, bottom: 80, left: 80 }; // Larger margins on desktop
 
             const svg = d3.select('#etfTrailChart')
                 .append('svg')
@@ -730,7 +787,10 @@
                 .attr('stroke-width', 3)
                 .attr('fill', 'none');
 
-            // Add data points
+            // Add data points with responsive sizing
+            const trailPointRadius = isMobile ? 6 : 8;
+            const trailStrokeWidth = isMobile ? 1.5 : 2;
+            
             svg.selectAll('.trail-point')
                 .data(etfData)
                 .enter()
@@ -738,10 +798,10 @@
                 .attr('class', 'trail-point')
                 .attr('cx', d => xScale(d.rs_ratio))
                 .attr('cy', d => yScale(d.rs_momentum))
-                .attr('r', 8)
+                .attr('r', trailPointRadius)
                 .attr('fill', d => colorScale(d.quadrant))
                 .attr('stroke', '#fff')
-                .attr('stroke-width', 2)
+                .attr('stroke-width', trailStrokeWidth)
                 .on('mouseover', function(event, d) {
                     const tooltip = d3.select('body').append('div')
                         .attr('class', 'tooltip')
@@ -772,7 +832,7 @@
                         <strong>Quadrant:</strong> <span style="color: ${colorScale(d.quadrant)}">${d.quadrant}</span>
                     `);
 
-                    d3.select(this).attr('r', 12);
+                    d3.select(this).attr('r', isMobile ? 10 : 12);
                 })
                 .on('mousemove', function(event) {
                     d3.select('.tooltip')
@@ -781,19 +841,22 @@
                 })
                 .on('mouseout', function() {
                     d3.select('.tooltip').remove();
-                    d3.select(this).attr('r', 8);
+                    d3.select(this).attr('r', trailPointRadius);
                 });
 
-            // Add labels
+            // Add labels with responsive sizing
+            const trailLabelFontSize = isMobile ? '8px' : '10px';
+            const trailLabelOffset = isMobile ? -10 : -12;
+            
             svg.selectAll('.trail-label')
                 .data(etfData)
                 .enter()
                 .append('text')
                 .attr('class', 'trail-label')
                 .attr('x', d => xScale(d.rs_ratio))
-                .attr('y', d => yScale(d.rs_momentum) - 12)
+                .attr('y', d => yScale(d.rs_momentum) + trailLabelOffset)
                 .attr('text-anchor', 'middle')
-                .style('font-size', '10px')
+                .style('font-size', trailLabelFontSize)
                 .style('font-weight', 'bold')
                 .style('fill', 'var(--text-primary)')
                 .text(d => d.week_number === 0 ? 'Now' : `-${d.week_number}W`);
@@ -895,11 +958,22 @@
                 return;
             }
 
-            // Chart dimensions - responsive (bigger on desktop)
+            // Chart dimensions - fully responsive to use all available space
             const containerWidth = document.getElementById('rrgChart').clientWidth || 1000;
-            const width = Math.min(containerWidth - 40, 1000); // Max 1000px on desktop
-            const height = Math.min(width * 0.7, 700); // Maintain aspect ratio, max 700px
-            const margin = { top: 40, right: 40, bottom: 80, left: 80 };
+            const isMobile = window.innerWidth <= 768;
+            
+            // Use maximum space while preserving text visibility
+            const width = isMobile ? 
+                Math.min(containerWidth, window.innerWidth - 20) : // Mobile: use almost full screen width
+                Math.min(containerWidth - 40, 1200); // Desktop: larger max size
+            
+            const height = isMobile ? 
+                Math.min(width * 0.9, window.innerHeight * 0.75) : // Mobile: much taller, use more vertical space
+                Math.min(width * 0.7, 800); // Desktop: maintain ratio, max 800px
+            
+            const margin = isMobile ? 
+                { top: 25, right: 25, bottom: 50, left: 60 } : // Increased left margin for Y-axis labels
+                { top: 40, right: 40, bottom: 80, left: 80 }; // Larger margins on desktop
 
             // Create SVG
             const svg = d3.select('#rrgChart')
@@ -1034,7 +1108,10 @@
                 .domain(['Leading', 'Weakening', 'Lagging', 'Improving'])
                 .range(['#28a745', '#ffc107', '#dc3545', '#17a2b8']);
 
-            // Add current week data points
+            // Add current week data points with responsive sizing
+            const pointRadius = isMobile ? 8 : 12;
+            const strokeWidth = isMobile ? 2 : 3;
+            
             svg.selectAll('.etf-point')
                 .data(currentWeekData)
                 .enter()
@@ -1042,10 +1119,10 @@
                 .attr('class', 'etf-point')
                 .attr('cx', d => xScale(d.rs_ratio))
                 .attr('cy', d => yScale(d.rs_momentum))
-                .attr('r', 12)
+                .attr('r', pointRadius)
                 .attr('fill', d => colorScale(d.quadrant))
                 .attr('stroke', '#fff')
-                .attr('stroke-width', 3)
+                .attr('stroke-width', strokeWidth)
                 .style('cursor', 'pointer')
                 .on('mouseover', function(event, d) {
                     // Show tooltip
@@ -1079,7 +1156,7 @@
                         <strong>Quadrant:</strong> <span style="color: ${colorScale(d.quadrant)}">${d.quadrant}</span>
                     `);
 
-                    d3.select(this).attr('r', 16);
+                    d3.select(this).attr('r', isMobile ? 12 : 16);
                 })
                 .on('mousemove', function(event) {
                     d3.select('.tooltip')
@@ -1088,19 +1165,22 @@
                 })
                 .on('mouseout', function() {
                     d3.select('.tooltip').remove();
-                    d3.select(this).attr('r', 12);
+                    d3.select(this).attr('r', pointRadius);
                 });
 
-            // Add ETF labels with better positioning
+            // Add ETF labels with responsive positioning and sizing
+            const labelFontSize = isMobile ? '9px' : '11px';
+            const labelOffset = isMobile ? -15 : -18;
+            
             svg.selectAll('.etf-label')
                 .data(currentWeekData)
                 .enter()
                 .append('text')
                 .attr('class', 'etf-label')
                 .attr('x', d => xScale(d.rs_ratio))
-                .attr('y', d => yScale(d.rs_momentum) - 18)
+                .attr('y', d => yScale(d.rs_momentum) + labelOffset)
                 .attr('text-anchor', 'middle')
-                .style('font-size', '11px')
+                .style('font-size', labelFontSize)
                 .style('font-weight', 'bold')
                 .style('fill', 'var(--text-primary)')
                 .style('text-shadow', '1px 1px 2px rgba(255,255,255,0.8)')
