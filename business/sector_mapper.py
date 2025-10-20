@@ -12,14 +12,19 @@ class SectorMapper:
             'Technology': 'XLK',
             'Healthcare': 'XLV', 
             'Financial Services': 'XLF',
+            'Financials': 'XLF',  # Alternative name
             'Consumer Discretionary': 'XLY',
+            'Consumer Cyclical': 'XLY',  # Alternative name for Consumer Discretionary
             'Consumer Staples': 'XLP',
+            'Consumer Defensive': 'XLP',  # Alternative name
             'Energy': 'XLE',
             'Industrials': 'XLI',
             'Materials': 'XLB',
+            'Basic Materials': 'XLB',  # Alternative name
             'Real Estate': 'XLRE',
             'Utilities': 'XLU',
-            'Communication Services': 'XLC'
+            'Communication Services': 'XLC',
+            'Communications': 'XLC'  # Alternative name
         }
     
     def get_sector_etf(self, sector: str) -> str:

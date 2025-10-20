@@ -14,6 +14,7 @@ from database.database import db_manager
 from publisher.data_publisher import DataPublisher
 from business.data_orchestrator import DataOrchestrator
 from business.rrg_calculator import RRGCalculator
+from business.trading_signals import TradingSignalsEngine
 from database.models import RRGData
 
 # Custom JSON provider to handle NaN values
@@ -48,6 +49,9 @@ server_start_time = datetime.now(pst).strftime('%Y-%m-%d %H:%M PST')
 # Data publisher instance (contains orchestrator)
 data_publisher = DataPublisher()
 data_orchestrator = data_publisher.orchestrator
+
+# Trading signals engine
+trading_signals_engine = TradingSignalsEngine()
 
 @app.route('/')
 def home():
@@ -108,6 +112,17 @@ def refresh_data():
         print("Data refresh triggered...", flush=True)
         print(f"Current stock count before refresh: {db_manager.get_stock_count()}", flush=True)
         
+        # Step 1: Refresh benchmark indices data from Polygon (if stale)
+        print("📊 Step 1: Checking benchmark indices freshness...", flush=True)
+        benchmark_success = data_orchestrator.refresh_benchmark_data()
+        
+        if benchmark_success:
+            print("✅ Benchmark data is fresh and ready", flush=True)
+        else:
+            print("⚠️ Benchmark data refresh failed or Polygon not configured, continuing with existing data...", flush=True)
+        
+        # Step 2: Refresh stock data
+        print("📈 Step 2: Refreshing stock data...", flush=True)
         success, successful_count, failed_count = data_publisher.publish_all_stocks()
         
         print(f"Refresh completed - Success: {success}, Updated: {successful_count}, Failed: {failed_count}", flush=True)
@@ -387,6 +402,92 @@ def calculate_and_return_rrg_data():
             
     except Exception as e:
         print(f"Error calculating RRG data: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+# Trading Signals Routes
+@app.route('/signals')
+def signals_page():
+    """Trading Signals Dashboard page"""
+    return render_template('signals.html')
+
+@app.route('/api/signals/data')
+def get_trading_signals():
+    """Get trading signals for all stocks"""
+    try:
+        # Get all stocks data with metrics
+        stocks_data_raw = data_orchestrator.get_all_stocks_data()
+        
+        if not stocks_data_raw:
+            return jsonify({
+                'success': False,
+                'error': 'No stock data available',
+                'signals': [],
+                'summary': {}
+            })
+        
+        # Convert to format expected by trading signals engine
+        # The engine expects a list of dicts with 'stock' and 'metrics' keys
+        stocks_data_formatted = []
+        for stock_data in stocks_data_raw:
+            formatted = {
+                'stock': {
+                    'symbol': stock_data.get('symbol'),
+                    'company_name': stock_data.get('company_name'),
+                    'sector': stock_data.get('sector'),
+                    'industry': stock_data.get('industry'),
+                    'current_price': stock_data.get('price'),
+                    'market_cap': stock_data.get('market_cap')
+                },
+                'metrics': {
+                    'eps_growth_qoq': stock_data.get('eps_growth', {}).get('quarter_over_quarter'),
+                    'eps_growth_yoy': stock_data.get('eps_growth', {}).get('year_over_year'),
+                    'latest_quarterly_eps': stock_data.get('eps_growth', {}).get('latest_quarters', [])[-1] if stock_data.get('eps_growth', {}).get('latest_quarters') else None,
+                    'rs_spy': stock_data.get('relative_strength', {}).get('rs_spy'),
+                    'rs_sector': stock_data.get('relative_strength', {}).get('rs_sector'),
+                    'ema_data': stock_data.get('ema_data', {}),
+                    'eps_history': stock_data.get('eps_history', {})
+                }
+            }
+            stocks_data_formatted.append(formatted)
+        
+        # Generate signals for all stocks
+        signals = trading_signals_engine.generate_signals_for_all_stocks(stocks_data_formatted)
+        
+        # Get summary statistics
+        summary = trading_signals_engine.get_signal_summary(signals)
+        
+        return jsonify({
+            'success': True,
+            'signals': signals,
+            'summary': summary,
+            'count': len(signals),
+            'generated_at': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        import traceback
+        print(f"Error generating trading signals: {e}", flush=True)
+        print(traceback.format_exc(), flush=True)
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'signals': [],
+            'summary': {}
+        }), 500
+
+@app.route('/api/signals/refresh', methods=['POST'])
+def refresh_trading_signals():
+    """Recalculate trading signals (signals are calculated on-demand from DB data)"""
+    try:
+        # Trading signals are generated from current DB data
+        # Just return fresh signals
+        return get_trading_signals()
+        
+    except Exception as e:
+        print(f"Error refreshing trading signals: {e}", flush=True)
         return jsonify({
             'success': False,
             'error': str(e)

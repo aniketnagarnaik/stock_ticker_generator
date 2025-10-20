@@ -74,13 +74,17 @@ class FinancialCalculations:
     
     @staticmethod
     def calculate_relative_strength(stock_prices: pd.DataFrame, 
-                                  benchmark_data: Dict[str, pd.DataFrame]) -> Dict[str, float]:
+                                  benchmark_data: Dict[str, pd.DataFrame],
+                                  sector: str = None,
+                                  sector_etf: str = None) -> Dict[str, float]:
         """
         Calculate relative strength vs benchmarks
         
         Args:
             stock_prices: Stock price DataFrame with 'date' and 'close' columns
             benchmark_data: Dictionary of benchmark DataFrames
+            sector: Stock sector (e.g., 'Technology', 'Healthcare')
+            sector_etf: Sector ETF symbol (e.g., 'XLK', 'XLV') - if not provided, will be determined from sector
             
         Returns:
             Dictionary with RS values
@@ -105,15 +109,33 @@ class FinancialCalculations:
                 rs_spy = FinancialCalculations._calculate_rs_ratio(stock_df, spy_df)
                 rs_values['rs_spy'] = rs_spy
             
-            # Calculate RS vs sector ETF (if available)
-            # For now, use QQQ as sector proxy for tech stocks
-            if 'QQQ' in benchmark_data:
-                qqq_df = benchmark_data['QQQ'].copy()
-                qqq_df['date'] = pd.to_datetime(qqq_df['date'])
-                qqq_df = qqq_df.set_index('date')['close']
+            # Calculate RS vs sector ETF
+            # Determine sector ETF if not provided
+            if not sector_etf and sector:
+                from business.sector_mapper import SectorMapper
+                sector_mapper = SectorMapper()
+                sector_etf = sector_mapper.get_sector_etf(sector)
+            
+            # Calculate RS against sector ETF if available
+            if sector_etf and sector_etf in benchmark_data:
+                sector_df = benchmark_data[sector_etf].copy()
+                sector_df['date'] = pd.to_datetime(sector_df['date'])
+                sector_df = sector_df.set_index('date')['close']
                 
-                rs_sector = FinancialCalculations._calculate_rs_ratio(stock_df, qqq_df)
+                rs_sector = FinancialCalculations._calculate_rs_ratio(stock_df, sector_df)
                 rs_values['rs_sector'] = rs_sector
+            else:
+                # Fallback to QQQ if sector ETF not available
+                if 'QQQ' in benchmark_data:
+                    qqq_df = benchmark_data['QQQ'].copy()
+                    qqq_df['date'] = pd.to_datetime(qqq_df['date'])
+                    qqq_df = qqq_df.set_index('date')['close']
+                    
+                    rs_sector = FinancialCalculations._calculate_rs_ratio(stock_df, qqq_df)
+                    rs_values['rs_sector'] = rs_sector
+                    print(f"  ⚠️ Using QQQ as fallback for sector {sector} (ETF: {sector_etf})", flush=True)
+                else:
+                    rs_values['rs_sector'] = None
             
             return rs_values
             

@@ -287,7 +287,15 @@ class DataOrchestrator:
                 if 'report_date' in price_data_copy.columns:
                     price_data_copy = price_data_copy.rename(columns={'report_date': 'date'})
                 
-                rs_values = self.calculations.calculate_relative_strength(price_data_copy, benchmark_data)
+                # Get sector from stock_data
+                sector = stock_data.get('sector')
+                
+                # Calculate RS with sector information
+                rs_values = self.calculations.calculate_relative_strength(
+                    price_data_copy, 
+                    benchmark_data,
+                    sector=sector
+                )
                 metrics['rs_spy'] = rs_values.get('rs_spy')
                 metrics['rs_sector'] = rs_values.get('rs_sector')
             else:

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Signals Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --strong-buy-color: #22c55e;
+            --buy-color: #84cc16;
+            --hold-color: #eab308;
+            --sell-color: #f97316;
+            --strong-sell-color: #ef4444;
+            --bg-light: #f8f9fa;
+            --bg-dark: #1a1d23;
+            --text-light: #333;
+            --text-dark: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: background-color 0.3s, color 0.3s;
+            margin: 0;
+            padding: 0;
+        }
+
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .signals-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .signals-header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .signals-header {
+            background: #252a30;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .signals-header h1 {
+            margin: 0 0 5px 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .summary-card {
+            background: #252a30;
+        }
+
+        .summary-card .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .summary-card .card-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filters-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .filters-section {
+            background: #252a30;
+        }
+
+        .signals-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        body.dark-mode .signals-table-container {
+            background: #252a30;
+        }
+
+        .signals-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .signals-table thead th {
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 12px;
+            border-bottom: 2px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        body.dark-mode .signals-table thead th {
+            background: #252a30;
+            border-bottom-color: #374151;
+        }
+
+        .signals-table tbody tr {
+            background: #f9fafb;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        body.dark-mode .signals-table tbody tr {
+            background: #1f2328;
+        }
+
+        .signals-table tbody tr:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .signals-table td {
+            padding: 15px 12px;
+        }
+
+        .signals-table tr td:first-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .signals-table tr td:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .signal-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .signal-strong-buy {
+            background: var(--strong-buy-color);
+            color: white;
+        }
+
+        .signal-buy {
+            background: var(--buy-color);
+            color: white;
+        }
+
+        .signal-hold {
+            background: var(--hold-color);
+            color: white;
+        }
+
+        .signal-sell {
+            background: var(--sell-color);
+            color: white;
+        }
+
+        .signal-strong-sell {
+            background: var(--strong-sell-color);
+            color: white;
+        }
+
+        .score-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        body.dark-mode .score-bar {
+            background: #374151;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .confidence-stars {
+            color: #fbbf24;
+            font-size: 1rem;
+        }
+
+        .stock-symbol {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .company-name {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .reasoning-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .details-row {
+            display: none;
+            background: #f3f4f6 !important;
+        }
+
+        body.dark-mode .details-row {
+            background: #161a1f !important;
+        }
+
+        .details-content {
+            padding: 20px;
+        }
+
+        .metric-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .metric-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        body.dark-mode .metric-item {
+            background: #1f2328;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+        }
+
+        .disclaimer {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        body.dark-mode .disclaimer {
+            background: #451a03;
+            border-left-color: #f59e0b;
+        }
+
+        @media (max-width: 768px) {
+            .signals-container {
+                padding: 10px;
+            }
+
+            .signals-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .summary-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .summary-card .card-value {
+                font-size: 2rem;
+            }
+
+            .signals-table {
+                font-size: 0.85rem;
+            }
+
+            .signals-table td {
+                padding: 10px 8px;
+            }
+
+            .metric-breakdown {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signals-container">
+        <!-- Header -->
+        <div class="signals-header">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="nav-links">
+                    <a href="/" class="btn btn-sm btn-outline-secondary me-2">🏠 Home</a>
+                    <a href="/stocks" class="btn btn-sm btn-outline-primary me-2">📊 Stock Table</a>
+                    <a href="/rrg" class="btn btn-sm btn-outline-success me-2">📈 RRG Chart</a>
+                    <a href="/signals" class="btn btn-sm btn-outline-warning">🎯 Signals</a>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1>🎯 Trading Signals Dashboard</h1>
+                    <p class="text-muted mb-0">AI-powered buy/sell recommendations based on fundamental, technical, and relative strength analysis</p>
+                </div>
+                <div class="header-controls">
+                    <button id="refreshBtn" class="btn btn-sm btn-outline-primary">
+                        🔄 Refresh
+                    </button>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                        <label class="form-check-label" for="darkModeToggle">
+                            🌙 Dark
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div id="summaryCards" class="summary-cards">
+            <!-- Populated by JavaScript -->
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label"><strong>Signal Type</strong></label>
+                    <select id="signalFilter" class="form-select">
+                        <option value="all">All Signals</option>
+                        <option value="STRONG BUY">Strong Buy</option>
+                        <option value="BUY">Buy</option>
+                        <option value="HOLD">Hold</option>
+                        <option value="SELL">Sell</option>
+                        <option value="STRONG SELL">Strong Sell</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label"><strong>Sector</strong></label>
+                    <select id="sectorFilter" class="form-select">
+                        <option value="all">All Sectors</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label"><strong>Confidence</strong></label>
+                    <select id="confidenceFilter" class="form-select">
+                        <option value="all">All Confidence Levels</option>
+                        <option value="High">High Confidence</option>
+                        <option value="Medium">Medium Confidence</option>
+                        <option value="Low">Low Confidence</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label"><strong>Sort By</strong></label>
+                    <select id="sortBy" class="form-select">
+                        <option value="score">Signal Score (High to Low)</option>
+                        <option value="score_asc">Signal Score (Low to High)</option>
+                        <option value="symbol">Symbol (A-Z)</option>
+                        <option value="confidence">Confidence (High to Low)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signals Table -->
+        <div class="signals-table-container">
+            <div id="loadingSpinner" class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+            <div id="signalsTableWrapper" style="display: none;">
+                <table class="signals-table">
+                    <thead>
+                        <tr>
+                            <th>Stock</th>
+                            <th>Signal</th>
+                            <th>Score</th>
+                            <th>Confidence</th>
+                            <th>Sector</th>
+                            <th>Reasoning</th>
+                        </tr>
+                    </thead>
+                    <tbody id="signalsTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+            <strong>⚠️ Disclaimer:</strong> These trading signals are for educational and informational purposes only. 
+            They are not investment advice. Past performance does not guarantee future results. 
+            Always conduct your own research and consult with a qualified financial advisor before making investment decisions.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let allSignals = [];
+        let allSectors = new Set();
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (savedDarkMode) {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        }
+
+        darkModeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        });
+
+        // Fetch and display signals
+        async function loadSignals() {
+            try {
+                document.getElementById('loadingSpinner').style.display = 'flex';
+                document.getElementById('signalsTableWrapper').style.display = 'none';
+
+                const response = await fetch('/api/signals/data');
+                const data = await response.json();
+
+                if (data.success) {
+                    allSignals = data.signals;
+                    
+                    // Extract unique sectors
+                    allSectors = new Set(allSignals.map(s => s.sector).filter(s => s));
+                    populateSectorFilter();
+                    
+                    // Display summary
+                    displaySummary(data.summary);
+                    
+                    // Display signals table
+                    displaySignals(allSignals);
+                    
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    document.getElementById('signalsTableWrapper').style.display = 'block';
+                } else {
+                    console.error('Error loading signals:', data.error);
+                    document.getElementById('loadingSpinner').innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Error:</strong> ${data.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error fetching signals:', error);
+                document.getElementById('loadingSpinner').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> Failed to load trading signals. ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function populateSectorFilter() {
+            const sectorFilter = document.getElementById('sectorFilter');
+            const currentValue = sectorFilter.value;
+            
+            // Keep "All Sectors" option
+            sectorFilter.innerHTML = '<option value="all">All Sectors</option>';
+            
+            // Add unique sectors
+            Array.from(allSectors).sort().forEach(sector => {
+                const option = document.createElement('option');
+                option.value = sector;
+                option.textContent = sector;
+                sectorFilter.appendChild(option);
+            });
+            
+            sectorFilter.value = currentValue;
+        }
+
+        function displaySummary(summary) {
+            const summaryCards = document.getElementById('summaryCards');
+            summaryCards.innerHTML = `
+                <div class="summary-card">
+                    <div class="card-label">Strong Buy</div>
+                    <div class="card-value" style="color: var(--strong-buy-color);">${summary.strong_buy_count || 0}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-label">Buy</div>
+                    <div class="card-value" style="color: var(--buy-color);">${summary.buy_count || 0}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-label">Hold</div>
+                    <div class="card-value" style="color: var(--hold-color);">${summary.hold_count || 0}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-label">Sell</div>
+                    <div class="card-value" style="color: var(--sell-color);">${summary.sell_count || 0}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-label">Avg Score</div>
+                    <div class="card-value">${summary.avg_score || 0}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-label">High Confidence</div>
+                    <div class="card-value">${summary.high_confidence_count || 0}</div>
+                </div>
+            `;
+        }
+
+        function displaySignals(signals) {
+            const tbody = document.getElementById('signalsTableBody');
+            tbody.innerHTML = '';
+
+            signals.forEach((signal, index) => {
+                const row = document.createElement('tr');
+                row.onclick = () => toggleDetails(index);
+                
+                const signalClass = signal.signal_type.replace(' ', '-').toLowerCase();
+                const scorePercent = signal.signal_score;
+                const scoreColor = getScoreColor(scorePercent);
+                const confidenceStars = getConfidenceStars(signal.confidence_level);
+
+                row.innerHTML = `
+                    <td>
+                        <div class="stock-symbol">${signal.symbol}</div>
+                        <div class="company-name">${signal.company_name || ''}</div>
+                    </td>
+                    <td>
+                        <span class="signal-badge signal-${signalClass}">
+                            ${getSignalIcon(signal.signal_type)} ${signal.signal_type}
+                        </span>
+                    </td>
+                    <td>
+                        <div><strong>${scorePercent.toFixed(1)}</strong> / 100</div>
+                        <div class="score-bar">
+                            <div class="score-bar-fill" style="width: ${scorePercent}%; background: ${scoreColor};"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="confidence-stars">${confidenceStars}</div>
+                        <div style="font-size: 0.8rem;">${signal.confidence_level} (${signal.confidence.toFixed(0)}%)</div>
+                    </td>
+                    <td>${signal.sector || 'N/A'}</td>
+                    <td>
+                        <div class="reasoning-text">${signal.reasoning}</div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+
+                // Add details row
+                const detailsRow = document.createElement('tr');
+                detailsRow.className = 'details-row';
+                detailsRow.id = `details-${index}`;
+                detailsRow.innerHTML = `
+                    <td colspan="6">
+                        <div class="details-content">
+                            <h5>📊 Signal Breakdown for ${signal.symbol}</h5>
+                            <div class="metric-breakdown">
+                                <div class="metric-item">
+                                    <div class="metric-label">Fundamental Score</div>
+                                    <div class="metric-value">${signal.fundamental_score.toFixed(1)}</div>
+                                    <div class="score-bar mt-2">
+                                        <div class="score-bar-fill" style="width: ${signal.fundamental_score}%; background: #3b82f6;"></div>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Technical Score</div>
+                                    <div class="metric-value">${signal.technical_score.toFixed(1)}</div>
+                                    <div class="score-bar mt-2">
+                                        <div class="score-bar-fill" style="width: ${signal.technical_score}%; background: #10b981;"></div>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Rel. Strength Score</div>
+                                    <div class="metric-value">${signal.rs_score.toFixed(1)}</div>
+                                    <div class="score-bar mt-2">
+                                        <div class="score-bar-fill" style="width: ${signal.rs_score}%; background: #f59e0b;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <strong>Detailed Metrics:</strong>
+                                <ul>
+                                    ${signal.reasoning_details.eps_qoq !== null ? `<li>EPS QoQ Growth: <strong>${signal.reasoning_details.eps_qoq.toFixed(2)}%</strong></li>` : ''}
+                                    ${signal.reasoning_details.eps_yoy !== null ? `<li>EPS YoY Growth: <strong>${signal.reasoning_details.eps_yoy.toFixed(2)}%</strong></li>` : ''}
+                                    ${signal.reasoning_details.rs_spy !== null ? `<li>RS vs SPY: <strong>${signal.reasoning_details.rs_spy.toFixed(2)}%</strong></li>` : ''}
+                                    ${signal.reasoning_details.rs_sector !== null ? `<li>RS vs Sector: <strong>${signal.reasoning_details.rs_sector.toFixed(2)}%</strong></li>` : ''}
+                                    ${signal.current_price ? `<li>Current Price: <strong>$${signal.current_price.toFixed(2)}</strong></li>` : ''}
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(detailsRow);
+            });
+        }
+
+        function toggleDetails(index) {
+            const detailsRow = document.getElementById(`details-${index}`);
+            if (detailsRow.style.display === 'table-row') {
+                detailsRow.style.display = 'none';
+            } else {
+                // Hide all other details
+                document.querySelectorAll('.details-row').forEach(row => {
+                    row.style.display = 'none';
+                });
+                detailsRow.style.display = 'table-row';
+            }
+        }
+
+        function getSignalIcon(signalType) {
+            switch(signalType) {
+                case 'STRONG BUY': return '🚀';
+                case 'BUY': return '📈';
+                case 'HOLD': return '⏸️';
+                case 'SELL': return '📉';
+                case 'STRONG SELL': return '🔻';
+                default: return '❓';
+            }
+        }
+
+        function getScoreColor(score) {
+            if (score >= 80) return 'var(--strong-buy-color)';
+            if (score >= 60) return 'var(--buy-color)';
+            if (score >= 40) return 'var(--hold-color)';
+            if (score >= 20) return 'var(--sell-color)';
+            return 'var(--strong-sell-color)';
+        }
+
+        function getConfidenceStars(level) {
+            switch(level) {
+                case 'High': return '⭐⭐⭐';
+                case 'Medium': return '⭐⭐';
+                case 'Low': return '⭐';
+                default: return '';
+            }
+        }
+
+        function filterAndSortSignals() {
+            const signalFilter = document.getElementById('signalFilter').value;
+            const sectorFilter = document.getElementById('sectorFilter').value;
+            const confidenceFilter = document.getElementById('confidenceFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            let filtered = allSignals.filter(signal => {
+                if (signalFilter !== 'all' && signal.signal_type !== signalFilter) return false;
+                if (sectorFilter !== 'all' && signal.sector !== sectorFilter) return false;
+                if (confidenceFilter !== 'all' && signal.confidence_level !== confidenceFilter) return false;
+                return true;
+            });
+
+            // Sort
+            filtered.sort((a, b) => {
+                switch(sortBy) {
+                    case 'score':
+                        return b.signal_score - a.signal_score;
+                    case 'score_asc':
+                        return a.signal_score - b.signal_score;
+                    case 'symbol':
+                        return a.symbol.localeCompare(b.symbol);
+                    case 'confidence':
+                        return b.confidence - a.confidence;
+                    default:
+                        return 0;
+                }
+            });
+
+            displaySignals(filtered);
+        }
+
+        // Event listeners
+        document.getElementById('refreshBtn').addEventListener('click', loadSignals);
+        document.getElementById('signalFilter').addEventListener('change', filterAndSortSignals);
+        document.getElementById('sectorFilter').addEventListener('change', filterAndSortSignals);
+        document.getElementById('confidenceFilter').addEventListener('change', filterAndSortSignals);
+        document.getElementById('sortBy').addEventListener('change', filterAndSortSignals);
+
+        // Initial load
+        loadSignals();
+    </script>
+</body>
+</html>
+
