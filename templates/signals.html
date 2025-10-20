@@ -333,6 +333,51 @@
             border-left-color: #f59e0b;
         }
 
+        /* Tooltip styles */
+        .info-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: help;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        body.dark-mode .info-icon {
+            background: #60a5fa;
+        }
+
+        .tooltip-content {
+            max-width: 400px;
+            text-align: left;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .tooltip-content strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+
+        .tooltip-content ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .tooltip-content li {
+            margin: 3px 0;
+        }
+
         @media (max-width: 768px) {
             .signals-container {
                 padding: 10px;
@@ -457,8 +502,20 @@
                         <tr>
                             <th>Stock</th>
                             <th>Signal</th>
-                            <th>Score</th>
-                            <th>Confidence</th>
+                            <th>
+                                Score
+                                <span class="info-icon" data-bs-toggle="tooltip" data-bs-html="true" 
+                                      data-bs-title="<div class='tooltip-content'><strong>Signal Score (0-100)</strong><ul><li>40% Fundamental (EPS growth, trend)</li><li>40% Technical (EMA alignment)</li><li>20% Relative Strength (vs SPY, Sector)</li></ul><strong>Ranges:</strong><ul><li>80-100: STRONG BUY</li><li>60-79: BUY</li><li>40-59: HOLD</li><li>20-39: SELL</li><li>0-19: STRONG SELL</li></ul></div>">
+                                    i
+                                </span>
+                            </th>
+                            <th>
+                                Confidence
+                                <span class="info-icon" data-bs-toggle="tooltip" data-bs-html="true"
+                                      data-bs-title="<div class='tooltip-content'><strong>Confidence Level</strong>Measures agreement between the three factors (Fundamental, Technical, RS).<ul><li><strong>High (80-100%):</strong> All signals strongly agree</li><li><strong>Medium (60-79%):</strong> Mostly aligned signals</li><li><strong>Low (40-59%):</strong> Mixed or conflicting signals</li></ul>Higher confidence = more reliable signal</div>">
+                                    i
+                                </span>
+                            </th>
                             <th>Sector</th>
                             <th>Reasoning</th>
                         </tr>
@@ -598,11 +655,15 @@
                 const scorePercent = signal.signal_score;
                 const scoreColor = getScoreColor(scorePercent);
                 const confidenceStars = getConfidenceStars(signal.confidence_level);
+                
+                // Truncate company name to first 60 characters (usually gets the actual name before description)
+                const companyName = signal.company_name || '';
+                const displayName = companyName.length > 60 ? companyName.substring(0, 60) + '...' : companyName;
 
                 row.innerHTML = `
                     <td>
                         <div class="stock-symbol">${signal.symbol}</div>
-                        <div class="company-name">${signal.company_name || ''}</div>
+                        <div class="company-name" title="${companyName}">${displayName}</div>
                     </td>
                     <td>
                         <span class="signal-badge signal-${signalClass}">
@@ -637,21 +698,39 @@
                             <h5>📊 Signal Breakdown for ${signal.symbol}</h5>
                             <div class="metric-breakdown">
                                 <div class="metric-item">
-                                    <div class="metric-label">Fundamental Score</div>
+                                    <div class="metric-label">
+                                        Fundamental Score
+                                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-html="true"
+                                              data-bs-title="<div class='tooltip-content'><strong>Fundamental Score (0-100)</strong>Based on earnings quality:<ul><li>EPS QoQ Growth (25 pts)</li><li>EPS YoY Growth (25 pts)</li><li>EPS Trend - Last 4Q (20 pts)</li><li>Latest EPS Value (10 pts)</li></ul>Higher score = stronger fundamentals</div>">
+                                            i
+                                        </span>
+                                    </div>
                                     <div class="metric-value">${signal.fundamental_score.toFixed(1)}</div>
                                     <div class="score-bar mt-2">
                                         <div class="score-bar-fill" style="width: ${signal.fundamental_score}%; background: #3b82f6;"></div>
                                     </div>
                                 </div>
                                 <div class="metric-item">
-                                    <div class="metric-label">Technical Score</div>
+                                    <div class="metric-label">
+                                        Technical Score
+                                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-html="true"
+                                              data-bs-title="<div class='tooltip-content'><strong>Technical Score (0-100)</strong>Based on price momentum:<ul><li>Daily EMA Alignment (30 pts)</li><li>Price vs EMAs (25 pts)</li><li>Weekly EMA Trend (25 pts)</li><li>Monthly EMA Trend (20 pts)</li></ul>Higher score = stronger momentum</div>">
+                                            i
+                                        </span>
+                                    </div>
                                     <div class="metric-value">${signal.technical_score.toFixed(1)}</div>
                                     <div class="score-bar mt-2">
                                         <div class="score-bar-fill" style="width: ${signal.technical_score}%; background: #10b981;"></div>
                                     </div>
                                 </div>
                                 <div class="metric-item">
-                                    <div class="metric-label">Rel. Strength Score</div>
+                                    <div class="metric-label">
+                                        Rel. Strength Score
+                                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-html="true"
+                                              data-bs-title="<div class='tooltip-content'><strong>Relative Strength Score (0-100)</strong>Compares stock to benchmarks:<ul><li>RS vs SPY (50 pts)<br>Performance vs S&P 500</li><li>RS vs Sector ETF (50 pts)<br>Performance vs sector peers</li></ul>Higher score = outperforming market</div>">
+                                            i
+                                        </span>
+                                    </div>
                                     <div class="metric-value">${signal.rs_score.toFixed(1)}</div>
                                     <div class="score-bar mt-2">
                                         <div class="score-bar-fill" style="width: ${signal.rs_score}%; background: #f59e0b;"></div>
@@ -673,6 +752,10 @@
                 `;
                 tbody.appendChild(detailsRow);
             });
+            
+            // Initialize Bootstrap tooltips for dynamically created content
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
         }
 
         function toggleDetails(index) {

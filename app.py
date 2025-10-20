@@ -413,6 +413,28 @@ def signals_page():
     """Trading Signals Dashboard page"""
     return render_template('signals.html')
 
+def sanitize_for_json(obj):
+    """Convert NaN, inf, and other non-JSON-serializable values to None"""
+    import math
+    import numpy as np
+    
+    if isinstance(obj, dict):
+        return {key: sanitize_for_json(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [sanitize_for_json(item) for item in obj]
+    elif isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+        return obj
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+        return float(obj)
+    else:
+        return obj
+
 @app.route('/api/signals/data')
 def get_trading_signals():
     """Get trading signals for all stocks"""
@@ -455,6 +477,9 @@ def get_trading_signals():
         
         # Generate signals for all stocks
         signals = trading_signals_engine.generate_signals_for_all_stocks(stocks_data_formatted)
+        
+        # Sanitize signals to remove NaN values
+        signals = sanitize_for_json(signals)
         
         # Get summary statistics
         summary = trading_signals_engine.get_signal_summary(signals)
