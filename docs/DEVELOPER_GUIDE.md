@@ -10,36 +10,62 @@ Welcome to the Stock Data Viewer project! This guide will help you understand th
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Backend        │    │   Data Source   │
-│   (HTML/CSS/JS) │◄──►│   (Flask)        │◄──►│   (Yahoo API)   │
+│   Frontend      │    │   Backend        │    │   Data Sources  │
+│   (HTML/CSS/JS) │◄──►│   (Flask)        │◄──►│   (APIs)        │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
          │                       │                       │
          │                       ▼                       │
          │              ┌──────────────────┐             │
-         │              │   Cache System   │             │
-         │              │   (JSON Files)   │             │
+         │              │   PostgreSQL     │             │
+         │              │   Database       │             │
          │              └──────────────────┘             │
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   User Interface│    │   Daily Refresh  │    │   Performance   │
-│   (Responsive)  │    │   (Cron Jobs)    │    │   Monitoring    │
+│   User Interface│    │   Data Publisher │    │   Data Providers│
+│   (Responsive)  │    │   (Orchestrator) │    │   (DefeatBeta)  │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
 ### Core Components
 
 1. **Flask Application** (`app.py`): Main web server and API endpoints
-2. **Data Fetcher** (`stock_data.py`): Yahoo Finance integration and calculations
-3. **Cache Manager** (`cache_manager.py`): File-based caching system
-4. **Performance Monitor** (`performance_monitor.py`): Performance tracking
-5. **Frontend** (`templates/index.html`): Single-page application
+2. **Data Publisher** (`publisher/data_publisher.py`): Orchestrates data fetching and storage
+3. **Data Orchestrator** (`business/data_orchestrator.py`): Business logic and calculations
+4. **DAO Layer** (`dao/`): Database access objects for clean data access
+5. **Data Providers** (`data_providers/`): Pluggable data source system
+6. **Frontend** (`templates/index.html`): Single-page application with accessibility features
+
+### Clean Architecture Layers
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Presentation Layer                        │
+│  (Flask App, Templates, API Endpoints)                      │
+└─────────────────────────────────────────────────────────────┘
+                                │
+┌─────────────────────────────────────────────────────────────┐
+│                    Business Layer                           │
+│  (DataOrchestrator, Calculations, TradingSignals)          │
+└─────────────────────────────────────────────────────────────┘
+                                │
+┌─────────────────────────────────────────────────────────────┐
+│                    Data Access Layer                        │
+│  (StockDAO, StockMetricsDAO, IndexDAO)                     │
+└─────────────────────────────────────────────────────────────┘
+                                │
+┌─────────────────────────────────────────────────────────────┐
+│                    Data Provider Layer                      │
+│  (DefeatBeta, Yahoo, Polygon Providers)                    │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ## 🔧 Development Setup
 
 ### Prerequisites
 
 - Python 3.11 or higher
+- PostgreSQL 14+ (local or cloud)
 - pip (Python package manager)
 - Git
 - Modern web browser
@@ -64,61 +90,103 @@ Welcome to the Stock Data Viewer project! This guide will help you understand th
    pip install -r requirements.txt
    ```
 
-4. **Run the application**
+4. **Set up PostgreSQL database**
+   ```bash
+   # Create database
+   createdb stock_ticker_db
+   
+   # Set environment variable
+   export DATABASE_URL="postgresql://username:password@localhost:5432/stock_ticker_db"
+   ```
+
+5. **Set up API keys (optional)**
+   ```bash
+   # For ETF data (recommended)
+   export POLYGON_API_KEY="your_polygon_api_key"
+   
+   # For custom stock list (optional)
+   export STOCK_SYMBOLS_FILE="data/stock_symbols.txt"
+   ```
+
+6. **Run the application**
    ```bash
    python3 app.py
    ```
 
-5. **Access the application**
+7. **Access the application**
    Open `http://localhost:5000` in your browser
 
 ## 📁 Code Structure
 
-### Backend Files
+### Backend Architecture
 
 #### `app.py` - Main Flask Application
 - **Purpose**: Web server, routing, and API endpoints
 - **Key Functions**:
-  - `index()`: Serves main HTML page
-  - `refresh_data()`: Triggers data refresh
-  - `filter_stocks()`: Applies filters (future)
-  - `cache_status()`: Returns cache information
-- **Dependencies**: Flask, cache_manager, stock_data
+  - `index()`: Serves main HTML page with stock data
+  - `api_stocks()`: Returns JSON stock data
+  - `api_refresh()`: Triggers data refresh
+  - `api_status()`: Returns system status
+- **Dependencies**: Flask, database models, data publisher
 
-#### `stock_data.py` - Data Processing
-- **Purpose**: Yahoo Finance integration and calculations
+#### `publisher/data_publisher.py` - Data Orchestration
+- **Purpose**: Orchestrates data fetching and database storage
 - **Key Classes**:
-  - `StockData`: Main data fetcher class
+  - `DataPublisher`: Main orchestrator class
 - **Key Methods**:
-  - `get_all_stocks()`: Fetches all stock data
-  - `get_stock_info()`: Fetches individual stock data
-  - `_calculate_rs()`: Relative strength calculations
-  - `_calculate_emas()`: EMA calculations
-- **Dependencies**: yfinance, pandas, numpy
+  - `publish_all_stocks()`: Fetches and stores all stock data
+  - `_convert_numpy_types()`: Handles PostgreSQL compatibility
+- **Dependencies**: DataOrchestrator, database models
 
-#### `cache_manager.py` - Caching System
-- **Purpose**: File-based caching for performance
+#### `business/data_orchestrator.py` - Business Logic
+- **Purpose**: Business logic and data processing
 - **Key Classes**:
-  - `StockCacheManager`: Cache management
+  - `DataOrchestrator`: Main business logic coordinator
 - **Key Methods**:
-  - `save_to_cache()`: Saves data to JSON files
-  - `load_from_cache()`: Loads data from cache
-  - `refresh_cache()`: Updates cache with fresh data
-  - `get_cache_status()`: Returns cache metadata
-- **Dependencies**: json, os, datetime
+  - `refresh_benchmark_data()`: Fetches ETF data
+  - `get_refresh_status()`: Returns refresh status
+  - `_process_single_stock()`: Processes individual stock data
+- **Dependencies**: DAO layer, data providers
+
+#### `dao/` - Data Access Layer
+- **Purpose**: Clean database access abstraction
+- **Key Files**:
+  - `stock_dao.py`: Stock data access
+  - `stock_metrics_dao.py`: Metrics data access
+  - `index_dao.py`: ETF/index data access
+  - `base_dao.py`: Base DAO functionality
+- **Dependencies**: SQLAlchemy, database models
+
+#### `data_providers/` - Data Source System
+- **Purpose**: Pluggable data provider system
+- **Key Files**:
+  - `defeatbeta_provider.py`: Primary stock data provider
+  - `yahoo_provider.py`: Fallback provider
+  - `polygon_provider.py`: ETF data provider
+  - `provider_manager.py`: Provider orchestration
+- **Dependencies**: Requests, yfinance, external APIs
+
+#### `database/` - Database Layer
+- **Purpose**: Database models and connection management
+- **Key Files**:
+  - `models.py`: SQLAlchemy models
+  - `database.py`: Database connection manager
+- **Dependencies**: SQLAlchemy, PostgreSQL
 
 ### Frontend Files
 
 #### `templates/index.html` - Single Page Application
 - **Structure**:
-  - HTML structure with Bootstrap
-  - CSS with CSS variables for theming
-  - JavaScript for interactivity
+  - Semantic HTML5 with accessibility features
+  - Bootstrap 5 with custom CSS variables
+  - Vanilla JavaScript with Chart.js integration
 - **Key Features**:
-  - Dark/light mode toggle
-  - Real-time filtering
-  - EMA modal popups
-  - Responsive design
+  - Dark/light mode toggle with persistence
+  - Real-time filtering and sorting
+  - EMA modal popups with detailed analysis
+  - EPS sparkline charts
+  - Full keyboard navigation (WCAG 2.1 AA compliant)
+  - Responsive design for mobile/desktop
 
 ## 🎯 Key Features Implementation
 

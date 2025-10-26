@@ -1,6 +1,6 @@
 """
 Daily Stock Data Refresh Job for Render
-Runs daily after market close to update stock data cache
+Runs daily after market close to update stock data in database
 """
 
 import os
@@ -9,61 +9,56 @@ import requests
 import time
 import json
 from datetime import datetime
-from cache_manager import StockCacheManager
-from stock_data import StockData
+
+# Add parent directory to path for imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from publisher.data_publisher import DataPublisher
+from database.database import db_manager
 
 def refresh_stock_data():
-    """Refresh stock data with optimized rate limiting"""
+    """Refresh stock data using current database architecture"""
     
     print(f"🔄 Daily Stock Data Refresh Job - {datetime.now().isoformat()}")
     print("=" * 60)
     
-    # Initialize cache manager
-    cache_manager = StockCacheManager()
+    # Initialize data publisher
+    data_publisher = DataPublisher()
     
-    print("📊 Checking current cache status...")
-    status = cache_manager.get_cache_status()
-    print(f"   Cache exists: {status['cache_exists']}")
-    print(f"   Cache valid: {status['cache_valid']}")
-    print(f"   Last updated: {status.get('last_updated', 'Never')}")
-    print(f"   Age: {status.get('age_hours', 0):.1f} hours")
+    print("📊 Checking current database status...")
+    try:
+        # Check database connection
+        session = db_manager.get_session()
+        session.close()
+        print("   ✅ Database connection successful")
+    except Exception as e:
+        print(f"   ❌ Database connection failed: {e}")
+        return False
     
-    # Force refresh regardless of cache age (daily job)
-    print(f"\n🔄 Starting daily refresh (forced)...")
+    print(f"\n🔄 Starting daily refresh...")
     
     try:
-        # Use optimized stock data fetcher
-        stock_data = StockData(enable_monitoring=True)
-        
-        print("📡 Fetching fresh stock data from Yahoo Finance...")
+        print("📡 Fetching fresh stock data and updating database...")
         print("   (This may take 10-15 minutes due to rate limiting)")
         
-        fresh_data = stock_data.get_all_stocks()
-        
-        if not fresh_data:
-            print("❌ Failed to fetch fresh data")
-            return False
-        
-        print(f"✅ Successfully fetched {len(fresh_data)} stocks")
-        
-        # Save to cache
-        print("💾 Saving data to cache...")
-        success = cache_manager.save_to_cache(fresh_data)
+        # Use the current data publisher to fetch and store data
+        success, successful_count, failed_count = data_publisher.publish_all_stocks()
         
         if success:
-            print(f"✅ Cache updated successfully with {len(fresh_data)} stocks")
-            
-            # Print performance summary if available
-            if hasattr(stock_data, 'print_performance_summary'):
-                stock_data.print_performance_summary()
-            
+            print(f"✅ Database updated successfully!")
+            print(f"   📊 Successful: {successful_count} stocks")
+            print(f"   ❌ Failed: {failed_count} stocks")
             return True
         else:
-            print("❌ Failed to save data to cache")
+            print(f"❌ Failed to update database")
+            print(f"   📊 Successful: {successful_count} stocks")
+            print(f"   ❌ Failed: {failed_count} stocks")
             return False
             
     except Exception as e:
         print(f"❌ Error during refresh: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def notify_web_app():
@@ -91,22 +86,36 @@ def notify_web_app():
         print(f"   (This is normal if the web app is not running)")
 
 def check_final_status():
-    """Check the final cache status"""
+    """Check the final database status"""
     
-    print(f"\n📊 Final Cache Status:")
+    print(f"\n📊 Final Database Status:")
     print("-" * 30)
     
-    cache_manager = StockCacheManager()
-    status = cache_manager.get_cache_status()
-    
-    print(f"✅ Cache exists: {status['cache_exists']}")
-    print(f"✅ Cache valid: {status['cache_valid']}")
-    print(f"✅ Last updated: {status.get('last_updated', 'Unknown')}")
-    print(f"✅ Stock count: {status.get('stock_count', 0)}")
-    print(f"✅ Age: {status.get('age_hours', 0):.1f} hours")
-    print(f"✅ File size: {status.get('cache_file_size', 0)} bytes")
-    
-    return status['cache_valid']
+    try:
+        session = db_manager.get_session()
+        
+        # Count stocks in database
+        from database.models import Stock
+        stock_count = session.query(Stock).count()
+        
+        # Get latest refresh log
+        from database.models import RefreshLog
+        latest_log = session.query(RefreshLog).order_by(RefreshLog.started_at.desc()).first()
+        
+        print(f"✅ Database connection: Working")
+        print(f"✅ Stock count: {stock_count}")
+        if latest_log:
+            print(f"✅ Last refresh: {latest_log.started_at}")
+            print(f"✅ Last status: {latest_log.status}")
+        else:
+            print(f"✅ Last refresh: No previous refresh found")
+        
+        session.close()
+        return True
+        
+    except Exception as e:
+        print(f"❌ Error checking database status: {e}")
+        return False
 
 def main():
     """Main function for the daily refresh job"""
@@ -134,11 +143,11 @@ def main():
         
         if final_status:
             print(f"\n🎉 Daily refresh job completed successfully!")
-            print(f"   ✅ Stock data updated and cached")
+            print(f"   ✅ Stock data updated in database")
             print(f"   ✅ Web app can now serve fresh data")
             return 0
         else:
-            print(f"\n⚠️  Job completed but cache status is invalid")
+            print(f"\n⚠️  Job completed but database status check failed")
             return 1
             
     except Exception as e:
