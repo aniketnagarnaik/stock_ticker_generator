@@ -192,13 +192,15 @@ class FinancialCalculations:
                     benchmark_cumulative = (1 + benchmark_period).prod() - 1
                     
                     # Calculate RS ratio with safety checks
+                    # Safety check prevents astronomical RS values when benchmark has minimal movement
+                    # This is normal for sector ETFs during low-volatility periods (e.g., XLF moving 0.075% over 63 days)
                     if abs(benchmark_cumulative) > 0.001:  # Avoid division by very small numbers
                         rs_ratio = (stock_cumulative / benchmark_cumulative - 1) * 100
                         # Cap extreme values to reasonable range (-1000% to +1000%)
                         rs_ratio = max(-1000, min(1000, rs_ratio))
                         rs_values.append(rs_ratio)
                     else:
-                        # Skip this period if benchmark is too small
+                        # Skip this period if benchmark is too small - this is expected behavior
                         print(f"  ⚠️ Skipping RS calculation: benchmark_cumulative too small ({benchmark_cumulative:.6f})", flush=True)
             
             if not rs_values:
