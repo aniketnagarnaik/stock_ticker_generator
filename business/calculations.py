@@ -191,10 +191,15 @@ class FinancialCalculations:
                     stock_cumulative = (1 + stock_period).prod() - 1
                     benchmark_cumulative = (1 + benchmark_period).prod() - 1
                     
-                    # Calculate RS ratio
-                    if benchmark_cumulative != 0:
+                    # Calculate RS ratio with safety checks
+                    if abs(benchmark_cumulative) > 0.001:  # Avoid division by very small numbers
                         rs_ratio = (stock_cumulative / benchmark_cumulative - 1) * 100
+                        # Cap extreme values to reasonable range (-1000% to +1000%)
+                        rs_ratio = max(-1000, min(1000, rs_ratio))
                         rs_values.append(rs_ratio)
+                    else:
+                        # Skip this period if benchmark is too small
+                        print(f"  ⚠️ Skipping RS calculation: benchmark_cumulative too small ({benchmark_cumulative:.6f})", flush=True)
             
             if not rs_values:
                 return None

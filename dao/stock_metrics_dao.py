@@ -152,17 +152,31 @@ class StockMetricsDAO(BaseDAO):
                         ]
                     
                     # Format data to match old structure (nested objects)
+                    # Handle NaN values for JSON serialization
+                    def safe_float(value):
+                        if value is None:
+                            return None
+                        if isinstance(value, float) and math.isnan(value):
+                            return None
+                        return value
+                    
+                    # Apply safe_float to EMA data as well
+                    ema_data = metrics.get_ema_data()
+                    safe_ema_data = {}
+                    for key, value in ema_data.items():
+                        safe_ema_data[key] = safe_float(value)
+                    
                     stock_dict.update({
                         'eps_growth': {
-                            'quarter_over_quarter': metrics.eps_growth_qoq,
-                            'year_over_year': metrics.eps_growth_yoy,
+                            'quarter_over_quarter': safe_float(metrics.eps_growth_qoq),
+                            'year_over_year': safe_float(metrics.eps_growth_yoy),
                             'latest_quarters': latest_quarters
                         },
                         'relative_strength': {
-                            'rs_spy': metrics.rs_spy,
-                            'rs_sector': metrics.rs_sector
+                            'rs_spy': safe_float(metrics.rs_spy),
+                            'rs_sector': safe_float(metrics.rs_sector)
                         },
-                        'ema_data': metrics.get_ema_data(),
+                        'ema_data': safe_ema_data,
                         'eps_history': eps_history_formatted
                     })
                 else:

@@ -1051,24 +1051,22 @@
                                                     data-symbol="{{ stock.symbol }}" 
                                                     aria-label="View detailed EMA analysis for {{ stock.symbol }}"
                                                     style="cursor: pointer;">
-                                                {% if stock.ema_data %}
-                                                    {% set above_count = 0 %}
-                                                    {% set below_count = 0 %}
-                                                    {% set total_valid_emas = 0 %}
-                                                    {% for ema_key, ema_value in stock.ema_data.items() %}
+                                                {% if stock['ema_data'] %}
+                                                    {% set ns = namespace(above_count=0, below_count=0, total_valid_emas=0) %}
+                                                    {% for ema_key, ema_value in stock['ema_data'].items() %}
                                                         {% if ema_value is not none %}
-                                                            {% set total_valid_emas = total_valid_emas + 1 %}
-                                                            {% if stock.price > ema_value %}
-                                                                {% set above_count = above_count + 1 %}
+                                                            {% set ns.total_valid_emas = ns.total_valid_emas + 1 %}
+                                                            {% if stock['price'] > ema_value %}
+                                                                {% set ns.above_count = ns.above_count + 1 %}
                                                             {% else %}
-                                                                {% set below_count = below_count + 1 %}
+                                                                {% set ns.below_count = ns.below_count + 1 %}
                                                             {% endif %}
                                                         {% endif %}
                                                     {% endfor %}
-                                                    {% if total_valid_emas > 0 %}
-                                                        {% if above_count == total_valid_emas %}
+                                                    {% if ns.total_valid_emas > 0 %}
+                                                        {% if ns.above_count == ns.total_valid_emas %}
                                                             <span aria-hidden="true">🟢</span> Bullish Signal
-                                                        {% elif below_count == total_valid_emas %}
+                                                        {% elif ns.below_count == ns.total_valid_emas %}
                                                             <span aria-hidden="true">🔴</span> Bearish Signal
                                                         {% else %}
                                                             <span aria-hidden="true">🟡</span> Mixed Signal
