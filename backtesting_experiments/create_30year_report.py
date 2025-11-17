@@ -1,0 +1,327 @@
+#!/usr/bin/env python3
+"""
+30-Year Momentum Trading System Results
+Comprehensive analysis of 30-year backtesting (1994-2024)
+"""
+
+import sys
+import pandas as pd
+import numpy as np
+from datetime import datetime
+
+def create_30_year_html_report():
+    """Create comprehensive HTML report for 30-year results"""
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>30-Year Momentum Trading System Analysis (1994-2024)</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <style>
+            body {{
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }}
+            .container {{
+                max-width: 1400px;
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }}
+            .header {{
+                text-align: center;
+                margin-bottom: 30px;
+                padding: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 10px;
+            }}
+            .metrics-grid {{
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin: 30px 0;
+            }}
+            .metric-card {{
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                text-align: center;
+                border-left: 4px solid #667eea;
+            }}
+            .metric-value {{
+                font-size: 24px;
+                font-weight: bold;
+                color: #2c3e50;
+            }}
+            .metric-label {{
+                font-size: 14px;
+                color: #7f8c8d;
+                margin-top: 5px;
+            }}
+            .chart-container {{
+                margin: 30px 0;
+                padding: 20px;
+                background: #f8f9fa;
+                border-radius: 8px;
+            }}
+            .insights {{
+                background: #e8f5e8;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border-left: 4px solid #27ae60;
+            }}
+            .warning {{
+                background: #fff3cd;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border-left: 4px solid #ffc107;
+            }}
+            .decade-analysis {{
+                background: #e3f2fd;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border-left: 4px solid #2196f3;
+            }}
+            .strategy-details {{
+                background: #f3e5f5;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border-left: 4px solid #9c27b0;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🚀 30-Year Momentum Trading System Analysis</h1>
+                <h2>Comprehensive Backtesting Results (1994-2024)</h2>
+                <p>Generated on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">$-73</div>
+                    <div class="metric-label">Final Portfolio Value</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">-1.00%</div>
+                    <div class="metric-label">Total Return (30 Years)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">-0.22%</div>
+                    <div class="metric-label">Annualized Return</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">5.8%</div>
+                    <div class="metric-label">Win Rate (7/121 quarters)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0.26%</div>
+                    <div class="metric-label">Portfolio Volatility</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">-0.83</div>
+                    <div class="metric-label">Sharpe Ratio</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div id="performance-charts"></div>
+            </div>
+            
+            <div class="warning">
+                <h3>⚠️ Critical Findings</h3>
+                <ul>
+                    <li><strong>Strategy Failure:</strong> The momentum strategy completely failed over 30 years</li>
+                    <li><strong>Portfolio Destruction:</strong> $100,000 initial capital reduced to -$73</li>
+                    <li><strong>Zero Performance:</strong> 95% of quarters showed 0% returns (strategy not working)</li>
+                    <li><strong>Data Issues:</strong> Many quarters had insufficient data for momentum calculations</li>
+                    <li><strong>Market Cycles:</strong> Strategy failed across all market conditions (bull, bear, sideways)</li>
+                </ul>
+            </div>
+            
+            <div class="decade-analysis">
+                <h3>📊 Performance by Decade</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #2196f3; color: white;">
+                            <th style="padding: 15px; text-align: left;">Decade</th>
+                            <th style="padding: 15px; text-align: center;">Strategy Return</th>
+                            <th style="padding: 15px; text-align: center;">SPY Return</th>
+                            <th style="padding: 15px; text-align: center;">Excess Return</th>
+                            <th style="padding: 15px; text-align: center;">Analysis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 12px;">1990s (1994-1999)</td>
+                            <td style="padding: 12px; text-align: center; color: #e74c3c;">-0.56%</td>
+                            <td style="padding: 12px; text-align: center;">1.07%</td>
+                            <td style="padding: 12px; text-align: center; color: #e74c3c;">-1.63%</td>
+                            <td style="padding: 12px;">Early struggles, data limitations</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;">2000s (2000-2009)</td>
+                            <td style="padding: 12px; text-align: center;">0.00%</td>
+                            <td style="padding: 12px; text-align: center;">0.30%</td>
+                            <td style="padding: 12px; text-align: center; color: #e74c3c;">-0.30%</td>
+                            <td style="padding: 12px;">Complete strategy failure</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 12px;">2010s (2010-2019)</td>
+                            <td style="padding: 12px; text-align: center;">0.00%</td>
+                            <td style="padding: 12px; text-align: center;">1.09%</td>
+                            <td style="padding: 12px; text-align: center; color: #e74c3c;">-1.09%</td>
+                            <td style="padding: 12px;">Bull market missed entirely</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;">2020s (2020-2024)</td>
+                            <td style="padding: 12px; text-align: center;">0.00%</td>
+                            <td style="padding: 12px; text-align: center;">0.49%</td>
+                            <td style="padding: 12px; text-align: center; color: #e74c3c;">-0.49%</td>
+                            <td style="padding: 12px;">Recent volatility ignored</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="insights">
+                <h3>💡 Key Insights from 30-Year Analysis</h3>
+                <ul>
+                    <li><strong>Data Quality Issues:</strong> Many quarters had insufficient historical data for momentum calculations</li>
+                    <li><strong>Strategy Limitations:</strong> Momentum strategy requires sufficient historical data to work effectively</li>
+                    <li><strong>Market Adaptation:</strong> Strategy failed to adapt to different market conditions over 30 years</li>
+                    <li><strong>Stock Universe:</strong> Limited to 5-9 stocks with complete data throughout the period</li>
+                    <li><strong>Transaction Costs:</strong> Minimal impact due to very few actual trades executed</li>
+                    <li><strong>Rebalancing Issues:</strong> Quarterly rebalancing often resulted in no trades due to data limitations</li>
+                </ul>
+            </div>
+            
+            <div class="strategy-details">
+                <h3>🎯 Strategy Analysis</h3>
+                <p><strong>Strategy Type:</strong> Momentum-based quarterly rebalancing</p>
+                <p><strong>Universe:</strong> 5-9 stocks with complete fundamental and technical data</p>
+                <p><strong>Selection:</strong> Top 2 stocks by momentum score each quarter</p>
+                <p><strong>Momentum Components:</strong></p>
+                <ul>
+                    <li>RS vs SPY (35%): Relative strength against market</li>
+                    <li>EPS Momentum (25%): Earnings per share growth</li>
+                    <li>Price Momentum (20%): Price trend over multiple periods</li>
+                    <li>P/E Momentum (10%): Valuation trend</li>
+                    <li>Volume Momentum (10%): Trading volume trend</li>
+                </ul>
+                <p><strong>Critical Issues Identified:</strong></p>
+                <ul>
+                    <li>Insufficient historical data for many quarters</li>
+                    <li>Strategy unable to identify momentum in early years</li>
+                    <li>Portfolio remained mostly in cash due to failed selections</li>
+                    <li>No adaptation mechanism for changing market conditions</li>
+                </ul>
+            </div>
+            
+            <div class="warning">
+                <h3>🚨 Recommendations</h3>
+                <ul>
+                    <li><strong>Data Requirements:</strong> Need at least 5-10 years of historical data for momentum calculations</li>
+                    <li><strong>Strategy Revision:</strong> Current momentum approach is fundamentally flawed for long-term backtesting</li>
+                    <li><strong>Alternative Approaches:</strong> Consider value-based or trend-following strategies with lower data requirements</li>
+                    <li><strong>Market Regimes:</strong> Implement regime detection to adapt strategy to different market conditions</li>
+                    <li><strong>Risk Management:</strong> Add position sizing and risk controls to prevent total portfolio destruction</li>
+                </ul>
+            </div>
+        </div>
+        
+        <script>
+            // Create performance visualization
+            const decades = ['1990s', '2000s', '2010s', '2020s'];
+            const strategyReturns = [-0.56, 0.00, 0.00, 0.00];
+            const spyReturns = [1.07, 0.30, 1.09, 0.49];
+            
+            const trace1 = {{
+                x: decades,
+                y: strategyReturns,
+                type: 'bar',
+                name: 'Momentum Strategy',
+                marker: {{ color: '#e74c3c' }}
+            }};
+            
+            const trace2 = {{
+                x: decades,
+                y: spyReturns,
+                type: 'bar',
+                name: 'SPY Benchmark',
+                marker: {{ color: '#3498db' }}
+            }};
+            
+            const layout = {{
+                title: '30-Year Performance by Decade',
+                xaxis: {{ title: 'Decade' }},
+                yaxis: {{ title: 'Total Return (%)' }},
+                barmode: 'group',
+                height: 400
+            }};
+            
+            Plotly.newPlot('performance-charts', [trace1, trace2], layout);
+        </script>
+    </body>
+    </html>
+    """
+    
+    # Write the comprehensive HTML file
+    with open("momentum_trading_30year_results.html", "w", encoding="utf-8") as f:
+        f.write(html_content)
+    
+    print("✅ 30-year comprehensive HTML report saved to: momentum_trading_30year_results.html")
+    print("   📊 Includes detailed analysis, decade breakdown, and critical findings")
+    
+    return html_content
+
+def main():
+    """Create comprehensive 30-year results summary"""
+    print("📊 30-YEAR MOMENTUM TRADING SYSTEM ANALYSIS")
+    print("=" * 80)
+    
+    print("🎯 KEY FINDINGS:")
+    print("-" * 40)
+    print("• Total Return: -1.00% over 30 years")
+    print("• Final Portfolio Value: -$73 (essentially $0)")
+    print("• Win Rate: 5.8% (7 out of 121 quarters)")
+    print("• Strategy completely failed across all market cycles")
+    print("• 95% of quarters showed 0% returns")
+    print("• Data limitations prevented effective momentum calculations")
+    
+    print("\n📊 DECADE ANALYSIS:")
+    print("-" * 40)
+    print("1990s (1994-1999): -0.56% vs SPY +1.07%")
+    print("2000s (2000-2009):  0.00% vs SPY +0.30%")
+    print("2010s (2010-2019):  0.00% vs SPY +1.09%")
+    print("2020s (2020-2024):  0.00% vs SPY +0.49%")
+    
+    print("\n🚨 CRITICAL ISSUES:")
+    print("-" * 40)
+    print("• Insufficient historical data for momentum calculations")
+    print("• Strategy unable to identify momentum in early years")
+    print("• Portfolio remained mostly in cash")
+    print("• No adaptation to changing market conditions")
+    print("• Fundamental flaws in long-term momentum approach")
+    
+    # Create HTML report
+    create_30_year_html_report()
+    
+    print("\n" + "=" * 80)
+    print("🎯 30-YEAR ANALYSIS COMPLETE!")
+    print("=" * 80)
+
+if __name__ == "__main__":
+    main()
+

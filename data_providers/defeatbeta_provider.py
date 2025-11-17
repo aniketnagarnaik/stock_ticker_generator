@@ -143,6 +143,54 @@ class DefeatBetaProvider(BaseDataProvider):
             print(f"Error getting raw EPS data: {e}", flush=True)
             return {'data': []}
     
+    def get_pe_ratios(self, symbol: str) -> Optional[pd.DataFrame]:
+        """Get P/E ratio data from defeatbeta-api"""
+        if not self.is_available():
+            return None
+        
+        try:
+            import time
+            time.sleep(self.request_delay)
+            
+            ticker = DefeatBetaTicker(symbol)
+            pe_data = ticker.ttm_pe()
+            
+            if pe_data.empty:
+                return None
+            
+            # Rename columns for consistency
+            pe_data = pe_data.rename(columns={'report_date': 'date', 'ttm_pe': 'pe'})
+            
+            return pe_data
+            
+        except Exception as e:
+            print(f"Error getting P/E data for {symbol}: {e}", flush=True)
+            return None
+    
+    def get_peg_ratios(self, symbol: str) -> Optional[pd.DataFrame]:
+        """Get PEG ratio data from defeatbeta-api"""
+        if not self.is_available():
+            return None
+        
+        try:
+            import time
+            time.sleep(self.request_delay)
+            
+            ticker = DefeatBetaTicker(symbol)
+            peg_data = ticker.peg_ratio()
+            
+            if peg_data.empty:
+                return None
+            
+            # Rename columns for consistency - use EPS-based PEG
+            peg_data = peg_data.rename(columns={'report_date': 'date', 'peg_ratio_by_eps': 'peg'})
+            
+            return peg_data
+            
+        except Exception as e:
+            print(f"Error getting PEG data for {symbol}: {e}", flush=True)
+            return None
+    
     def get_all_stocks(self, symbols: List[str]) -> List[Dict]:
         """Get raw data for multiple stocks"""
         if not self.is_available():
