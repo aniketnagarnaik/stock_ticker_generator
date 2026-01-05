@@ -178,3 +178,4 @@ echo -e "${YELLOW}🔒 SSL Setup (if you have a domain):${NC}"
 echo "  sudo certbot --nginx -d ${DOMAIN_NAME:-your-domain.com}"
 echo ""
 
+

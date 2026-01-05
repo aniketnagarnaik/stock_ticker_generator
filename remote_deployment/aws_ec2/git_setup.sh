@@ -143,3 +143,4 @@ echo "1. Edit .env file if needed: nano $APP_DIR/.env"
 echo "2. Run deployment script: ./deployment/aws_ec2_deploy.sh"
 echo ""
 
+

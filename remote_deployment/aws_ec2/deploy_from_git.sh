@@ -71,3 +71,4 @@ fi
 echo ""
 echo -e "${GREEN}🎉 Your app is now running the latest code!${NC}"
 
+

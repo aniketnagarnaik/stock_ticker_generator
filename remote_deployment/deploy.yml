@@ -22,3 +22,4 @@ jobs:
           cd /opt/stock_ticker_generator
           ./deployment/deploy_from_git.sh
 
+
