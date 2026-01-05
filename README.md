@@ -34,29 +34,69 @@ A comprehensive stock analysis web application that provides real-time stock dat
 ## 📋 Prerequisites
 
 - Python 3.11+
+- PostgreSQL 14+ (local installation or remote server)
 - pip (Python package manager)
 - Git
 - Modern web browser
+
+> 📖 **For detailed setup instructions, see [docs/SETUP.md](docs/SETUP.md)**
 
 ## 🚀 Quick Start
 
 ### 1. Clone the Repository
    ```bash
-git clone https://github.com/aniketnagarnaik/stock_ticker_generator.git
+   git clone https://github.com/aniketnagarnaik/stock_ticker_generator.git
    cd stock_ticker_generator
    ```
 
-### 2. Install Dependencies
+### 2. Set Up PostgreSQL Database
    ```bash
-pip install -r requirements.txt
-```
+   # Create a PostgreSQL database
+   createdb stock_ticker_db
+   
+   # Or using psql:
+   psql -U postgres
+   CREATE DATABASE stock_ticker_db;
+   \q
+   ```
 
-### 3. Run the Application
+### 3. Configure Environment Variables
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+   
+   # Edit .env file and set your DATABASE_URL
+   # Format: postgresql://username:password@localhost:5432/stock_ticker_db
+   nano .env  # or use your preferred editor
+   ```
+
+### 4. Install Dependencies
+   ```bash
+   # Create virtual environment (recommended)
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   
+   # Install dependencies
+   pip install -r requirements.txt
+   ```
+
+### 5. Run the Application
+
+   **Option A: Using the startup script (recommended)**
+   ```bash
+   # On Unix/Mac:
+   ./start.sh
+   
+   # On Windows:
+   start.bat
+   ```
+
+   **Option B: Run directly**
    ```bash
    python3 app.py
-```
+   ```
 
-### 4. Access the Application
+### 6. Access the Application
 Open your browser and navigate to: `http://localhost:5000`
 
 ## 📁 Project Structure
@@ -64,24 +104,23 @@ Open your browser and navigate to: `http://localhost:5000`
 ```
 stock_ticker_generator/
 ├── 📄 app.py                    # Main Flask application
-├── 📄 stock_data.py             # Yahoo Finance data fetcher
-├── 📄 cache_manager.py          # Caching system
-├── 📄 performance_monitor.py    # Performance tracking
-├── 📄 daily_refresh_job.py      # Daily refresh script
-├── 📄 stock_symbols.txt         # S&P 500 stock symbols
-├── 📄 sp500_companies.json      # Company metadata
+├── 📄 start.sh                  # Startup script (Unix/Mac)
+├── 📄 start.bat                 # Startup script (Windows)
 ├── 📄 requirements.txt          # Python dependencies
-├── 📄 render.yaml               # Render deployment config
-├── 📁 templates/
+├── 📄 .env.example              # Environment variables template
+├── 📁 templates/                # HTML templates
 │   └── 📄 index.html            # Main web interface
+├── 📁 database/                 # Database models and connection
+├── 📁 dao/                      # Data Access Objects
+├── 📁 business/                 # Business logic layer
+├── 📁 data_providers/           # Data source providers
+├── 📁 publisher/                # Data publishing layer
 ├── 📁 docs/                     # Documentation
+│   ├── 📄 SETUP.md             # Setup guide (START HERE)
 │   ├── 📄 API.md               # API documentation
 │   ├── 📄 DEPLOYMENT.md        # Deployment guide
 │   └── 📄 DEVELOPER_GUIDE.md   # Developer onboarding
-├── 📁 config/                   # Configuration files
-│   └── 📄 settings.py          # App configuration
-└── 📁 scripts/                  # Utility scripts
-    └── 📄 sp500_extractor.py    # S&P 500 data extractor
+└── 📁 backtesting_experiments/  # Backtesting code and results
 ```
 
 ## 🔧 Configuration

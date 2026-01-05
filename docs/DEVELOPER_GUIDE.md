@@ -94,24 +94,45 @@ Welcome to the Stock Data Viewer project! This guide will help you understand th
    ```bash
    # Create database
    createdb stock_ticker_db
-   
-   # Set environment variable
-   export DATABASE_URL="postgresql://username:password@localhost:5432/stock_ticker_db"
    ```
 
-5. **Set up API keys (optional)**
+5. **Create environment file**
    ```bash
-   # For ETF data (recommended)
-   export POLYGON_API_KEY="your_polygon_api_key"
-   
-   # For custom stock list (optional)
-   export STOCK_SYMBOLS_FILE="data/stock_symbols.txt"
+   # Create .env file from template
+   cp .env.example .env  # If .env.example exists
+   # Or create .env manually with:
+   # DATABASE_URL=postgresql://username:password@localhost:5432/stock_ticker_db
    ```
 
-6. **Run the application**
+   Edit `.env` file and set your `DATABASE_URL`:
+   ```env
+   DATABASE_URL=postgresql://username:password@localhost:5432/stock_ticker_db
+   PORT=5000
+   ```
+
+6. **Set up API keys (optional)**
+   Add to your `.env` file:
+   ```env
+   POLYGON_API_KEY=your_polygon_api_key
+   ```
+
+7. **Run the application**
+
+   **Option A: Using startup script (recommended)**
+   ```bash
+   # Unix/Mac:
+   ./start.sh
+   
+   # Windows:
+   start.bat
+   ```
+
+   **Option B: Run directly**
    ```bash
    python3 app.py
    ```
+
+> 📖 **For detailed setup instructions, see [SETUP.md](SETUP.md)**
 
 7. **Access the application**
    Open `http://localhost:5000` in your browser

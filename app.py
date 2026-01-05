@@ -10,6 +10,11 @@ import sys
 from datetime import datetime
 import pytz
 import math
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 from database.database import db_manager
 from publisher.data_publisher import DataPublisher
 from business.data_orchestrator import DataOrchestrator
